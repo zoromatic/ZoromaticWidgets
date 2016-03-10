@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"  
+    xmlns:widgets="http://schemas.android.com/apk/res/com.zoromatic.widgets"
+	android:key="com.zoromatic.widgets.Preferences" >
+
+    <!-- <PreferenceCategory android:title="@string/weathersettings" > -->        
+        <com.zoromatic.widgets.ImageListPreference
+            android:defaultValue="0"
+            android:entries="@array/tempScaleArray"
+            android:entryValues="@array/tempScaleValues"
+            android:key="tempscale_"
+            android:summary="@string/selecttempscale"
+            android:title="@string/tempscale" />
+        
+        <PreferenceScreen android:title="@string/locationsettings"
+            android:key="locationsettings_">
+			<intent android:action="android.intent.action.VIEW"
+			         android:targetPackage="com.zoromatic.widgets"
+			         android:targetClass="com.zoromatic.widgets.ConfigureLocationActivity">					    
+			</intent>
+		</PreferenceScreen>
+        
+        <com.zoromatic.widgets.ImageListPreference
+            android:defaultValue="3"
+            android:entries="@array/refreshIntervalArray"
+            android:entryValues="@array/refreshIntervalValues"
+            android:key="refreshinterval_"
+            android:summary="@string/intervalrefreshing"
+            android:title="@string/refreshinterval" />
+        
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="refreshwifionly_"
+            android:summary="@string/refreshwifionlyconnection"
+            android:title="@string/refreshwifionly" />
+        
+        <PreferenceScreen android:title="@string/refreshnow"
+            android:key="refreshnow_"
+            android:summary="@string/lastrefreshnever">				    
+		</PreferenceScreen>		        				
+			
+		<PreferenceScreen android:title="@string/weatherprovider"
+            android:summary="@string/openweathermaplink">
+		    <intent android:action="android.intent.action.VIEW"
+                android:data="http://www.openweathermap.org" />
+		</PreferenceScreen>			
+    <!-- </PreferenceCategory> -->
+
+</PreferenceScreen>

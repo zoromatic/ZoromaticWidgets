@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/syncWidget"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_weight="1"
+    android:background="@drawable/background_widget"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/indicator_margin"
+    android:paddingRight="@dimen/indicator_margin" >
+
+    <ImageView
+        android:id="@+id/imageViewSync"
+        android:layout_width="wrap_content"
+        android:layout_height="0sp"
+        android:layout_weight=".7"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/syncdesc"
+        android:scaleType="fitCenter"
+        android:src="@drawable/sync_on" />
+	
+    <TextView
+        android:id="@+id/textViewSync"
+        android:layout_width="fill_parent"
+        android:layout_height="15sp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/sync"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:textStyle="normal" />
+    
+    <ImageView
+        android:id="@+id/imageViewSyncInd"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/indicator_height"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/app_name"
+        android:scaleType="fitXY"
+        android:src="@drawable/background_indicator" />
+
+</LinearLayout>

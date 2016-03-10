@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/torchWidget"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_weight="1"
+    android:background="@drawable/background_widget"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/indicator_margin"
+    android:paddingRight="@dimen/indicator_margin" >
+
+    <ImageView
+        android:id="@+id/imageViewTorch"
+        android:layout_width="wrap_content"
+        android:layout_height="0sp"
+        android:layout_weight=".7"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/torchdesc"
+        android:scaleType="fitCenter"
+        android:src="@drawable/flashlight_on" />
+
+    <TextView
+        android:id="@+id/textViewTorch"
+        android:layout_width="fill_parent"
+        android:layout_height="15sp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/torch"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:textStyle="normal" />
+    
+    <ImageView
+        android:id="@+id/imageViewTorchInd"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/indicator_height"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/app_name"
+        android:scaleType="fitXY"
+        android:src="@drawable/background_indicator" />
+
+</LinearLayout>

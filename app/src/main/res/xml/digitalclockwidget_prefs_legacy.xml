@@ -1,0 +1,29 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference 
+        android:title="@string/generalsettings"
+        android:icon="?attr/iconSettings"
+        android:key="@string/category_general" >
+        <!-- <intent 
+            android:targetPackage="com.zoromatic.widgets"
+            android:targetClass="com.zoromatic.widgets.DigitalClockAppWidgetPreferenceActivity"
+            android:action="@string/category_general" /> -->
+    </Preference>
+    <Preference 
+        android:title="@string/weathersettings"
+        android:icon="?attr/iconWeather" 
+        android:key="@string/category_weather" >
+        <!-- <intent 
+            android:targetPackage="com.zoromatic.widgets"
+            android:targetClass="com.zoromatic.widgets.DigitalClockAppWidgetPreferenceActivity"
+            android:action="@string/category_weather" /> -->
+    </Preference>
+    <Preference 
+        android:title="@string/lookandfeel"
+        android:icon="?attr/iconPalette" 
+        android:key="@string/category_look" >
+        <!-- <intent 
+            android:targetPackage="com.zoromatic.widgets"
+            android:targetClass="com.zoromatic.widgets.DigitalClockAppWidgetPreferenceActivity"
+            android:action="@string/category_look" /> -->
+    </Preference>
+</PreferenceScreen>

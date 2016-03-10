@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/powerWidgetContainer"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"       
+    android:background="@android:color/transparent" >
+
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/app_name"
+        android:scaleType="fitXY"
+        android:src="@drawable/background" />
+
+    <LinearLayout
+        android:id="@+id/powerWidget"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/indicator_margin"
+        android:paddingRight="@dimen/indicator_margin" >
+
+        <LinearLayout
+            android:id="@+id/loadingWidget"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textViewLoading"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/loadingwidget"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/wifiWidget"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/background_power_widget"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imageViewWiFi"
+                android:layout_width="wrap_content"
+                android:layout_height="0sp"
+                android:layout_weight=".7"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/wifidesc"
+                android:scaleType="fitCenter"
+                android:src="@drawable/wifi_on" />
+
+            <TextView
+                android:id="@+id/textViewWiFi"
+                android:layout_width="fill_parent"
+                android:layout_height="15sp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/wifi"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+            
+            <ImageView
+                android:id="@+id/imageViewWiFiInd"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/indicator_height"
+                android:adjustViewBounds="false"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/background_indicator" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mobileWidget"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/background_power_widget"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imageViewMobile"
+                android:layout_width="wrap_content"
+                android:layout_height="0sp"
+                android:layout_weight=".7"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/mobiledesc"
+                android:scaleType="fitCenter"
+                android:src="@drawable/data_on" />
+
+            <TextView
+                android:id="@+id/textViewMobile"
+                android:layout_width="fill_parent"
+                android:layout_height="15sp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/mobile"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+            
+            <ImageView
+                android:id="@+id/imageViewMobileInd"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/indicator_height"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/background_indicator" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bluetoothWidget"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/background_power_widget"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imageViewBluetooth"
+                android:layout_width="wrap_content"
+                android:layout_height="0sp"
+                android:layout_weight=".7"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/bluetoothdesc"
+                android:scaleType="fitCenter"
+                android:src="@drawable/bluetooth_on" />
+
+            <TextView
+                android:id="@+id/textViewBluetooth"
+                android:layout_width="fill_parent"
+                android:layout_height="15sp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/bluetooth"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+            
+            <ImageView
+                android:id="@+id/imageViewBluetoothInd"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/indicator_height"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/background_indicator" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ringerWidget"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/background_power_widget"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imageViewRinger"
+                android:layout_width="wrap_content"
+                android:layout_height="0sp"
+                android:layout_weight=".7"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/ringerdesc"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ringer_normal" />
+
+            <TextView
+                android:id="@+id/textViewRinger"
+                android:layout_width="fill_parent"
+                android:layout_height="15sp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/ringer"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+            
+            <ImageView
+                android:id="@+id/imageViewRingerInd"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/indicator_height"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/background_indicator" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/airplaneWidget"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/background_power_widget"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imageViewAirplane"
+                android:layout_width="wrap_content"
+                android:layout_height="0sp"
+                android:layout_weight=".7"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/airplanedesc"
+                android:scaleType="fitCenter"
+                android:src="@drawable/airplane_on" />
+
+            <TextView
+                android:id="@+id/textViewAirplane"
+                android:layout_width="fill_parent"
+                android:layout_height="15sp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/airplane"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+            
+            <ImageView
+                android:id="@+id/imageViewAirplaneInd"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/indicator_height"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/background_indicator" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/brightnessWidget"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/background_power_widget"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imageViewBrightness"
+                android:layout_width="wrap_content"
+                android:layout_height="0sp"
+                android:layout_weight=".7"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/brightnessdesc"
+                android:scaleType="fitCenter"
+                android:src="@drawable/brightness_on" />
+
+            <TextView
+                android:id="@+id/textViewBrightness"
+                android:layout_width="fill_parent"
+                android:layout_height="15sp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/brightness"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+            
+            <ImageView
+                android:id="@+id/imageViewBrightnessInd"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/indicator_height"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/background_indicator" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/gpsWidget"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/background_power_widget"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imageViewGps"
+                android:layout_width="wrap_content"
+                android:layout_height="0sp"
+                android:layout_weight=".7"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/gpsdesc"
+                android:scaleType="fitCenter"
+                android:src="@drawable/gps_on" />
+
+            <TextView
+                android:id="@+id/textViewGps"
+                android:layout_width="fill_parent"
+                android:layout_height="15sp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/gps"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+            
+            <ImageView
+                android:id="@+id/imageViewGpsInd"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/indicator_height"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/background_indicator" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/nfcWidget"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/background_power_widget"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imageViewNfc"
+                android:layout_width="wrap_content"
+                android:layout_height="0sp"
+                android:layout_weight=".7"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/nfcdesc"
+                android:scaleType="fitCenter"
+                android:src="@drawable/nfc_on" />
+
+            <TextView
+                android:id="@+id/textViewNfc"
+                android:layout_width="fill_parent"
+                android:layout_height="15sp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/nfc"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+            
+            <ImageView
+                android:id="@+id/imageViewNfcInd"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/indicator_height"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/background_indicator" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/orientationWidget"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/background_power_widget"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imageViewOrientation"
+                android:layout_width="wrap_content"
+                android:layout_height="0sp"
+                android:layout_weight=".7"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/orientationdesc"
+                android:scaleType="fitCenter"
+                android:src="@drawable/orientation_on" />
+
+            <TextView
+                android:id="@+id/textViewOrientation"
+                android:layout_width="fill_parent"
+                android:layout_height="15sp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/orientation"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+            
+            <ImageView
+                android:id="@+id/imageViewOrientationInd"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/indicator_height"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/background_indicator" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/syncWidget"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/background_power_widget"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imageViewSync"
+                android:layout_width="wrap_content"
+                android:layout_height="0sp"
+                android:layout_weight=".7"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/syncdesc"
+                android:scaleType="fitCenter"
+                android:src="@drawable/sync_on" />
+
+            <TextView
+                android:id="@+id/textViewSync"
+                android:layout_width="fill_parent"
+                android:layout_height="15sp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/sync"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+            
+            <ImageView
+                android:id="@+id/imageViewSyncInd"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/indicator_height"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/background_indicator" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/torchWidget"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/background_power_widget"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imageViewTorch"
+                android:layout_width="wrap_content"
+                android:layout_height="0sp"
+                android:layout_weight=".7"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/torchdesc"
+                android:scaleType="fitCenter"
+                android:src="@drawable/flashlight_on" />
+
+            <TextView
+                android:id="@+id/textViewTorch"
+                android:layout_width="fill_parent"
+                android:layout_height="15sp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/torch"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+            
+            <ImageView
+                android:id="@+id/imageViewTorchInd"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/indicator_height"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/background_indicator" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/batteryStatusWidget"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/background_power_widget"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imageViewBatteryStatus"
+                android:layout_width="match_parent"
+                android:layout_height="0sp"
+                android:layout_weight=".7"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/batterydesc"
+                android:gravity="center|fill_vertical"
+                android:scaleType="fitXY"
+                android:src="@drawable/battery_font_050"
+                android:text="@string/tempempty"
+                android:textColor="#C0C0C0"
+                android:textSize="144sp" />
+
+            <ImageView
+                android:id="@+id/imageViewBatteryStatusCharge"
+                android:layout_width="fill_parent"
+                android:layout_height="15sp"
+                android:contentDescription="@string/batterydesc"
+                android:gravity="center"
+                android:scaleType="fitCenter"
+                android:visibility="visible" />
+            
+            <ImageView
+                android:id="@+id/imageViewBatteryStatusInd"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/indicator_height"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/background_indicator" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/settingsWidget"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/background_power_widget"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imageViewSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="0sp"
+                android:layout_weight=".7"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/settings"
+                android:scaleType="fitCenter"
+                android:src="@drawable/settings_on" />
+
+            <TextView
+                android:id="@+id/textViewSettings"
+                android:layout_width="fill_parent"
+                android:layout_height="15sp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/settings"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+            
+            <ImageView
+                android:id="@+id/imageViewSettingsInd"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/indicator_height"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/background_indicator" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

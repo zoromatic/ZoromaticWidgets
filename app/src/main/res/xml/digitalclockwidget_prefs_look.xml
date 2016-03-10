@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"  
+    xmlns:widgets="http://schemas.android.com/apk/res/com.zoromatic.widgets"
+	android:key="com.zoromatic.widgets.Preferences" >
+
+    <!-- <PreferenceCategory android:title="@string/lookandfeel" > -->
+		<com.margaritov.preference.colorpicker.ColorPickerPreference
+            android:defaultValue="0xFF000000"
+            android:summary="@string/select_widget_background"
+            android:key="widgetcolorpicker_"
+            hexValue="true"
+            android:title="@string/widget_background" />
+		
+		<com.zoromatic.widgets.SeekBarPreference 
+	        android:key="transparency_"
+	        android:title="@string/widgettransparency"
+	        android:summary="@string/widgetbackground"
+	        android:dialogMessage="@string/opacitydescription"
+	        android:defaultValue="100"
+	        android:text=" %"
+	        android:max="100" />
+		
+		<!-- <PreferenceScreen android:title="@string/clocklayout" 
+		    android:summary="@string/clocklayoutdesc"
+		    android:key="clocksettings_">	
+		    
+		    <com.zoromatic.widgets.ToolbarPreference
+		        android:key="clocksettings_"
+		        android:title="@string/clocklayout" /> -->
+		    	    
+		    <PreferenceCategory android:title="@string/clocklayout"
+		        android:key="clocksettings_" >
+		        
+		        <CheckBoxPreference
+		            android:defaultValue="false"
+		            android:key="show24hrs_"
+		            android:summary="@string/basedon12or24"
+		            android:title="@string/show24hrs" />
+		        
+		        <com.margaritov.preference.colorpicker.ColorPickerPreference
+		            android:defaultValue="0xFFFFFFFF"
+		            android:summary="@string/selectclockcolor"
+		            android:key="clockcolorpicker_"
+		            hexValue="true"
+		            android:title="@string/clockcolor" />
+		        
+		        <com.zoromatic.widgets.ImageListPreference
+		            android:defaultValue="0"
+		            android:entries="@array/fontArray"
+		            android:entryValues="@array/fontValues"
+		            android:key="font_"
+		            android:summary="@string/selectclockfont"
+		            android:title="@string/clockfont"
+		            widgets:entryFonts="@array/fontPathValues" />
+		        
+		        <CheckBoxPreference
+		            android:defaultValue="true"
+		            android:key="boldtext_"
+		            android:summary="@string/normaltext"
+		            android:title="@string/boldtext" />
+		        
+		        <com.zoromatic.widgets.ImageListPreference
+		            android:defaultValue="0"
+		            android:entries="@array/skinArray"
+		            android:entryValues="@array/skinValues"
+		            android:key="clockskin_"
+		            android:summary="@string/selectclockskin"
+		            android:title="@string/clockskin"/>		        		       
+			</PreferenceCategory>
+		<!-- </PreferenceScreen> -->            
+		
+		<!-- <PreferenceScreen android:title="@string/datelayout" 
+		    android:summary="@string/datelayoutdesc"
+		    android:key="datesettings_">	
+		    
+		    <com.zoromatic.widgets.ToolbarPreference
+		        android:key="datesettings_"
+		        android:title="@string/datelayout" /> -->
+		    	    
+		    <PreferenceCategory android:title="@string/datelayout"
+		        android:key="datesettings_" >
+		        
+		        <com.zoromatic.widgets.ImageListPreference
+		            android:defaultValue="0"
+		            android:entries="@array/dateFormatArray"
+		            android:entryValues="@array/dateFormatValues"
+		            android:key="dateformat_"
+		            android:summary="Select date format"
+		            android:title="@string/dateformat" />
+		        
+		        <com.margaritov.preference.colorpicker.ColorPickerPreference
+		            android:defaultValue="0xFFFFFFFF"
+		            android:summary="@string/selectdatecolor"
+		            android:key="datecolorpicker_"
+		            hexValue="true"
+		            android:title="@string/datecolor" />
+		        
+		        <com.zoromatic.widgets.ImageListPreference
+		            android:defaultValue="0"
+		            android:entries="@array/fontArray"
+		            android:entryValues="@array/fontValues"
+		            android:key="datefont_"
+		            android:summary="@string/selectdatefont"
+		            android:title="@string/datefont"
+		            widgets:entryFonts="@array/fontPathValues" />
+		        
+		        <CheckBoxPreference
+		            android:defaultValue="true"
+		            android:key="dateboldtext_"
+		            android:summary="@string/datenormaltext"
+		            android:title="@string/dateboldtext" />
+			</PreferenceCategory>
+		<!-- </PreferenceScreen>  -->
+		
+		<!-- <PreferenceScreen android:title="@string/weatherlayout" 
+		    android:summary="@string/weatherlayoutdesc"
+		    android:key="weatherlayout_">		    
+		    
+		    <com.zoromatic.widgets.ToolbarPreference
+		        android:key="weatherlayout_"
+		        android:title="@string/weatherlayout" /> -->
+		    
+		    <PreferenceCategory android:title="@string/weatherlayout"
+		        android:key="weatherlayout_" >
+		        
+		        <com.margaritov.preference.colorpicker.ColorPickerPreference
+		            android:defaultValue="0xFFFFFFFF"
+		            android:summary="@string/selectweathercolor"
+		            android:key="weathercolorpicker_"
+		            hexValue="true"
+		            android:title="@string/weathercolor" />
+		        
+		        <com.zoromatic.widgets.ImageListPreference
+		            android:defaultValue="0"
+		            android:entries="@array/fontArray"
+		            android:entryValues="@array/fontValues"
+		            android:key="weatherfont_"
+		            android:summary="@string/selectweatherfont"
+		            android:title="@string/weatherfont"
+		            widgets:entryFonts="@array/fontPathValues" />
+		        
+		        <CheckBoxPreference
+		            android:defaultValue="true"
+		            android:key="weatherboldtext_"
+		            android:summary="@string/weathernormaltext"
+		            android:title="@string/weatherboldtext" />
+		        
+		        <com.zoromatic.widgets.ImageListPreference
+		            android:defaultValue="0"
+		            android:entries="@array/weatherIconsArray"
+		            android:entryValues="@array/weatherIconsValues"
+		            android:key="weathericons_"
+		            android:summary="@string/selectweathericons"
+		            android:title="@string/weathericons" 
+		            widgets:entryImages="@array/weatherIconsImageValues"/>
+		        
+		        <!-- <com.zoromatic.widgets.ImageListPreference
+		            android:defaultValue="0"
+		            android:key="forecasttheme_"
+		            android:entries="@array/themeArray"
+		            android:entryValues="@array/themeValues"
+		            android:summary="@string/selectforecasttheme"
+		            android:title="@string/forecasttheme" /> -->
+		        
+			</PreferenceCategory>
+		<!-- </PreferenceScreen> -->
+    <!-- </PreferenceCategory> -->      
+
+</PreferenceScreen>

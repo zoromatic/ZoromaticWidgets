@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:widgets="http://schemas.android.com/apk/res/com.zoromatic.widgets"
+    android:key="com.zoromatic.widgets.Preferences" >
+    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="showwifi_"
+        android:summary="@string/showtoggle"
+        android:title="@string/wifi" />
+    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="showmobile_"
+        android:summary="@string/showtoggle"
+        android:title="@string/mobile" />
+    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="showbluetooth_"
+        android:summary="@string/showtoggle"
+        android:title="@string/bluetooth" />
+    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="showringer_"
+        android:summary="@string/showtoggle"
+        android:title="@string/ringer" />        		
+       
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="showairplane_"
+        android:summary="@string/showtoggle"
+        android:title="@string/airplane" />
+    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="showbrightness_"
+        android:summary="@string/showtoggle"
+        android:title="@string/brightness" />
+    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="showgps_"
+        android:summary="@string/showtoggle"
+        android:title="@string/gps" />
+    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="shownfc_"
+        android:summary="@string/showtoggle"
+        android:title="@string/nfc" />
+    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="showorientation_"
+        android:summary="@string/showtoggle"
+        android:title="@string/orientation" />
+    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="showsync_"
+        android:summary="@string/showtoggle"
+        android:title="@string/sync" />
+    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="showtorch_"
+        android:summary="@string/showtoggle"
+        android:title="@string/torch" />
+    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="showbatterystatus_"
+        android:summary="@string/showbatterywidget"
+        android:title="@string/batterydesc" />
+    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="showsettings_"
+        android:summary="@string/showsettings"
+        android:title="@string/settings" />
+
+</PreferenceScreen>

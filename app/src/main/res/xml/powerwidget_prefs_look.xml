@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:widgets="http://schemas.android.com/apk/res/com.zoromatic.widgets"
+    android:key="com.zoromatic.widgets.Preferences" >
+    
+    <com.margaritov.preference.colorpicker.ColorPickerPreference
+	    android:defaultValue="0xFF000000"
+	    android:summary="@string/select_color_background"
+	    android:key="colorbackground_"
+	    hexValue="true"
+	    android:title="@string/color_background" />
+    
+    <com.zoromatic.widgets.SeekBarPreference 
+        android:key="powertransparency_"
+        android:title="@string/widgettransparency"
+        android:summary="@string/widgetbackground"
+        android:dialogMessage="@string/opacitydescription"
+        android:defaultValue="100"
+        android:text=" %"
+        android:max="100" />
+    
+    <PreferenceCategory android:title="@string/togglewidgets"
+		android:key="togglewidgetssettings_"
+		android:selectable="true" >
+		
+	    <com.margaritov.preference.colorpicker.ColorPickerPreference
+		    android:defaultValue="0xFF35B6E5"
+		    android:summary="@string/select_color_on"
+		    android:key="coloron_"
+		    hexValue="true"
+		    android:title="@string/color_on" />
+	    
+	    <com.margaritov.preference.colorpicker.ColorPickerPreference
+		    android:defaultValue="0xFFC0C0C0"
+		    android:summary="@string/select_color_off"
+		    android:key="coloroff_"
+		    hexValue="true"
+		    android:title="@string/color_off" />
+	    
+	    <com.margaritov.preference.colorpicker.ColorPickerPreference
+		    android:defaultValue="0xFFFF8C00"
+		    android:summary="@string/select_color_transition"
+		    android:key="colortransition_"
+		    hexValue="true"
+		    android:title="@string/color_transition" />
+	    
+	    <com.margaritov.preference.colorpicker.ColorPickerPreference
+		    android:defaultValue="0xFF000000"
+		    android:summary="@string/select_color_text_on"
+		    android:key="colortexton_"
+		    hexValue="true"
+		    android:title="@string/color_text_on" />
+	    
+	    <com.margaritov.preference.colorpicker.ColorPickerPreference
+		    android:defaultValue="0xFF000000"
+		    android:summary="@string/select_color_text_off"
+		    android:key="colortextoff_"
+		    hexValue="true"
+		    android:title="@string/color_text_off" />
+	</PreferenceCategory>   
+	
+    <PreferenceCategory android:title="@string/batterywidget"
+		android:key="batterywidgetsettings_"
+		android:selectable="true" >
+	    
+        <com.margaritov.preference.colorpicker.ColorPickerPreference
+		    android:defaultValue="0xFFFF0000"
+		    android:summary="@string/select_battery_color_1"
+		    android:key="colorbattery1_"
+		    hexValue="true"
+		    android:title="@string/color_battery_1" />
+        
+        <com.zoromatic.widgets.NumberPickerPreference
+            android:key="thresholdbattery2_"
+        	android:title="@string/battery_threshold_2"
+        	android:defaultValue="25" />                    
+        
+        <com.margaritov.preference.colorpicker.ColorPickerPreference
+		    android:defaultValue="0xFFFF6A00"
+		    android:summary="@string/select_battery_color_2"
+		    android:key="colorbattery2_"
+		    hexValue="true"
+		    android:title="@string/color_battery_2" />
+        
+        <com.zoromatic.widgets.NumberPickerPreference
+            android:key="thresholdbattery3_"
+        	android:title="@string/battery_threshold_3"
+        	android:defaultValue="50" />
+        
+        <com.margaritov.preference.colorpicker.ColorPickerPreference
+		    android:defaultValue="0xFFB6FF00"
+		    android:summary="@string/select_battery_color_3"
+		    android:key="colorbattery3_"
+		    hexValue="true"
+		    android:title="@string/color_battery_3" />
+        
+        <com.zoromatic.widgets.NumberPickerPreference
+            android:key="thresholdbattery4_"
+        	android:title="@string/battery_threshold_4"
+        	android:defaultValue="75" />
+        
+        <com.margaritov.preference.colorpicker.ColorPickerPreference
+		    android:defaultValue="0xFF00FF21"
+		    android:summary="@string/select_battery_color_4"
+		    android:key="colorbattery4_"
+		    hexValue="true"
+		    android:title="@string/color_battery_4" />
+	    
+	</PreferenceCategory>
+
+</PreferenceScreen>

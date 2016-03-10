@@ -1,0 +1,25 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:widgets="http://schemas.android.com/apk/res/com.zoromatic.widgets"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+    <!-- <com.jraf.android.backport.switchwidget.SwitchPreference
+        android:defaultValue="false"
+        android:disableDependentsState="true"
+        android:key="showbatterynotif_"
+        android:summary="@string/batterysummaryon"
+        android:title="@string/showbatterynotification"
+        app:asb_summaryOff="@string/batterysummaryoff"
+        app:asb_summaryOn="@string/batterysummaryon" /> -->
+
+    <com.zoromatic.widgets.ImageListPreference
+        android:defaultValue="0"        
+        android:entries="@array/batteryIconsArray"
+        android:entryValues="@array/batteryIconsValues"
+        android:key="batteryicons_"
+        android:summary="@string/selectbattery"
+        android:title="@string/batteryicons"
+        widgets:entryBatteries="@array/batteryIconsImageValues" />
+    
+<!--     android:dependency="showbatterynotif_" -->
+
+</PreferenceScreen>

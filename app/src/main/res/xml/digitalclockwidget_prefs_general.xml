@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"  
+    xmlns:widgets="http://schemas.android.com/apk/res/com.zoromatic.widgets"
+	android:key="com.zoromatic.widgets.Preferences" >
+
+    <!-- <PreferenceCategory android:title="@string/generalsettings" > -->
+        
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="showdate_"
+            android:summary="@string/showdatewidget"
+            android:title="@string/showdate" />
+        
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="showbattery_"
+            android:summary="@string/showbatterywidget"
+            android:title="@string/showbattery" />
+        
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="showweather_"
+            android:summary="@string/showweatherwidget"
+            android:title="@string/showweather" />
+        
+    <!-- </PreferenceCategory> -->                
+
+</PreferenceScreen>

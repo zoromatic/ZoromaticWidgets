@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/batteryWidget"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/widget_margin" >
+
+    <ImageView
+        android:id="@+id/imageViewBattery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/batterydesc"
+        android:scaleType="fitXY"
+        android:src="@drawable/battery_widget_100" />
+
+    <TextView
+        android:id="@+id/textViewBatteryStatus"
+        style="@style/shadoweffect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageViewBattery"
+        android:layout_alignLeft="@+id/imageViewBattery"
+        android:layout_alignRight="@+id/imageViewBattery"
+        android:layout_alignTop="@+id/imageViewBattery"
+        android:gravity="center"
+        android:text="@string/batterystatus"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@android:color/white"
+        android:textSize="24sp" />
+
+</RelativeLayout>

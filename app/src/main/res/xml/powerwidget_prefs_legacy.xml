@@ -1,0 +1,12 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference 
+        android:title="@string/generalsettings"
+        android:icon="?attr/iconGeneralSettings"
+        android:key="@string/category_general" >        
+    </Preference>
+    <Preference 
+        android:title="@string/lookandfeel"
+        android:icon="?attr/iconPalette"
+        android:key="@string/category_look" >    
+    </Preference>
+</PreferenceScreen>

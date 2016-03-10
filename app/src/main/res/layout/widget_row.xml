@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content"
+	android:layout_margin="0dp"
+	android:padding="2dp" >
+	
+    <ImageView
+        android:id="@+id/iconWidget"
+        android:layout_width="40dp"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:visibility="visible"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/app_name"        
+        android:src="@drawable/ic_now_widgets_black_48dp" />
+	
+	<CheckBox
+        android:id="@+id/checkBoxSelect"
+        android:layout_width="40dp"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"       
+        android:visibility="gone"
+        android:scaleType="fitCenter"
+        android:button="@drawable/abc_btn_check_material" 
+        android:focusable="false"               
+        android:focusableInTouchMode="false" />
+	
+	<LinearLayout
+        android:id="@+id/viewHolder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="40dp"
+        android:contentDescription="@string/settings"
+        android:orientation="horizontal" />	   	
+	
+</RelativeLayout>
+
