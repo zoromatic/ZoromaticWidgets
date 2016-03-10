@@ -134,8 +134,7 @@
 		<item name="selectableItemBackground">@drawable/background_control</item>
         <item name="selectableItemBackgroundBorderless">@drawable/background_control_borderless</item>               
         <item name="android:listViewStyle">@style/ListViewStyle</item>
-        <item name="theme">@style/ToolbarDark</item>
-    	<item name="popupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
     	<item name="drawerArrowStyle">@style/DrawerArrowStyleDark</item>
 	    <item name="iconRefresh">@drawable/ic_refresh_white_48dp</item>
 	    <item name="iconSettings">@drawable/ic_settings_white_48dp</item>
@@ -168,8 +167,7 @@
 		<item name="selectableItemBackground">@drawable/background_control</item>
         <item name="selectableItemBackgroundBorderless">@drawable/background_control_borderless</item>               
         <item name="android:listViewStyle">@style/ListViewStyle</item>
-        <item name="theme">@style/ToolbarDark</item>
-    	<item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     	<item name="drawerArrowStyle">@style/DrawerArrowStyleDark</item>
 	    <item name="iconRefresh">@drawable/ic_refresh_white_48dp</item>
 	    <item name="iconSettings">@drawable/ic_settings_white_48dp</item>
