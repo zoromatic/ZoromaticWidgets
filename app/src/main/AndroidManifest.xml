@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zoromatic.widgets"
-    android:versionCode="20"
-    android:versionName="2.0" >
+<manifest package="com.zoromatic.widgets"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          android:versionCode="21"
+          android:versionName="2.1">
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="22" />
+        android:targetSdkVersion="23"/>
 
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
@@ -15,9 +15,9 @@
     <uses-permission android:name="android.permission.NFC"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>         
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.MODIFY_PHONE_STATE"/>
-	<uses-permission android:name="android.permission.ACCESS_SUPERUSER"/>
+    <uses-permission android:name="android.permission.ACCESS_SUPERUSER"/>
     <uses-permission android:name="android.permission.BATTERY_STATS"/>
     <uses-permission android:name="android.permission.DEVICE_POWER"/>
     <uses-permission android:name="android.permission.SET_DEBUG_APP"/>
@@ -28,336 +28,350 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>        
-    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>        
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.CAMERA"/>   
-    <uses-permission android:name="android.permission.FLASHLIGHT"
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission
+        android:name="android.permission.FLASHLIGHT"
         android:permissionGroup="android.permission-group.HARDWARE_CONTROLS"
         android:protectionLevel="normal">
     </uses-permission>
-    <uses-feature android:name="android.hardware.camera"
-        android:required="false">
-    </uses-feature>     
-    <uses-feature android:name="android.hardware.bluetooth"
-        android:required="false">
-    </uses-feature>
-    <uses-feature android:name="android.hardware.location"
+
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="false">
     </uses-feature>
-    <uses-feature android:name="android.hardware.telephony"
+    <uses-feature
+        android:name="android.hardware.bluetooth"
         android:required="false">
     </uses-feature>
-    <uses-feature android:name="android.hardware.wifi"
+    <uses-feature
+        android:name="android.hardware.location"
         android:required="false">
     </uses-feature>
-    
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false">
+    </uses-feature>
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="false">
+    </uses-feature>
+
     <supports-screens
         android:anyDensity="true"
-        android:xlargeScreens="true"
         android:largeScreens="true"
         android:normalScreens="true"
         android:resizeable="true"
-        android:smallScreens="true" />
-	 
+        android:smallScreens="true"
+        android:xlargeScreens="true"/>
+
+    <android:uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
-        android:icon="@drawable/icon"
-        android:label="@string/app_name" 
-        android:allowBackup="true" 
         android:name=".ZoromaticWidgetsApplication"
-        android:theme="@style/Theme.AppCompat" >  
-        
-        <uses-library android:required="false" android:name="com.sec.android.app.multiwindow" />
-		<meta-data android:name="com.sec.android.support.multiwindow" android:value="true" />
-		<meta-data android:name="com.sec.android.multiwindow.DEFAULT_SIZE_W" android:value="632.0dip" />
-		<meta-data android:name="com.sec.android.multiwindow.DEFAULT_SIZE_H" android:value="598.0dip" />
-		<meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_W" android:value="632.0dip" />
-		<meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H" android:value="598.0dip" />
-		<meta-data android:name="com.samsung.android.sdk.multiwindow.multiinstance.enable" android:value="true" />
-		<meta-data android:name="com.samsung.android.sdk.multiwindow.penwindow.enable" android:value="true" />
-        
-        <service 
-            android:name=".WidgetUpdateService" 
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.AppCompat">
+        <uses-library
+            android:name="com.sec.android.app.multiwindow"
+            android:required="false"/>
+
+        <meta-data
+            android:name="com.sec.android.support.multiwindow"
+            android:value="true"/>
+        <meta-data
+            android:name="com.sec.android.multiwindow.DEFAULT_SIZE_W"
+            android:value="632.0dip"/>
+        <meta-data
+            android:name="com.sec.android.multiwindow.DEFAULT_SIZE_H"
+            android:value="598.0dip"/>
+        <meta-data
+            android:name="com.sec.android.multiwindow.MINIMUM_SIZE_W"
+            android:value="632.0dip"/>
+        <meta-data
+            android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H"
+            android:value="598.0dip"/>
+        <meta-data
+            android:name="com.samsung.android.sdk.multiwindow.multiinstance.enable"
+            android:value="true"/>
+        <meta-data
+            android:name="com.samsung.android.sdk.multiwindow.penwindow.enable"
+            android:value="true"/>
+
+        <service
+            android:name=".WidgetUpdateService"
             android:enabled="true"/>
-        
-        <receiver 
-            android:name=".WidgetInfoReceiver" 
-            android:label="WidgetInfoReceiver">          	
-      	</receiver>
-        
+
+        <receiver
+            android:name=".WidgetInfoReceiver"
+            android:label="WidgetInfoReceiver">
+        </receiver>
         <receiver
             android:name=".DigitalClockAppWidgetProvider"
             android:icon="@drawable/weather_clock"
-            android:label="@string/clockweatherwidgetname4x2" >
+            android:label="@string/clockweatherwidgetname4x2">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/digitalclockwidget_info" />
+                android:resource="@xml/digitalclockwidget_info"/>
         </receiver>
-        
         <receiver
             android:name=".BatteryAppWidgetProvider"
             android:icon="@drawable/battery"
-            android:label="@string/batterywidgetname" >
+            android:label="@string/batterywidgetname">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />                
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/batterywidget_info" />
-        </receiver>              
-        
+                android:resource="@xml/batterywidget_info"/>
+        </receiver>
         <receiver
             android:name=".WifiAppWidgetProvider"
             android:icon="@drawable/wifi"
-            android:label="@string/wifiwidgetname" >
+            android:label="@string/wifiwidgetname">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/wifiwidget_info" />
+                android:resource="@xml/wifiwidget_info"/>
         </receiver>
-        
         <receiver
             android:name=".BluetoothAppWidgetProvider"
             android:icon="@drawable/bluetooth"
-            android:label="@string/bluetoothwidgetname" >
+            android:label="@string/bluetoothwidgetname">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/bluetoothwidget_info" />
+                android:resource="@xml/bluetoothwidget_info"/>
         </receiver>
-        
         <receiver
             android:name=".MobileAppWidgetProvider"
             android:icon="@drawable/data"
-            android:label="@string/mobilewidgetname" >
+            android:label="@string/mobilewidgetname">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/mobilewidget_info" />
+                android:resource="@xml/mobilewidget_info"/>
         </receiver>
-        
         <receiver
             android:name=".GpsAppWidgetProvider"
             android:icon="@drawable/gps"
-            android:label="@string/gpswidgetname" >
+            android:label="@string/gpswidgetname">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />                   
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/gpswidget_info" />
+                android:resource="@xml/gpswidget_info"/>
         </receiver>
-        
         <receiver
             android:name=".RingerAppWidgetProvider"
             android:icon="@drawable/ringer"
-            android:label="@string/ringerwidgetname" >
+            android:label="@string/ringerwidgetname">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/ringerwidget_info" />
+                android:resource="@xml/ringerwidget_info"/>
         </receiver>
-        
         <receiver
             android:name=".AirplaneAppWidgetProvider"
             android:icon="@drawable/airplane"
-            android:label="@string/airplanewidgetname" >
+            android:label="@string/airplanewidgetname">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/airplanewidget_info" />
+                android:resource="@xml/airplanewidget_info"/>
         </receiver>
-        
         <receiver
             android:name=".BrightnessAppWidgetProvider"
             android:icon="@drawable/brightness"
-            android:label="@string/brightnesswidgetname" >
+            android:label="@string/brightnesswidgetname">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/brightnesswidget_info" />
+                android:resource="@xml/brightnesswidget_info"/>
         </receiver>
-        
         <receiver
             android:name=".NfcAppWidgetProvider"
             android:icon="@drawable/nfc"
-            android:label="@string/nfcwidgetname" >
+            android:label="@string/nfcwidgetname">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/nfcwidget_info" />
+                android:resource="@xml/nfcwidget_info"/>
         </receiver>
-        
         <receiver
             android:name=".SyncAppWidgetProvider"
             android:icon="@drawable/sync"
-            android:label="@string/syncwidgetname" >
+            android:label="@string/syncwidgetname">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/syncwidget_info" />
+                android:resource="@xml/syncwidget_info"/>
         </receiver>
-        
         <receiver
             android:name=".OrientationAppWidgetProvider"
             android:icon="@drawable/orientation"
-            android:label="@string/orientationwidgetname" >
+            android:label="@string/orientationwidgetname">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/orientationwidget_info" />
+                android:resource="@xml/orientationwidget_info"/>
         </receiver>
-        
-        <receiver 
-            android:name=".TorchAppWidgetProvider" 
-            android:icon="@drawable/flashlight" 
+        <receiver
+            android:name=".TorchAppWidgetProvider"
+            android:icon="@drawable/flashlight"
             android:label="@string/torchwidgetname">
-         	<intent-filter>
-            	<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-         	</intent-filter>
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
 
-         	<meta-data 
-         	    android:name="android.appwidget.provider"
-            	android:resource="@xml/torchwidget_info" />
-		</receiver>
-		
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/torchwidget_info"/>
+        </receiver>
         <receiver
             android:name=".PowerAppWidgetProvider"
             android:icon="@drawable/power_widget"
-            android:label="@string/powerwidgetname" >
+            android:label="@string/powerwidgetname">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/powerwidget_info" />
+                android:resource="@xml/powerwidget_info"/>
         </receiver>
 
         <activity
             android:name=".ZoromaticWidgetsActivity"
-            android:label="@string/app_name" 
+            android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
-	            <category android:name="android.intent.category.PENWINDOW_LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER"/>
+                <category android:name="android.intent.category.PENWINDOW_LAUNCHER"/>
             </intent-filter>
         </activity>
-        
         <activity
             android:name=".DigitalClockAppWidgetPreferenceActivity"
-            android:label="@string/clockwidgetprefs" >
+            android:label="@string/clockwidgetprefs">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
-                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
-	            <category android:name="android.intent.category.PENWINDOW_LAUNCHER" />
+
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER"/>
+                <category android:name="android.intent.category.PENWINDOW_LAUNCHER"/>
             </intent-filter>
         </activity>
-        
         <activity
             android:name=".PowerAppWidgetPreferenceActivity"
-            android:label="@string/power_prefs" >
+            android:label="@string/power_prefs">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
-                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
-	            <category android:name="android.intent.category.PENWINDOW_LAUNCHER" />
-            </intent-filter>            
+
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER"/>
+                <category android:name="android.intent.category.PENWINDOW_LAUNCHER"/>
+            </intent-filter>
         </activity>
-        
         <activity
             android:name=".ZoromaticWidgetsPreferenceActivity"
-            android:label="@string/app_prefs" >
+            android:label="@string/app_prefs">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
-                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
-	            <category android:name="android.intent.category.PENWINDOW_LAUNCHER" />
-            </intent-filter>            
+
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER"/>
+                <category android:name="android.intent.category.PENWINDOW_LAUNCHER"/>
+            </intent-filter>
         </activity>
-        
         <activity
             android:name=".ConfigureLocationActivity"
-            android:label="@string/locationsettings" > 
+            android:label="@string/locationsettings">
             <intent-filter>
-	            <action android:name="android.intent.category.SEARCH" />
-	            <category android:name="android.intent.category.DEFAULT" />
-	            <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
-	            <category android:name="android.intent.category.PENWINDOW_LAUNCHER" />
-	        </intent-filter>	                   
+                <action android:name="android.intent.category.SEARCH"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER"/>
+                <category android:name="android.intent.category.PENWINDOW_LAUNCHER"/>
+            </intent-filter>
         </activity>
-        
         <activity
             android:name=".WeatherForecastActivity"
-            android:label="@string/weatherforecast" >             
+            android:label="@string/weatherforecast">
             <intent-filter>
-	            <action android:name="android.intent.category.SEARCH" />
-	            <category android:name="android.intent.category.DEFAULT" />
-	            <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
-	            <category android:name="android.intent.category.PENWINDOW_LAUNCHER" />
-	        </intent-filter>          	                  
+                <action android:name="android.intent.category.SEARCH"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER"/>
+                <category android:name="android.intent.category.PENWINDOW_LAUNCHER"/>
+            </intent-filter>
         </activity>
-        
         <activity
             android:name=".BatteryInfoActivity"
-            android:label="@string/batteryinfo" >            	                  
+            android:label="@string/batteryinfo">
         </activity>
-        
         <activity
             android:name=".BrightnessActivity"
-            android:label="@string/brightnessdesc" 
             android:excludeFromRecents="true"
-            android:noHistory="true"	
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">       	                  
+            android:label="@string/brightnessdesc"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
-                     
-        <activity 
-            android:name=".LocationsEdit" 
-            android:label="@string/menu_update_location">            
+        <activity
+            android:name=".LocationsEdit"
+            android:label="@string/menu_update_location">
         </activity>
-        
         <activity
             android:name=".ConfigureWidgetsActivity"
-            android:label="@string/widgets_settings" > 
+            android:label="@string/widgets_settings">
             <intent-filter>
-	            <action android:name="android.intent.category.SEARCH" />
-	            <category android:name="android.intent.category.DEFAULT" />
-	        </intent-filter>	                   
+                <action android:name="android.intent.category.SEARCH"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
-        
+        <activity
+            android:name=".SetPermissionsActivity"
+            android:label="@string/title_activity_set_permissions"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+        </activity>
     </application>
 
 </manifest>
