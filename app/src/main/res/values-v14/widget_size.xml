@@ -3,7 +3,7 @@
 <resources>
     <dimen name="cell_size_1">40dp</dimen>
     <dimen name="cell_size_2">110dp</dimen>
-    <dimen name="cell_size_4">250dp</dimen>    
+    <dimen name="cell_size_4">250dp</dimen>
     <dimen name="widget_margin">0dp</dimen>
     <dimen name="layout_margin">2dp</dimen>
 </resources>

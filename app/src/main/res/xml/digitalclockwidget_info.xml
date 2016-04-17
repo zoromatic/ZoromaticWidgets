@@ -4,5 +4,4 @@
     android:initialLayout="@layout/digitalclockwidget"
     android:minWidth="@dimen/cell_size_4"
     android:minHeight="@dimen/cell_size_2"
-    android:previewImage="@drawable/weather_clock" >
-</appwidget-provider>
+    android:previewImage="@drawable/weather_clock"></appwidget-provider>

@@ -33,12 +33,10 @@ public class SolarEventCalculator {
 
     /**
      * Constructs a new <code>SolarEventCalculator</code> using the given parameters.
-     * 
-     * @param sunriseSunsetLocation
-     *            <code>SunriseSunsetLocation</code> of the place where the solar event should be calculated from.
-     * @param timeZoneIdentifier
-     *            time zone identifier of the timezone of the sunriseSunsetLocation parameter. For example,
-     *            "America/New_York".
+     *
+     * @param sunriseSunsetLocation <code>SunriseSunsetLocation</code> of the place where the solar event should be calculated from.
+     * @param timeZoneIdentifier    time zone identifier of the timezone of the sunriseSunsetLocation parameter. For example,
+     *                              "America/New_York".
      */
     public SolarEventCalculator(SunriseSunsetLocation sunriseSunsetLocation, String timeZoneIdentifier) {
         this.sunriseSunsetLocation = sunriseSunsetLocation;
@@ -47,11 +45,9 @@ public class SolarEventCalculator {
 
     /**
      * Constructs a new <code>SolarEventCalculator</code> using the given parameters.
-     * 
-     * @param sunriseSunsetLocation
-     *            <code>SunriseSunsetLocation</code> of the place where the solar event should be calculated from.
-     * @param timeZone
-     *            timezone of the sunriseSunsetLocation parameter.
+     *
+     * @param sunriseSunsetLocation <code>SunriseSunsetLocation</code> of the place where the solar event should be calculated from.
+     * @param timeZone              timezone of the sunriseSunsetLocation parameter.
      */
     public SolarEventCalculator(SunriseSunsetLocation sunriseSunsetLocation, TimeZone timeZone) {
         this.sunriseSunsetLocation = sunriseSunsetLocation;
@@ -60,13 +56,11 @@ public class SolarEventCalculator {
 
     /**
      * Computes the sunrise time for the given zenith at the given date.
-     * 
-     * @param solarZenith
-     *            <code>Zenith</code> enum corresponding to the type of sunrise to compute.
-     * @param date
-     *            <code>Calendar</code> object representing the date to compute the sunrise for.
+     *
+     * @param solarZenith <code>Zenith</code> enum corresponding to the type of sunrise to compute.
+     * @param date        <code>Calendar</code> object representing the date to compute the sunrise for.
      * @return the sunrise time, in HH:MM format (24-hour clock), 00:00 if the sun does not rise on the given
-     *         date.
+     * date.
      */
     public String computeSunriseTime(Zenith solarZenith, Calendar date) {
         return getLocalTimeAsString(computeSolarEventTime(solarZenith, date, true));
@@ -74,11 +68,9 @@ public class SolarEventCalculator {
 
     /**
      * Computes the sunrise time for the given zenith at the given date.
-     * 
-     * @param solarZenith
-     *            <code>Zenith</code> enum corresponding to the type of sunrise to compute.
-     * @param date
-     *            <code>Calendar</code> object representing the date to compute the sunrise for.
+     *
+     * @param solarZenith <code>Zenith</code> enum corresponding to the type of sunrise to compute.
+     * @param date        <code>Calendar</code> object representing the date to compute the sunrise for.
      * @return the sunrise time as a calendar or null for no sunrise
      */
     public Calendar computeSunriseCalendar(Zenith solarZenith, Calendar date) {
@@ -87,13 +79,11 @@ public class SolarEventCalculator {
 
     /**
      * Computes the sunset time for the given zenith at the given date.
-     * 
-     * @param solarZenith
-     *            <code>Zenith</code> enum corresponding to the type of sunset to compute.
-     * @param date
-     *            <code>Calendar</code> object representing the date to compute the sunset for.
+     *
+     * @param solarZenith <code>Zenith</code> enum corresponding to the type of sunset to compute.
+     * @param date        <code>Calendar</code> object representing the date to compute the sunset for.
      * @return the sunset time, in HH:MM format (24-hour clock), 00:00 if the sun does not set on the given
-     *         date.
+     * date.
      */
     public String computeSunsetTime(Zenith solarZenith, Calendar date) {
         return getLocalTimeAsString(computeSolarEventTime(solarZenith, date, false));
@@ -101,11 +91,9 @@ public class SolarEventCalculator {
 
     /**
      * Computes the sunset time for the given zenith at the given date.
-     * 
-     * @param solarZenith
-     *            <code>Zenith</code> enum corresponding to the type of sunset to compute.
-     * @param date
-     *            <code>Calendar</code> object representing the date to compute the sunset for.
+     *
+     * @param solarZenith <code>Zenith</code> enum corresponding to the type of sunset to compute.
+     * @param date        <code>Calendar</code> object representing the date to compute the sunset for.
      * @return the sunset time as a Calendar or null for no sunset.
      */
     public Calendar computeSunsetCalendar(Zenith solarZenith, Calendar date) {
@@ -131,9 +119,9 @@ public class SolarEventCalculator {
 
     /**
      * Computes the base longitude hour, lngHour in the algorithm.
-     * 
+     *
      * @return the longitude of the sunriseSunsetLocation of the solar event divided by 15 (deg/hour), in
-     *         <code>BigDecimal</code> form.
+     * <code>BigDecimal</code> form.
      */
     private BigDecimal getBaseLongitudeHour() {
         return divideBy(sunriseSunsetLocation.getLongitude(), BigDecimal.valueOf(15));
@@ -141,7 +129,7 @@ public class SolarEventCalculator {
 
     /**
      * Computes the longitude time, t in the algorithm.
-     * 
+     *
      * @return longitudinal time in <code>BigDecimal</code> form.
      */
     private BigDecimal getLongitudeHour(Calendar date, Boolean isSunrise) {
@@ -157,7 +145,7 @@ public class SolarEventCalculator {
 
     /**
      * Computes the mean anomaly of the Sun, M in the algorithm.
-     * 
+     *
      * @return the suns mean anomaly, M, in <code>BigDecimal</code> form.
      */
     private BigDecimal getMeanAnomaly(BigDecimal longitudeHour) {
@@ -168,9 +156,8 @@ public class SolarEventCalculator {
     /**
      * Computes the true longitude of the sun, L in the algorithm, at the given sunriseSunsetLocation, adjusted to fit in
      * the range [0-360].
-     * 
-     * @param meanAnomaly
-     *            the suns mean anomaly.
+     *
+     * @param meanAnomaly the suns mean anomaly.
      * @return the suns true longitude, in <code>BigDecimal</code> form.
      */
     private BigDecimal getSunTrueLongitude(BigDecimal meanAnomaly) {
@@ -191,9 +178,8 @@ public class SolarEventCalculator {
     /**
      * Computes the suns right ascension, RA in the algorithm, adjusting for the quadrant of L and turning it
      * into degree-hours. Will be in the range [0,360].
-     * 
-     * @param sunTrueLong
-     *            Suns true longitude, in <code>BigDecimal</code>
+     *
+     * @param sunTrueLong Suns true longitude, in <code>BigDecimal</code>
      * @return suns right ascension in degree-hours, in <code>BigDecimal</code> form.
      */
     private BigDecimal getRightAscension(BigDecimal sunTrueLong) {
@@ -291,9 +277,8 @@ public class SolarEventCalculator {
 
     /**
      * Returns the local rise/set time in the form HH:MM.
-     * 
-     * @param localTime
-     *            <code>BigDecimal</code> representation of the local rise/set time.
+     *
+     * @param localTime <code>BigDecimal</code> representation of the local rise/set time.
      * @return <code>String</code> representation of the local rise/set time in HH:MM format.
      */
     private String getLocalTimeAsString(BigDecimal localTimeParam) {
@@ -325,9 +310,8 @@ public class SolarEventCalculator {
 
     /**
      * Returns the local rise/set time in the form HH:MM.
-     * 
-     * @param localTimeParam
-     *            <code>BigDecimal</code> representation of the local rise/set time.
+     *
+     * @param localTimeParam <code>BigDecimal</code> representation of the local rise/set time.
      * @return <code>Calendar</code> representation of the local time as a calendar, or null for none.
      */
     protected Calendar getLocalTimeAsCalendar(BigDecimal localTimeParam, Calendar date) {
@@ -365,7 +349,9 @@ public class SolarEventCalculator {
         return resultTime;
     }
 
-    /** ******* UTILITY METHODS (Should probably go somewhere else. ***************** */
+    /**
+     * ***** UTILITY METHODS (Should probably go somewhere else. *****************
+     */
 
     private BigDecimal getDayOfYear(Calendar date) {
         return new BigDecimal(date.get(Calendar.DAY_OF_YEAR));

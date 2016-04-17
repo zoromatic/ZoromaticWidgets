@@ -12,19 +12,19 @@
     <color name="sysTransparent">#00000000</color>
     <color name="sysWhite">#FFFFFFFF</color>
     <color name="sysYellow">#FFFFFF00</color>
-    
+
     <color name="default_screen_bg">#20324a</color>
     <color name="rounded_container_bg">#80000000</color>
     <color name="rounded_container_border">#3b3f44</color>
     <color name="light_gray_header_color">#646663</color>
-    
+
     <color name="primaryColor">@color/sysWhite</color>
     <color name="primaryColorDark">@color/sysBlack</color>
 
     <color name="transparent">#00000000</color>
 
     <!-- Material Design Colors -->
-    
+
     <!--reds-->
     <color name="md_red_50">#FFEBEE</color>
     <color name="md_red_100">#FFCDD2</color>
@@ -318,5 +318,5 @@
     <color name="md_blue_grey_700">#455A64</color>
     <color name="md_blue_grey_800">#37474F</color>
     <color name="md_blue_grey_900">#263238</color>
-    
+
 </resources>

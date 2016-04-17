@@ -119,8 +119,8 @@ public abstract class TwoStatePreference extends Preference {
     }
 
     /**
-     * @see #setSummaryOn(CharSequence)
      * @param summaryResId The summary as a resource.
+     * @see #setSummaryOn(CharSequence)
      */
     public void setSummaryOn(int summaryResId) {
         setSummaryOn(getContext().getString(summaryResId));
@@ -128,6 +128,7 @@ public abstract class TwoStatePreference extends Preference {
 
     /**
      * Returns the summary to be shown when checked.
+     *
      * @return The summary.
      */
     public CharSequence getSummaryOn() {
@@ -147,8 +148,8 @@ public abstract class TwoStatePreference extends Preference {
     }
 
     /**
-     * @see #setSummaryOff(CharSequence)
      * @param summaryResId The summary as a resource.
+     * @see #setSummaryOff(CharSequence)
      */
     public void setSummaryOff(int summaryResId) {
         setSummaryOff(getContext().getString(summaryResId));
@@ -156,6 +157,7 @@ public abstract class TwoStatePreference extends Preference {
 
     /**
      * Returns the summary to be shown when unchecked.
+     *
      * @return The summary.
      */
     public CharSequence getSummaryOff() {
@@ -167,7 +169,7 @@ public abstract class TwoStatePreference extends Preference {
      * or when this preference is off ({@code false}).
      *
      * @return Whether dependents are disabled when this preference is on ({@code true})
-     *         or when this preference is off ({@code false}).
+     * or when this preference is off ({@code false}).
      */
     public boolean getDisableDependentsState() {
         return mDisableDependentsState;
@@ -196,6 +198,7 @@ public abstract class TwoStatePreference extends Preference {
 
     /**
      * Sync a summary view contained within view's subhierarchy with the correct summary text.
+     *
      * @param view View where a summary should be located
      */
     void syncSummaryView(View view) {

@@ -27,11 +27,9 @@ public class SunriseSunsetLocation {
 
     /**
      * Creates a new instance of <code>SunriseSunsetLocation</code> with the given parameters.
-     * 
-     * @param latitude
-     *            the latitude, in degrees, of this location. North latitude is positive, south negative.
-     * @param longitude
-     *            the longitude, in degrees of this location. East longitude is positive, west negative.
+     *
+     * @param latitude  the latitude, in degrees, of this location. North latitude is positive, south negative.
+     * @param longitude the longitude, in degrees of this location. East longitude is positive, west negative.
      */
     public SunriseSunsetLocation(String latitude, String longitude) {
         this.latitude = new BigDecimal(latitude);
@@ -40,11 +38,9 @@ public class SunriseSunsetLocation {
 
     /**
      * Creates a new instance of <code>SunriseSunsetLocation</code> with the given parameters.
-     * 
-     * @param latitude
-     *            the latitude, in degrees, of this location. North latitude is positive, south negative.
-     * @param longitude
-     *            the longitude, in degrees, of this location. East longitude is positive, east negative.
+     *
+     * @param latitude  the latitude, in degrees, of this location. North latitude is positive, south negative.
+     * @param longitude the longitude, in degrees, of this location. East longitude is positive, east negative.
      */
     public SunriseSunsetLocation(double latitude, double longitude) {
         this.latitude = new BigDecimal(latitude);

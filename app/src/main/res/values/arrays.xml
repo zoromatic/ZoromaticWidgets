@@ -27,50 +27,50 @@
         <item>9</item>
         <item>10</item>
     </string-array>
-	<array name="colorPaintValues">
-	    <item>color/sysBlack</item>
-		<item>color/sysDkGray</item>
-		<item>color/sysGray</item>
-		<item>color/sysLtGray</item>
-		<item>color/sysWhite</item>
-		<item>color/sysRed</item>
-		<item>color/sysGreen</item>
-		<item>color/sysBlue</item>
-		<item>color/sysYellow</item>
-		<item>color/sysCyan</item>
-		<item>color/sysMagenta</item>
-	</array>
-	<string-array name="fontArray">
+    <array name="colorPaintValues">
+        <item>color/sysBlack</item>
+        <item>color/sysDkGray</item>
+        <item>color/sysGray</item>
+        <item>color/sysLtGray</item>
+        <item>color/sysWhite</item>
+        <item>color/sysRed</item>
+        <item>color/sysGreen</item>
+        <item>color/sysBlue</item>
+        <item>color/sysYellow</item>
+        <item>color/sysCyan</item>
+        <item>color/sysMagenta</item>
+    </array>
+    <string-array name="fontArray">
         <item>Roboto [12:35]</item>
         <item>Clockopia [12:35]</item>
         <item>Helvetica [12:35]</item>
         <item>DroidSans [12:35]</item>
-        <item>Digital [12:35]</item>        
+        <item>Digital [12:35]</item>
         <item>LED Counter [12:35]</item>
         <item>LCD Phone [12:35]</item>
-        <item>Xolonium [12:35]</item>        
-        <item>Laconic [12:35]</item> 
+        <item>Xolonium [12:35]</item>
+        <item>Laconic [12:35]</item>
         <item>Newtown [12:35]</item>
         <item>Cloister [12:35]</item>
-		<item>Gothic [12:35]</item>
-		<item>Freedom [12:35]</item>
-		<item>Graduate [12:35]</item>
-		<item>Graffiti [12:35]</item>
-		<item>TimeBurner [12:35]</item>
-		<item>Viafont [12:35]</item>
-		<item>Playball [12:35]</item>
-		<item>Ferrum [12:35]</item>
-		<item>Mama [12:35]</item>
-		<item>Namskin [12:35]</item>
-		<item>Raconteur [12:35]</item>
-		<item>Longdon [12:35]</item>	
-		<item>Nickelodeon [12:35]</item>
-		<item>Rialto [12:35]</item>
-		<item>Wickhop [12:35]</item>
-		<item>Belepotan [12:35]</item>
-		<item>Coggers [12:35]</item>
-		<item>Devonshire [12:35]</item>
-		<item>Android 7 [12:35]</item>	      
+        <item>Gothic [12:35]</item>
+        <item>Freedom [12:35]</item>
+        <item>Graduate [12:35]</item>
+        <item>Graffiti [12:35]</item>
+        <item>TimeBurner [12:35]</item>
+        <item>Viafont [12:35]</item>
+        <item>Playball [12:35]</item>
+        <item>Ferrum [12:35]</item>
+        <item>Mama [12:35]</item>
+        <item>Namskin [12:35]</item>
+        <item>Raconteur [12:35]</item>
+        <item>Longdon [12:35]</item>
+        <item>Nickelodeon [12:35]</item>
+        <item>Rialto [12:35]</item>
+        <item>Wickhop [12:35]</item>
+        <item>Belepotan [12:35]</item>
+        <item>Coggers [12:35]</item>
+        <item>Devonshire [12:35]</item>
+        <item>Android 7 [12:35]</item>
     </string-array>
     <string-array name="fontValues">
         <item>0</item>
@@ -84,61 +84,61 @@
         <item>8</item>
         <item>9</item>
         <item>10</item>
-        <item>11</item>  
-		<item>12</item>
-		<item>13</item>
-		<item>14</item>
-		<item>15</item>
-		<item>16</item>
-		<item>17</item>	
-		<item>18</item>
-		<item>19</item>
-		<item>20</item>
-		<item>21</item>		
-		<item>22</item>
-		<item>23</item>
-		<item>24</item>
-		<item>25</item>
-		<item>26</item>
-		<item>27</item>
-		<item>28</item>
-		<item>29</item>               
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
     </string-array>
-	<array name="fontPathValues">
-	    <item>fonts/Roboto.ttf</item>
-		<item>fonts/Clockopia.ttf</item>
-		<item>fonts/Helvetica.ttf</item>
-		<item>fonts/DroidSans.ttf</item>	
-		<item>fonts/DS-Digital.ttf</item>		
-		<item>fonts/LED Counter.ttf</item>
-		<item>fonts/LCD Phone.ttf</item>
-		<item>fonts/Xolonium.ttf</item>		
-		<item>fonts/Laconic.ttf</item>
-		<item>fonts/Newtown.ttf</item>
-		<item>fonts/CloisterBlack.ttf</item>
-		<item>fonts/Gothic.ttf</item>
-		<item>fonts/Freedom.ttf</item>
-		<item>fonts/Graduate.ttf</item>
-		<item>fonts/GraffitiPaintBrush.ttf</item>
-		<item>fonts/TimeBurner.ttf</item>
-		<item>fonts/Viafont.ttf</item>
-		<item>fonts/Playball.ttf</item>
-		<item>fonts/Ferrum.ttf</item>
-		<item>fonts/Mama.ttf</item>
-		<item>fonts/Namskin.ttf</item>
-		<item>fonts/Raconteur.ttf</item>
-		<item>fonts/Longdon.ttf</item>	
-		<item>fonts/Nickelodeon.ttf</item>
-		<item>fonts/Rialto.ttf</item>
-		<item>fonts/Wickhop.ttf</item>
-		<item>fonts/Belepotan.ttf</item>
-		<item>fonts/CoggersTariqa.ttf</item>
-		<item>fonts/Devonshire.ttf</item>
-		<item>fonts/Android7.ttf</item>
-	</array>    
+    <array name="fontPathValues">
+        <item>fonts/Roboto.ttf</item>
+        <item>fonts/Clockopia.ttf</item>
+        <item>fonts/Helvetica.ttf</item>
+        <item>fonts/DroidSans.ttf</item>
+        <item>fonts/DS-Digital.ttf</item>
+        <item>fonts/LED Counter.ttf</item>
+        <item>fonts/LCD Phone.ttf</item>
+        <item>fonts/Xolonium.ttf</item>
+        <item>fonts/Laconic.ttf</item>
+        <item>fonts/Newtown.ttf</item>
+        <item>fonts/CloisterBlack.ttf</item>
+        <item>fonts/Gothic.ttf</item>
+        <item>fonts/Freedom.ttf</item>
+        <item>fonts/Graduate.ttf</item>
+        <item>fonts/GraffitiPaintBrush.ttf</item>
+        <item>fonts/TimeBurner.ttf</item>
+        <item>fonts/Viafont.ttf</item>
+        <item>fonts/Playball.ttf</item>
+        <item>fonts/Ferrum.ttf</item>
+        <item>fonts/Mama.ttf</item>
+        <item>fonts/Namskin.ttf</item>
+        <item>fonts/Raconteur.ttf</item>
+        <item>fonts/Longdon.ttf</item>
+        <item>fonts/Nickelodeon.ttf</item>
+        <item>fonts/Rialto.ttf</item>
+        <item>fonts/Wickhop.ttf</item>
+        <item>fonts/Belepotan.ttf</item>
+        <item>fonts/CoggersTariqa.ttf</item>
+        <item>fonts/Devonshire.ttf</item>
+        <item>fonts/Android7.ttf</item>
+    </array>
     <string-array name="dateFormat">
         <item>dd.MM.yyyy</item>
-        <item>dd/MM/yyyy</item>        
+        <item>dd/MM/yyyy</item>
         <item>MM/dd/yyyy</item>
         <item>yyyy/MM/dd</item>
         <item>MM&#8211;dd&#8211;yyyy</item>
@@ -153,15 +153,15 @@
         <item>EEE, MMMM dd</item>
         <item>EEE, dd MMMM</item>
         <item>EEE, MMM dd</item>
-        <item>EEE, dd MMM</item>        
+        <item>EEE, dd MMM</item>
         <item>MMMM dd</item>
         <item>dd MMMM</item>
         <item>MMM dd</item>
-        <item>dd MMM</item>                
+        <item>dd MMM</item>
     </string-array>
     <string-array name="dateFormatArray">
         <item>21.12.2012</item>
-        <item>21/12/2012</item>        
+        <item>21/12/2012</item>
         <item>12/21/2012</item>
         <item>2012/12/21</item>
         <item>12&#8211;21&#8211;2012</item>
@@ -176,11 +176,11 @@
         <item>Fri, December 21</item>
         <item>Fri, 21 December</item>
         <item>Fri, Dec 21</item>
-        <item>Fri, 21 Dec</item>        
+        <item>Fri, 21 Dec</item>
         <item>December 21</item>
         <item>21 December</item>
         <item>Dec 21</item>
-        <item>21 Dec</item>                
+        <item>21 Dec</item>
     </string-array>
     <string-array name="dateFormatValues">
         <item>0</item>
@@ -203,21 +203,21 @@
         <item>17</item>
         <item>18</item>
         <item>19</item>
-        <item>20</item>        
+        <item>20</item>
     </string-array>
-	<string-array name="refreshIntervalArray">
+    <string-array name="refreshIntervalArray">
         <item>@string/label_30_minutes</item>
         <item>@string/label_1_hour</item>
         <item>@string/label_2_hours</item>
         <item>@string/label_3_hours</item>
-        <item>@string/label_6_hours</item>        
+        <item>@string/label_6_hours</item>
     </string-array>
     <string-array name="refreshIntervalValues">
         <item>0</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
-        <item>6</item>        
+        <item>6</item>
     </string-array>
     <string-array name="tempScaleArray">
         <item>@string/label_celsius</item>
@@ -238,15 +238,15 @@
         <item>2</item>
     </string-array>
     <array name="skinImageValues">
-		<item>drawable/bck_left</item>
-		<item>drawable/bck_left_light</item>
-		<item>drawable/none</item>				
-	</array>
+        <item>drawable/bck_left</item>
+        <item>drawable/bck_left_light</item>
+        <item>drawable/none</item>
+    </array>
     <string-array name="soundArray">
         <item>@string/label_sound_vibration_silent</item>
         <item>@string/label_sound_silent_vibration</item>
         <item>@string/label_sound_vibration</item>
-        <item>@string/label_sound_silent</item>                
+        <item>@string/label_sound_silent</item>
     </string-array>
     <string-array name="soundValues">
         <item>0</item>
@@ -262,7 +262,7 @@
     <string-array name="languageValues">
         <item>en</item>
         <item>es</item>
-        <item>ru</item>                
+        <item>ru</item>
     </string-array>
     <string-array name="weatherIconsArray">
         <item>Tick</item>
@@ -272,16 +272,16 @@
         <item>Simple</item>
         <item>Novacons</item>
         <item>Sticker</item>
-        <item>Plain</item>  
-        <item>Flat</item>     
-		<item>Dvoid</item>
-		<item>Ikonko</item>
-		<item>Smooth</item>		
-		<item>Bubble</item>
-		<item>Stylish</item>
-		<item>Garmahis</item>
-		<item>IconBest</item>	
-		<item>Cartoon</item>		
+        <item>Plain</item>
+        <item>Flat</item>
+        <item>Dvoid</item>
+        <item>Ikonko</item>
+        <item>Smooth</item>
+        <item>Bubble</item>
+        <item>Stylish</item>
+        <item>Garmahis</item>
+        <item>IconBest</item>
+        <item>Cartoon</item>
     </string-array>
     <string-array name="weatherIconsValues">
         <item>0</item>
@@ -300,69 +300,69 @@
         <item>13</item>
         <item>14</item>
         <item>15</item>
-        <item>16</item>        
-    </string-array>    
+        <item>16</item>
+    </string-array>
     <array name="weatherIconsImageValues">
-		<item>drawable/tick_weather_03d</item>
-		<item>drawable/touch_weather_03d</item>
-		<item>drawable/icon_set_weather_03d</item>
-		<item>drawable/weezle_weather_03d</item>
-		<item>drawable/simple_weather_03d</item>
-		<item>drawable/novacons_weather_03d</item>
-		<item>drawable/sticker_weather_03d</item>
-		<item>drawable/plain_weather_03d</item>
-		<item>drawable/flat_weather_03d</item>
-		<item>drawable/dvoid_weather_03d</item>
-		<item>drawable/ikonko_weather_03d</item>
-		<item>drawable/smooth_weather_03d</item>
-		<item>drawable/bubble_weather_03d</item>
-		<item>drawable/stylish_weather_03d</item>
-		<item>drawable/garmahis_weather_03d</item>
-		<item>drawable/iconbest_weather_03d</item>
-		<item>drawable/cartoon_weather_03d</item>					
-	</array>	
+        <item>drawable/tick_weather_03d</item>
+        <item>drawable/touch_weather_03d</item>
+        <item>drawable/icon_set_weather_03d</item>
+        <item>drawable/weezle_weather_03d</item>
+        <item>drawable/simple_weather_03d</item>
+        <item>drawable/novacons_weather_03d</item>
+        <item>drawable/sticker_weather_03d</item>
+        <item>drawable/plain_weather_03d</item>
+        <item>drawable/flat_weather_03d</item>
+        <item>drawable/dvoid_weather_03d</item>
+        <item>drawable/ikonko_weather_03d</item>
+        <item>drawable/smooth_weather_03d</item>
+        <item>drawable/bubble_weather_03d</item>
+        <item>drawable/stylish_weather_03d</item>
+        <item>drawable/garmahis_weather_03d</item>
+        <item>drawable/iconbest_weather_03d</item>
+        <item>drawable/cartoon_weather_03d</item>
+    </array>
     <string-array name="batteryIconsArray">
         <item>@string/label_icon</item>
-        <item>@string/label_text</item>        		   
+        <item>@string/label_text</item>
     </string-array>
     <string-array name="batteryIconsValues">
         <item>0</item>
-        <item>1</item>                 
-    </string-array>    
+        <item>1</item>
+    </string-array>
     <array name="batteryIconsImageValues">
-		<item>drawable/battery_075</item>
-		<item>drawable/battery_font_075</item>						
-	</array>		
-	<string-array name="themeArray">
-		<item>@string/label_light</item>
-        <item>@string/label_dark</item>        
+        <item>drawable/battery_075</item>
+        <item>drawable/battery_font_075</item>
+    </array>
+    <string-array name="themeArray">
+        <item>@string/label_light</item>
+        <item>@string/label_dark</item>
     </string-array>
     <string-array name="themeValues">
         <item>light</item>
-        <item>dark</item>               
+        <item>dark</item>
     </string-array>
     <string-array name="colorSchemeArray">
-		<item>@string/black</item>
-		<item>@string/white</item>
-		<item>@string/red</item>
-	    <item>@string/pink</item>
-	    <item>@string/purple</item>
-	    <item>@string/deep_purple</item>
-	    <item>@string/indigo</item>
-	    <item>@string/blue</item>
-	    <item>@string/light_blue</item>
-	    <item>@string/cyan</item>
-	    <item>@string/teal</item>
-	    <item>@string/green</item>
-	    <item>@string/light_green</item>
-	    <item>@string/lime</item>
-	    <item>@string/yellow</item>
-	    <item>@string/amber</item>
-	    <item>@string/orange</item>
-	    <item>@string/deep_orange</item>
-	    <item>@string/brown</item>
-	    <item>@string/grey</item>
-	    <item>@string/blue_grey</item>        
+        <item>@string/black</item>
+        <item>@string/white</item>
+        <item>@string/red</item>
+        <item>@string/pink</item>
+        <item>@string/purple</item>
+        <item>@string/deep_purple</item>
+        <item>@string/indigo</item>
+        <item>@string/blue</item>
+        <item>@string/light_blue</item>
+        <item>@string/cyan</item>
+        <item>@string/teal</item>
+        <item>@string/green</item>
+        <item>@string/light_green</item>
+        <item>@string/lime</item>
+        <item>@string/yellow</item>
+        <item>@string/amber</item>
+        <item>@string/orange</item>
+        <item>@string/deep_orange</item>
+        <item>@string/brown</item>
+        <item>@string/grey</item>
+        <item>@string/blue_grey</item>
     </string-array>
     <string-array name="colorSchemeValues">
         <item>0</item>
@@ -383,42 +383,42 @@
         <item>15</item>
         <item>16</item>
         <item>17</item>
-        <item>18</item>               
+        <item>18</item>
         <item>19</item>
         <item>20</item>
     </string-array>
     <array name="colorSchemeColorValues">
         <item>color/sysBlack</item>
-		<item>color/sysWhite</item>
-	    <item>color/md_red_500</item>
-	    <item>color/md_pink_500</item>
-	    <item>color/md_purple_500</item>
-	    <item>color/md_deep_purple_500</item>
-	    <item>color/md_indigo_500</item>
-	    <item>color/md_blue_500</item>
-	    <item>color/md_light_blue_500</item>
-	    <item>color/md_cyan_500</item>
-	    <item>color/md_teal_500</item>
-	    <item>color/md_green_500</item>
-	    <item>color/md_light_green_500</item>
-	    <item>color/md_lime_500</item>
-	    <item>color/md_yellow_500</item>
-	    <item>color/md_amber_500</item>
-	    <item>color/md_orange_500</item>
-	    <item>color/md_deep_orange_500</item>
-	    <item>color/md_brown_500</item>
-	    <item>color/md_grey_500</item>
-	    <item>color/md_blue_grey_500</item>
-	</array>
-	<string-array name="brightnessArray">
+        <item>color/sysWhite</item>
+        <item>color/md_red_500</item>
+        <item>color/md_pink_500</item>
+        <item>color/md_purple_500</item>
+        <item>color/md_deep_purple_500</item>
+        <item>color/md_indigo_500</item>
+        <item>color/md_blue_500</item>
+        <item>color/md_light_blue_500</item>
+        <item>color/md_cyan_500</item>
+        <item>color/md_teal_500</item>
+        <item>color/md_green_500</item>
+        <item>color/md_light_green_500</item>
+        <item>color/md_lime_500</item>
+        <item>color/md_yellow_500</item>
+        <item>color/md_amber_500</item>
+        <item>color/md_orange_500</item>
+        <item>color/md_deep_orange_500</item>
+        <item>color/md_brown_500</item>
+        <item>color/md_grey_500</item>
+        <item>color/md_blue_grey_500</item>
+    </array>
+    <string-array name="brightnessArray">
         <item>@string/label_brightness_toggle</item>
-        <item>@string/label_brightness_dialog</item>                               
+        <item>@string/label_brightness_dialog</item>
     </string-array>
     <string-array name="brightnessValues">
         <item>0</item>
-        <item>1</item>        
+        <item>1</item>
     </string-array>
-    
+
     <!-- All of the possible tile background colors -->
     <array name="letter_tile_colors">
         <item>#f16364</item>

@@ -1,4 +1,4 @@
-<PreferenceScreen  xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:widgets="http://schemas.android.com/apk/res/com.zoromatic.widgets">
 
     <com.zoromatic.widgets.ImageListPreference
@@ -8,7 +8,7 @@
         android:key="maintheme_"
         android:summary="@string/selecttheme"
         android:title="@string/apptheme" />
-    
+
     <com.zoromatic.widgets.ImageListPreference
         android:defaultValue="0"
         android:entries="@array/colorSchemeArray"

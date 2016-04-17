@@ -36,6 +36,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Checkable;
 import android.widget.CompoundButton;
+
 import com.zoromatic.widgets.R;
 
 /**
@@ -73,11 +74,11 @@ public class SwitchPreference extends TwoStatePreference {
     /**
      * Construct a new SwitchPreference with the given style options.
      *
-     * @param context The Context that will style this preference
-     * @param attrs Style attributes that differ from the default
+     * @param context      The Context that will style this preference
+     * @param attrs        Style attributes that differ from the default
      * @param defStyleAttr An attribute in the current theme that contains a
-     *        reference to a style resource that supplies default values for
-     *        the view. Can be 0 to not look for defaults.
+     *                     reference to a style resource that supplies default values for
+     *                     the view. Can be 0 to not look for defaults.
      */
     public SwitchPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -99,7 +100,7 @@ public class SwitchPreference extends TwoStatePreference {
      * Construct a new SwitchPreference with the given style options.
      *
      * @param context The Context that will style this preference
-     * @param attrs Style attributes that differ from the default
+     * @param attrs   Style attributes that differ from the default
      */
     public SwitchPreference(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.asb_switchPreferenceStyle);
@@ -144,7 +145,9 @@ public class SwitchPreference extends TwoStatePreference {
     }
 
     public Drawable getIconCompat() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) return getIconHoneycomb();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            return getIconHoneycomb();
+        }
         return null;
     }
 

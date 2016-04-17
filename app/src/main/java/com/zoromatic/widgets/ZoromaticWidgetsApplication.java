@@ -14,18 +14,19 @@ public class ZoromaticWidgetsApplication extends Application {
         String lang = Preferences.getLanguageOptions(this);
 
         if (lang.equals("")) {
-    		String langDef = Locale.getDefault().getLanguage();
+            String langDef = Locale.getDefault().getLanguage();
 
-    		if (!langDef.equals(""))
-    			lang = langDef;
-    		else
-    			lang = "en";
+            if (!langDef.equals("")) {
+                lang = langDef;
+            } else {
+                lang = "en";
+            }
 
-    		Preferences.setLanguageOptions(this, lang);
-    	}
+            Preferences.setLanguageOptions(this, lang);
+        }
 
-    	// Change locale settings in the application
-    	Resources res = getApplicationContext().getResources();
+        // Change locale settings in the application
+        Resources res = getApplicationContext().getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
         android.content.res.Configuration conf = res.getConfiguration();
         conf.locale = new Locale(lang.toLowerCase());

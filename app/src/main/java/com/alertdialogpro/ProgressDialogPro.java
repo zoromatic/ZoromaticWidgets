@@ -28,12 +28,14 @@ import com.zoromatic.widgets.R;
  */
 public class ProgressDialogPro extends AlertDialogPro {
 
-    /** Creates a ProgressDialog with a circular, spinning progress
+    /**
+     * Creates a ProgressDialog with a circular, spinning progress
      * bar. This is the default.
      */
     public static final int STYLE_SPINNER = 0;
 
-    /** Creates a ProgressDialog with a horizontal progress bar.
+    /**
+     * Creates a ProgressDialog with a horizontal progress bar.
      */
     public static final int STYLE_HORIZONTAL = 1;
 
@@ -78,23 +80,23 @@ public class ProgressDialogPro extends AlertDialogPro {
     }
 
     public static ProgressDialogPro show(Context context, CharSequence title,
-                                      CharSequence message) {
+                                         CharSequence message) {
         return show(context, title, message, false);
     }
 
     public static ProgressDialogPro show(Context context, CharSequence title,
-                                      CharSequence message, boolean indeterminate) {
+                                         CharSequence message, boolean indeterminate) {
         return show(context, title, message, indeterminate, false, null);
     }
 
     public static ProgressDialogPro show(Context context, CharSequence title,
-                                      CharSequence message, boolean indeterminate, boolean cancelable) {
+                                         CharSequence message, boolean indeterminate, boolean cancelable) {
         return show(context, title, message, indeterminate, cancelable, null);
     }
 
     public static ProgressDialogPro show(Context context, CharSequence title,
-                                      CharSequence message, boolean indeterminate,
-                                      boolean cancelable, OnCancelListener cancelListener) {
+                                         CharSequence message, boolean indeterminate,
+                                         boolean cancelable, OnCancelListener cancelListener) {
         ProgressDialogPro dialog = new ProgressDialogPro(context);
         dialog.setTitle(title);
         dialog.setMessage(message);
@@ -114,7 +116,7 @@ public class ProgressDialogPro extends AlertDialogPro {
                 R.attr.alertDialogProStyle, 0);
 
         if (mProgressStyle == STYLE_HORIZONTAL) {
-            
+
             /* Use a separate handler to update the text views as they
              * must be updated on the same thread that created them.
              */
@@ -321,9 +323,10 @@ public class ProgressDialogPro extends AlertDialogPro {
      * Change the format of the small text showing current and maximum units
      * of progress.  The default is "%1d/%2d".
      * Should not be called during the number is progressing.
+     *
      * @param format A string passed to {@link String#format String.format()};
-     * use "%1d" for the current number and "%2d" for the maximum.  If null,
-     * nothing will be shown.
+     *               use "%1d" for the current number and "%2d" for the maximum.  If null,
+     *               nothing will be shown.
      */
     public void setProgressNumberFormat(String format) {
         mProgressNumberFormat = format;
@@ -335,8 +338,9 @@ public class ProgressDialogPro extends AlertDialogPro {
      * The default is
      * {@link java.text.NumberFormat#getPercentInstance() NumberFormat.getPercentageInstnace().}
      * Should not be called during the number is progressing.
+     *
      * @param format An instance of a {@link java.text.NumberFormat} to generate the
-     * percentage text.  If null, nothing will be shown.
+     *               percentage text.  If null, nothing will be shown.
      */
     public void setProgressPercentFormat(NumberFormat format) {
         mProgressPercentFormat = format;

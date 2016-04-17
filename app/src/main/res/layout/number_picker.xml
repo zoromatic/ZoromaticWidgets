@@ -6,9 +6,10 @@
     android:background="@drawable/background_widget"
     android:gravity="center"
     android:padding="1sp"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-    <ImageButton android:id="@+id/increment"
+    <ImageButton
+        android:id="@+id/increment"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@android:drawable/btn_plus"
@@ -26,7 +27,8 @@
         android:inputType="number"
         android:background="@android:drawable/editbox_background" />
 
-    <ImageButton android:id="@+id/decrement"
+    <ImageButton
+        android:id="@+id/decrement"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@android:drawable/btn_minus"

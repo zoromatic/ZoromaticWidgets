@@ -15,82 +15,83 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class ListPreferencePro extends ListPreference {
-	private AlertDialogPro.Builder mBuilder;
-	private Dialog mDialog;
-	private int mWhichButtonClicked;
-	
-	private Context context;
+    private AlertDialogPro.Builder mBuilder;
+    private Dialog mDialog;
+    private int mWhichButtonClicked;
 
-	public ListPreferencePro(Context context) {
-		super(context);
-		this.context = context;
-	}
+    private Context context;
 
-	public ListPreferencePro(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		this.context = context;
-	}
-	
-	private int getValueIndex() {
+    public ListPreferencePro(Context context) {
+        super(context);
+        this.context = context;
+    }
+
+    public ListPreferencePro(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        this.context = context;
+    }
+
+    private int getValueIndex() {
         return findIndexOfValue(getValue());
     }
 
-	@Override
-	protected void showDialog(Bundle state) {
-		mWhichButtonClicked = DialogInterface.BUTTON_NEGATIVE;
-		
-		String theme = Preferences.getMainTheme(getContext());    
+    @Override
+    protected void showDialog(Bundle state) {
+        mWhichButtonClicked = DialogInterface.BUTTON_NEGATIVE;
 
-		mBuilder = new AlertDialogPro.Builder(context, 
-				theme.compareToIgnoreCase("light") == 0?R.style.Theme_AlertDialogPro_Material_Light:R.style.Theme_AlertDialogPro_Material);
-		mBuilder.setTitle(getTitle());
-		mBuilder.setIcon(getDialogIcon());
-		mBuilder.setNegativeButton(getNegativeButtonText(), this);
+        String theme = Preferences.getMainTheme(getContext());
 
-		mBuilder.setSingleChoiceItems(getEntries(), getValueIndex(), new OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
+        mBuilder = new AlertDialogPro.Builder(context,
+                theme.compareToIgnoreCase("light") == 0 ? R.style.Theme_AlertDialogPro_Material_Light : R.style.Theme_AlertDialogPro_Material);
+        mBuilder.setTitle(getTitle());
+        mBuilder.setIcon(getDialogIcon());
+        mBuilder.setNegativeButton(getNegativeButtonText(), this);
 
-		        if (which >= 0 && getEntryValues() != null) {
-		          String value = getEntryValues()[which].toString();
-		          if (callChangeListener(value))
-		            setValue(value);
-		        }				
-			}
-		});
+        mBuilder.setSingleChoiceItems(getEntries(), getValueIndex(), new OnClickListener() {
 
-		final View contentView = onCreateDialogView();
-		
-	    if (contentView != null) {
-	      onBindDialogView(contentView);
-	      mBuilder.setView(contentView);
-	    }
-	    else
-	      mBuilder.setMessage(getDialogMessage());
-	    
-	    //onPrepareDialogBuilder(mBuilder);
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
 
-	    //mBuilder.show();
-	    
-	    // Create the dialog
+                if (which >= 0 && getEntryValues() != null) {
+                    String value = getEntryValues()[which].toString();
+                    if (callChangeListener(value)) {
+                        setValue(value);
+                    }
+                }
+            }
+        });
+
+        final View contentView = onCreateDialogView();
+
+        if (contentView != null) {
+            onBindDialogView(contentView);
+            mBuilder.setView(contentView);
+        } else {
+            mBuilder.setMessage(getDialogMessage());
+        }
+
+        //onPrepareDialogBuilder(mBuilder);
+
+        //mBuilder.show();
+
+        // Create the dialog
         final Dialog dialog = mDialog = mBuilder.create();
-        
+
         if (state != null) {
             dialog.onRestoreInstanceState(state);
         }
-        
+
         dialog.setOnDismissListener(this);
         dialog.show();
-	}
-	
-	public void onClick(DialogInterface dialog, int which) {
+    }
+
+    public void onClick(DialogInterface dialog, int which) {
         mWhichButtonClicked = which;
     }
-    
+
     public void onDismiss(DialogInterface dialog) {
-        
+
         mDialog = null;
         onDialogClosed(mWhichButtonClicked == DialogInterface.BUTTON_POSITIVE);
     }
@@ -98,16 +99,16 @@ public class ListPreferencePro extends ListPreference {
     /**
      * Called when the dialog is dismissed and should be used to save data to
      * the {@link SharedPreferences}.
-     * 
+     *
      * @param positiveResult Whether the positive button was clicked (true), or
-     *            the negative button was clicked or the dialog was canceled (false).
+     *                       the negative button was clicked or the dialog was canceled (false).
      */
     protected void onDialogClosed(boolean positiveResult) {
     }
 
     /**
      * Gets the dialog that is shown by this preference.
-     * 
+     *
      * @return The dialog, or null if a dialog is not being shown.
      */
     public Dialog getDialog() {
@@ -118,11 +119,11 @@ public class ListPreferencePro extends ListPreference {
      * {@inheritDoc}
      */
     public void onActivityDestroy() {
-        
+
         if (mDialog == null || !mDialog.isShowing()) {
             return;
         }
-        
+
         mDialog.dismiss();
     }
 
@@ -157,7 +158,7 @@ public class ListPreferencePro extends ListPreference {
     private static class SavedState extends BaseSavedState {
         boolean isDialogShowing;
         Bundle dialogBundle;
-        
+
         public SavedState(Parcel source) {
             super(source);
             isDialogShowing = source.readInt() == 1;
@@ -176,16 +177,16 @@ public class ListPreferencePro extends ListPreference {
         }
 
         @SuppressWarnings("unused")
-		public static final Parcelable.Creator<SavedState> CREATOR =
+        public static final Parcelable.Creator<SavedState> CREATOR =
                 new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
 
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
     }
 
 }
