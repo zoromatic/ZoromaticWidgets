@@ -369,4 +369,9 @@
     <string name="weather_hot">Hot</string>
     <string name="weather_windy">Windy</string>
     <string name="weather_hail">Hail</string>
+
+    <string name="title_activity_set_permissions">SetPermissions</string>
+    <string name="permission_request">Permissions request.</string>
+    <string name="permission_needed">Permissions needed to change the following: orientation, brightness and location.</string>
+
 </resources>

@@ -24,6 +24,7 @@
     <attr name="iconSound" format="reference"/>
     <attr name="iconDelete" format="reference"/>
     <attr name="tabTextColor" format="reference"/>
+    <attr name="toolbarNewStyle" format="reference"/>
     
     <declare-styleable name="asb_SwitchPreference">
         <!--

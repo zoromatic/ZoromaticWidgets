@@ -141,6 +141,7 @@
 	    <item name="iconAdd">@drawable/ic_add_white_48dp</item>
 	    <item name="iconDelete">@drawable/ic_delete_white_48dp</item>
 	    <item name="tabTextColor">@color/sysWhite</item>
+        <item name="toolbarNewStyle">@style/ToolbarLight</item>
     </style>
     
     <style name="ThemeLightBasic" parent="Theme.AppCompat.Light.NoActionBar">
@@ -174,6 +175,7 @@
 	    <item name="iconAdd">@drawable/ic_add_white_48dp</item>
 	    <item name="iconDelete">@drawable/ic_delete_white_48dp</item>
 	    <item name="tabTextColor">@color/sysWhite</item>
+        <item name="toolbarNewStyle">@style/ToolbarDark</item>
     </style>
     
     <style name="ThemeLight" parent="ThemeLightBasic">
@@ -198,7 +200,7 @@
         <item name="colorPrimary">@color/sysWhite</item>
 	    <item name="colorPrimaryDark">@color/sysBlack</item>
 	    <item name="colorAccent">@color/sysWhite</item>
-        <item name="theme">@style/ToolbarLight</item>
+        <item name="toolbarNewStyle">@style/ToolbarLight</item>
     	<item name="popupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
     	<item name="drawerArrowStyle">@style/DrawerArrowStyleLight</item>
 	    <item name="iconRefresh">@drawable/ic_refresh_black_48dp</item>
@@ -212,7 +214,7 @@
         <item name="colorPrimary">@color/sysWhite</item>
 	    <item name="colorPrimaryDark">@color/sysBlack</item>
 	    <item name="colorAccent">@color/sysBlack</item>
-        <item name="theme">@style/ToolbarLight</item>
+        <item name="toolbarNewStyle">@style/ToolbarLight</item>
     	<item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     	<item name="drawerArrowStyle">@style/DrawerArrowStyleLight</item>
 	    <item name="iconRefresh">@drawable/ic_refresh_black_48dp</item>
@@ -376,7 +378,7 @@
         <item name="colorPrimary">@color/md_yellow_500</item>
 	    <item name="colorPrimaryDark">@color/md_yellow_900</item>
 	    <item name="colorAccent">@color/md_yellow_900</item>
-        <item name="theme">@style/ToolbarLight</item>
+        <item name="toolbarNewStyle">@style/ToolbarLight</item>
     	<item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     	<item name="drawerArrowStyle">@style/DrawerArrowStyleLight</item>
 	    <item name="iconRefresh">@drawable/ic_refresh_black_48dp</item>

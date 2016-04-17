@@ -40,6 +40,7 @@ import com.luckycatlabs.sunrisesunset.dto.SunriseSunsetLocation;
 import com.zoromatic.widgets.R;
 import com.zoromatic.widgets.LocationProvider.LocationResult;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -97,6 +98,7 @@ import android.os.Vibrator;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
@@ -484,7 +486,7 @@ public class WidgetUpdateService extends Service {
 						mLocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
 								GPS_UPDATE_TIME_INTERVAL, GPS_UPDATE_DISTANCE_INTERVAL,
 								mLocListener);
-					} catch (Exception e) {
+					} catch (SecurityException e) {
 						Log.e(LOG_TAG, "", e);
 					}
 				}
@@ -3559,11 +3561,28 @@ public class WidgetUpdateService extends Service {
 		updateViews.setInt(R.id.imageViewRingerInd, "setColorFilter", color);
 	}	
 
-	private void toggleBrightness() {
+	public void toggleBrightness() {
+		if (  Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
+			// Check permissions and open request if not granted
+			if ( ContextCompat.checkSelfPermission( this, Manifest.permission.WRITE_SETTINGS ) != PackageManager.PERMISSION_GRANTED ||
+					ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ||
+					ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+				Intent permissionsIntent = new Intent(this, SetPermissionsActivity.class);
+				permissionsIntent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+				startActivity( permissionsIntent );
+			} else {
+				realToggleBrightness();
+			}
+		} else {
+			realToggleBrightness();
+		}
+	}
+
+	private void realToggleBrightness() {
 		try {
 			ContentResolver cr = this.getContentResolver();
 			int brightness = Settings.System.getInt(cr,
-					Settings.System.SCREEN_BRIGHTNESS);
+			                                        Settings.System.SCREEN_BRIGHTNESS);
 			int brightnessMode = Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
 
 			//Only get brightness setting if available
@@ -3584,12 +3603,12 @@ public class WidgetUpdateService extends Service {
 			}
 
 			Settings.System.putInt(this.getContentResolver(),
-					Settings.System.SCREEN_BRIGHTNESS_MODE,
-					brightnessMode);
+			                       Settings.System.SCREEN_BRIGHTNESS_MODE,
+			                       brightnessMode);
 
 			if (brightnessMode == Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL) {
 				Settings.System.putInt(cr, Settings.System.SCREEN_BRIGHTNESS, brightness);
-			}        
+			}
 		} catch (Settings.SettingNotFoundException e) {
 			Log.d(LOG_TAG, "toggleBrightness: " + e);
 		}
@@ -4136,7 +4155,7 @@ public class WidgetUpdateService extends Service {
 		}			
 	}
 
-	private void startWeatherUpdate (RemoteViews updateViews, int appWidgetId, boolean scheduledUpdate) {
+	public void startWeatherUpdate (RemoteViews updateViews, int appWidgetId, boolean scheduledUpdate) {
 
 		SQLiteDbAdapter dbHelper = new SQLiteDbAdapter(this);
 
