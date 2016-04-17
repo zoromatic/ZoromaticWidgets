@@ -207,6 +207,9 @@
 	
 	<string name="asb_switch_on">ON</string>
     <string name="asb_switch_off">OFF</string>
+
+    <string name="permission_request">Permission request.</string>
+    <string name="permission_needed">Permission needed to access system resources.</string>
 		
    	<string name="black">Black</string>
    	<string name="white">White</string>

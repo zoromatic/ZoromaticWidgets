@@ -8,12 +8,13 @@ import android.content.Context;
 import android.content.res.Resources;
 //import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
 
 @SuppressLint("Registered")
-public class ThemeActivity extends Activity {
+public class ThemeActivity extends AppCompatActivity {
 
 	protected void onCreate(Bundle savedInstanceState) {			
 		String theme = Preferences.getMainTheme(this);		
