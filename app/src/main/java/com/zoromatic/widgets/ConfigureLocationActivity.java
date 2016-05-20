@@ -16,33 +16,15 @@
 
 package com.zoromatic.widgets;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.lang.ref.WeakReference;
-import java.lang.reflect.InvocationTargetException;
 import java.net.UnknownHostException;
-import java.sql.PreparedStatement;
 import java.util.ArrayList;
-//import java.util.List;
-
-
-import java.util.Calendar;
-import java.util.ConcurrentModificationException;
-import java.util.Date;
-import java.util.EmptyStackException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.Map.Entry;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -50,37 +32,26 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.ProxySelectorRoutePlanner;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import com.alertdialogpro.AlertDialogPro;
-import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
-import com.luckycatlabs.sunrisesunset.dto.SunriseSunsetLocation;
 import com.zoromatic.widgets.LocationProvider.LocationResult;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -88,27 +59,19 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.preference.DialogPreference;
 import android.provider.Settings;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.text.style.StyleSpan;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -117,11 +80,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.webkit.WebChromeClient.CustomViewCallback;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -130,7 +91,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -140,7 +100,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 @SuppressWarnings({ "unused", "deprecation" })
 public class ConfigureLocationActivity extends ThemeActionBarActivity {    
 	
-	public static final String LOG_TAG = "ConfigureLocationActivity";
+	public static final String LOG_TAG = "ConfigureLocation";
     
     public static int LOCATION_TYPE_CUSTOM = 0;
     public static int LOCATION_TYPE_CURRENT = 1;
@@ -157,14 +117,8 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
     private String mLocation = "";
     private long mLocationID = -1;
     private int mLocationType = 0;
-    
-    private double mLatPref = Double.NaN;
-    private double mLonPref = Double.NaN;
-    private String mLocationPref = "";
-    private long mLocationIDPref = -1;
-    private int mLocationTypePref = LOCATION_TYPE_CUSTOM;
-    
-    public static final String LAT = "lat";
+
+	public static final String LAT = "lat";
     public static final String LON = "lon";
     public static final String LOC = "loc";
     public static final String ID = "id";
@@ -188,10 +142,8 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     static final String APPWIDGETID = "AppWidgetId";
     private static final int ZOOM_LEVEL = 15;
-    
-    private Toolbar toolbar;
-    
-    private ProgressDialogFragment mProgressFragment = null;
+
+	private ProgressDialogFragment mProgressFragment = null;
     
     static HttpTask mHttpTask;
     static DataProviderTask mDataProviderTask;
@@ -204,6 +156,7 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
 	private static final int ACTIVITY_CREATE=0;
     private static final int ACTIVITY_EDIT=1;
     private static final int ACTIVITY_LOCATION=2;
+	private static final int ACTIVITY_PERMISSION=3;
     
     private static final int INSERT_ID = Menu.FIRST;
     private static final int DELETE_ID = Menu.FIRST + 1;
@@ -247,9 +200,9 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
     
     private void displayActivity() {
     	setContentView(R.layout.configurelocation);
-    	
-    	toolbar = (Toolbar) findViewById(R.id.toolbar);
-	    setSupportActionBar(toolbar);
+
+	    Toolbar toolbar = ( Toolbar ) findViewById( R.id.toolbar );
+	    setSupportActionBar( toolbar );
 	    
 	    ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -284,7 +237,7 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
 	        	} while (!locationsCursor.isAfterLast());
 	    	}
 	    	
-	    	if (bFound == false && locationIDPref >= 0) {
+	    	if ( !bFound && locationIDPref >= 0) {
 	    		mDbHelper.createLocation(locationIDPref, latPref, lonPref, locationPref);
 	    	}
 	    	
@@ -346,8 +299,7 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				if (isChecked && getLocationType() != LOCATION_TYPE_CURRENT) {
-					showCurrentLocationInfo();                
-	                //setLocationType(LOCATION_TYPE_CURRENT);
+					showCurrentLocationInfo();
 				} else if (!isChecked && getLocationType() != LOCATION_TYPE_CUSTOM) {
 					setLocationType(LOCATION_TYPE_CUSTOM);
 					getCheckCurrent().setText(getResources().getText(R.string.locationcurrent));
@@ -359,12 +311,12 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
 				}
 			}
 		});
-        
-        mLatPref = Preferences.getLocationLat(this, getAppWidgetId());
-        mLonPref = Preferences.getLocationLon(this, getAppWidgetId());
-        mLocationPref = Preferences.getLocation(this, getAppWidgetId());
-        mLocationIDPref = Preferences.getLocationId(this, getAppWidgetId());        
-        mLocationTypePref = Preferences.getLocationType(this, getAppWidgetId());
+
+	    double latPref = Preferences.getLocationLat( this, getAppWidgetId() );
+	    double lonPref = Preferences.getLocationLon( this, getAppWidgetId() );
+	    String locationPref = Preferences.getLocation( this, getAppWidgetId() );
+	    long   locationIDPref = Preferences.getLocationId( this, getAppWidgetId() );
+	    int    locationTypePref = Preferences.getLocationType( this, getAppWidgetId() );
 
         // If restoring, read location and units from bundle
         if (mSavedState != null) {
@@ -374,11 +326,11 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
             setLocationID(mSavedState.getLong(ID));
             setLocationType(mSavedState.getInt(LOCTYPE));
         } else {
-        	setLat(mLatPref);
-            setLon(mLonPref);
-            setLoc(mLocationPref);
-            setLocationID(mLocationIDPref);
-            setLocationType(mLocationTypePref);
+        	setLat( latPref );
+            setLon( lonPref );
+            setLoc( locationPref );
+            setLocationID( locationIDPref );
+            setLocationType( locationTypePref );
             
             items = null;
         	list = null;
@@ -386,8 +338,10 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
         }
         
         if (getLocationType() == LOCATION_TYPE_CURRENT) {
-        	mCheckCurrent.setChecked(true);			
-        	mCheckCurrent.setText(getResources().getText(R.string.locationcurrent) + " [" + mLocationPref + "]");
+        	mCheckCurrent.setChecked(true);
+	        CharSequence loc = getResources().getText( R.string.locationcurrent);
+	        loc = loc + " [" + locationPref + "]";
+        	mCheckCurrent.setText(loc);
 		} else {
 			mCheckCurrent.setChecked(false);
 			mCheckCurrent.setText(getResources().getText(R.string.locationcurrent));
@@ -435,12 +389,7 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
     	if (view == null)
     		return;
     	
-    	/*TypedValue outValue = new TypedValue();
-        getDialogContext().getTheme().resolveAttribute(R.attr.colorAccent, outValue, true);
-        int color = outValue.resourceId;
-        int colorAccent = getDialogContext().getResources().getColor(color);*/  
-        
-        TextView text = (TextView) view.findViewById(R.id.label);
+    	TextView text = (TextView) view.findViewById(R.id.label);
 		String strLabel = "L"; 
 		
 		if (text != null) {
@@ -464,9 +413,6 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
 		    final Bitmap letterTile = tileProvider.getLetterTile(strLabel, strLabel, tileSize, tileSize);
 		    
 		    image.setImageBitmap(letterTile);
-		    
-		    //String font = "fonts/Roboto.ttf";
-			//image.setImageBitmap(WidgetUpdateService.getFontBitmap(getDialogContext(), strLabel, colorAccent, font, true, 96)); 		    
 		}
 		
 		CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBoxSelect);
@@ -703,9 +649,6 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
     @Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
-    	//super.onCreateContextMenu(menu, v, menuInfo);
-        //menu.add(0, DEFAULT_ID, 0, R.string.menu_make_default);
-        //menu.add(0, DELETE_ID, 1, R.string.menu_delete_location);                
 	}
 
     @Override
@@ -764,8 +707,6 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
             	makeDefault(cursorAdapter.getItemId(0)); // make first default
             }
             
-            //fillData();
-    		
             // Show the ProgressDialogFragment on this thread
             mProgressFragment = new ProgressDialogFragment();
     		Bundle args = new Bundle();
@@ -922,10 +863,10 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                Window w = getWindow();
                w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-               //status bar height
-               //int actionBarHeight = getActionBarHeight();
-               int statusBarHeight = getStatusBarHeight();
-               //action bar height
+	           //action bar height
+	           //int actionBarHeight = getActionBarHeight();
+	           //status bar height
+	           int statusBarHeight = getStatusBarHeight();
                statusBar.getLayoutParams().height = /*actionBarHeight + */statusBarHeight;
                statusBar.setBackgroundColor(color);
          } else {
@@ -1152,12 +1093,12 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
             }
         }
     };
-    
+
     DialogInterface.OnClickListener dialogAddLocationClickListener = new DialogInterface.OnClickListener() {
     	public void onClick(DialogInterface dialog,
 				int whichButton) {
 			
-    		EditText input = (EditText) ((AlertDialogPro) dialog).findViewById(AlertDialogFragment.TEXT_ID);
+    		EditText input = (EditText) ((AlertDialogPro) dialog).findViewById(R.id.text_id);
     		
 			if (input != null) {
 				Editable value = input.getText();
@@ -1282,24 +1223,53 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
 	            } else {
 	            	showProgressDialog(false);
 	            }            
-	        }
+	        } else {
+			    if (requestCode == ACTIVITY_PERMISSION) {
+				    if (resultCode == RESULT_OK){
+					    mCheckCurrent.setChecked(false);
+					    mCheckCurrent.setText(getResources().getText(R.string.locationcurrent));
+
+					    showProgressDialog(true);
+
+					    LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+					    List<String> providers = locationManager.getProviders(new Criteria(), true);
+
+					    if (!providers.isEmpty()) {
+						    getLocation();
+					    } else {
+						    showLocationDisabledAlertDialog();
+					    }
+				    } else {
+					    mCheckCurrent.setChecked(false);
+					    mCheckCurrent.setText(getResources().getText(R.string.locationcurrent));
+				    }
+			    }
+		    }
+
         } 
     }
     
     public void showCurrentLocationInfo() {
-    	mCheckCurrent.setChecked(false);
-    	mCheckCurrent.setText(getResources().getText(R.string.locationcurrent));
-    	
-    	showProgressDialog(true); 
-        
-        LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        List<String> providers = locationManager.getProviders(new Criteria(), true);
+	    if ( ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ||
+			    ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+		    Intent permissionsIntent = new Intent(this, SetPermissionsActivity.class);
+		    //permissionsIntent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+		    startActivityForResult( permissionsIntent, ACTIVITY_PERMISSION );
+	    } else {
+		    mCheckCurrent.setChecked(false);
+		    mCheckCurrent.setText(getResources().getText(R.string.locationcurrent));
 
-        if (!providers.isEmpty()) {
-        	getLocation();                    	
-        } else {
-        	showLocationDisabledAlertDialog();                                      
-        }
+		    showProgressDialog(true);
+
+		    LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		    List<String> providers = locationManager.getProviders(new Criteria(), true);
+
+		    if (!providers.isEmpty()) {
+			    getLocation();
+		    } else {
+			    showLocationDisabledAlertDialog();
+		    }
+	    }
     }
     
     public void showProgressDialog(boolean show) {
@@ -1421,11 +1391,14 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
 		        JSONObject sys = null;
 		        try {
 		            sys = cityJSON.getJSONObject("sys");
-		        } catch (JSONException e) {	                
+		        } catch (JSONException e) {
+			        e.printStackTrace();
 		        }
 		        try {
-		            country = sys.getString("country");                              
-		        } catch (JSONException e) {	                
+			        if (sys != null)
+		                country = sys.getString("country");
+		        } catch (JSONException e) {
+			        e.printStackTrace();
 		        }
 		        
 		        if (name == null || country == null)
@@ -1459,12 +1432,12 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
 		
 		showProgressDialog(false);
 		
-		if (parseString.equals(null) || parseString.equals("") || parseString.contains("<html>") || parseString.contains("failed to connect")) {
+		if (TextUtils.isEmpty(parseString) || parseString.contains("<html>") || parseString.contains("failed to connect")) {
 			Toast.makeText(getDialogContext(), getResources().getText(R.string.locationnotfound), Toast.LENGTH_LONG).show();
             return false; 	    	
 		}		
 		
-		parseString.trim();
+		parseString = parseString.trim();
 		
 		String start = parseString.substring(0, 1);
 		String end = parseString.substring(parseString.length()-1, parseString.length());
@@ -1501,12 +1474,17 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
             JSONObject coord = null;
             try {
                 coord = weatherJSON.getJSONObject("coord");
-            } catch (JSONException e) {	                
+            } catch (JSONException e) {
+	            e.printStackTrace();
             }
             try {
-                lat = coord.getDouble("lat");
-                lon = coord.getDouble("lon");                                
-            } catch (JSONException e) {	                
+	            if (coord != null)
+	            {
+		            lat = coord.getDouble( "lat" );
+		            lon = coord.getDouble( "lon" );
+	            }
+            } catch (JSONException e) {
+	            e.printStackTrace();
             }                                                      
 		    
             mConfigurationActivity.setLat(lat);
@@ -1520,15 +1498,14 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
             Preferences.setLocation(this, mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLoc());
             
             mConfigurationActivity.getCheckCurrent().setChecked(true);
-            mConfigurationActivity.getCheckCurrent().setText(getResources().getText(R.string.locationcurrent) + 
-            		" [" + Preferences.getLocation(this, mConfigurationActivity.getAppWidgetId()) + "]");
+			CharSequence loc = getResources().getText(R.string.locationcurrent);
+			loc = loc + " [" + Preferences.getLocation(this, mConfigurationActivity.getAppWidgetId()) + "]";
+            mConfigurationActivity.getCheckCurrent().setText(loc);
             
             Preferences.setLocationId(this, mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLocationID());
             Preferences.setLocationType(this, mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLocationType());
 	        
-	        //fillData();
-            
-            // Show the ProgressDialogFragment on this thread
+	        // Show the ProgressDialogFragment on this thread
             mProgressFragment = new ProgressDialogFragment();
     		Bundle args = new Bundle();
     		args.putString("title", (String) getResources().getText(R.string.working));
@@ -1621,7 +1598,7 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
         	} while (!locationsCursor.isAfterLast());
     	}
     	
-    	if (bFound == false && cityId >= 0) {
+    	if ( !bFound && cityId >= 0) {
     		long id = mDbHelper.createLocation(cityId, lat, lon, name);
     	}
     	
@@ -1649,7 +1626,6 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
 		if (current) {
 			if ((!parseCurrentLocation(getAppWidgetId(), parseString)) || (items != null && items.length <= 0)) {
 				Toast.makeText(getDialogContext(), getResources().getText(R.string.locationnotfound), Toast.LENGTH_LONG).show();
-				return;
 			}
 		} else
 		{
@@ -1718,30 +1694,22 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
 		        	//request = new HttpGet(String.format(GET_CITY_URL, latitude, longitude, lang));
 		        	request = new HttpGet(String.format(WidgetUpdateService.WEATHER_SERVICE_COORD_URL, latitude, longitude, lang));
 		        	
-		        } else if (cityName != "") {
+		        } else if (!TextUtils.isEmpty(cityName)) {
 		        	cityName = cityName.replaceAll(" ", "%20");
 			        request = new HttpGet(String.format(FIND_CITIES_URL, cityName, lang));
 		        } else {
-		        	return openResult;
+		        	return null;
 		        }
-		        
-		        if (request == null) {
-		        	return openResult;
-		        }
-		        
-		        HttpResponse response = client.execute(request);
+
+			    HttpResponse response = client.execute(request);
 
 	            StatusLine status = response.getStatusLine();
 	            Log.d(LOG_TAG, "Request returned status " + status);
 
 	            HttpEntity entity = response.getEntity();
-	            responseReader = new InputStreamReader(entity.getContent()); 
-	            
-	            if (responseReader == null) {	            	            
-	            	return openResult;
-	            }
-	            
-	            char[] buf = new char[1024];
+	            responseReader = new InputStreamReader(entity.getContent());
+
+			    char[] buf = new char[1024];
 	            StringBuilder result = new StringBuilder();
 	            int read = responseReader.read(buf);
 	            
@@ -1752,13 +1720,8 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
 	            
 	            openResult = new OpenQuery(result.toString(), TextUtils.isEmpty(cityName));
 	            
-	        } catch (UnknownHostException e) {
-	        	e.printStackTrace();	        	
-	        } catch (UnsupportedEncodingException e) {
-	            e.printStackTrace();	            
-	        } catch (ClientProtocolException e) {
-	            e.printStackTrace();	            
-	        } catch (IOException e) {
+	        }
+		    catch (IOException e) {
 	            e.printStackTrace();	            
 	        }
 

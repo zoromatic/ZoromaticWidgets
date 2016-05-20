@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.zoromatic.widgets"
-          xmlns:android="http://schemas.android.com/apk/res/android"
-          android:versionCode="21"
-          android:versionName="2.1">
-
-    <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="23"/>
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
@@ -67,8 +61,8 @@
         android:smallScreens="true"
         android:xlargeScreens="true"/>
 
-    <android:uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".ZoromaticWidgetsApplication"
@@ -369,6 +363,11 @@
         </activity>
         <activity
             android:name=".SetPermissionsActivity"
+            android:label="@string/title_activity_set_permissions"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+        </activity>
+        <activity
+            android:name=".WriteSettingsActivity"
             android:label="@string/title_activity_set_permissions"
             android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>

@@ -3563,16 +3563,28 @@ public class WidgetUpdateService extends Service {
 
 	public void toggleBrightness() {
 		if (  Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
-			// Check permissions and open request if not granted
-			if ( ContextCompat.checkSelfPermission( this, Manifest.permission.WRITE_SETTINGS ) != PackageManager.PERMISSION_GRANTED ||
-					ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ||
-					ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-				Intent permissionsIntent = new Intent(this, SetPermissionsActivity.class);
-				permissionsIntent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
-				startActivity( permissionsIntent );
-			} else {
-				realToggleBrightness();
+
+			if ( isMarshmallowSixPointZiro() ) {
+				if ( Settings.System.canWrite( this ) ) {
+					realToggleBrightness();
+				}
+				else {
+					Intent writeSettingsIntent = new Intent(this, WriteSettingsActivity.class);
+					writeSettingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity( writeSettingsIntent );
+				}
 			}
+			/*else {
+				// Check permissions and open request if not granted
+				if ( ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ||
+						ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+					Intent permissionsIntent = new Intent(this, SetPermissionsActivity.class);
+					permissionsIntent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+					startActivity( permissionsIntent );
+				} else {
+					realToggleBrightness();
+				}
+			}*/
 		} else {
 			realToggleBrightness();
 		}
@@ -5015,5 +5027,10 @@ public class WidgetUpdateService extends Service {
 
 		BitmapDrawable outDrawable = new BitmapDrawable(res, outBitmap);
 		return outDrawable;
+	}
+
+	public static boolean isMarshmallowSixPointZiro() {
+		//We need to check if phone is 6.0
+		return android.os.Build.VERSION.RELEASE.matches( "6.0" );
 	}
 }

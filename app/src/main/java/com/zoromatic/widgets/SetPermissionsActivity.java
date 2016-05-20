@@ -15,6 +15,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
+import com.alertdialogpro.AlertDialogPro;
+
 public class SetPermissionsActivity extends AppCompatActivity
 {
 	private static final int PERMISSIONS_REQUEST   = 0;
@@ -27,12 +29,10 @@ public class SetPermissionsActivity extends AppCompatActivity
 
 		if (  Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
 			// Check permissions and open request if not granted
-			if ( ContextCompat.checkSelfPermission( this, Manifest.permission.WRITE_SETTINGS ) != PackageManager.PERMISSION_GRANTED ||
-					ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ||
+			if ( ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ||
 					ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
 				// Should we show an explanation?
-				if ( ActivityCompat.shouldShowRequestPermissionRationale( this, Manifest.permission.WRITE_SETTINGS ) ||
-						ActivityCompat.shouldShowRequestPermissionRationale( this, Manifest.permission.ACCESS_COARSE_LOCATION ) ||
+				if ( ActivityCompat.shouldShowRequestPermissionRationale( this, Manifest.permission.ACCESS_COARSE_LOCATION ) ||
 						ActivityCompat.shouldShowRequestPermissionRationale( this, Manifest.permission.ACCESS_FINE_LOCATION ) ) {
 					// Show an explanation to the user *asynchronously* -- don't block
 					// this thread waiting for the user's response! After the user
@@ -58,8 +58,7 @@ public class SetPermissionsActivity extends AppCompatActivity
 				} else {
 					// No explanation needed, we can request the permission.
 					ActivityCompat.requestPermissions( this,
-					                                   new String[]{ Manifest.permission.WRITE_SETTINGS, Manifest.permission.ACCESS_COARSE_LOCATION,
-							                                   Manifest.permission.ACCESS_FINE_LOCATION },
+					                                   new String[]{ Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION },
 					                                   PERMISSIONS_REQUEST );
 
 					// PERMISSIONS_REQUEST is an
@@ -85,9 +84,8 @@ public class SetPermissionsActivity extends AppCompatActivity
 			case PERMISSIONS_REQUEST:
 			{
 				// If request is cancelled, the result arrays are empty.
-				if ( grantResults.length > 2
-						&& grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED
-						&& grantResults[2] == PackageManager.PERMISSION_GRANTED ) {
+				if ( grantResults.length > 1
+						&& grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED ) {
 					// permission granted
 					initializeActivity();
 				} else {
@@ -124,8 +122,10 @@ public class SetPermissionsActivity extends AppCompatActivity
 		public Dialog onCreateDialog( Bundle savedInstanceState )
 		{
 			mContext = getActivity();
+			String theme = Preferences.getMainTheme(getContext());
 
-			AlertDialog.Builder builder = new AlertDialog.Builder( mContext );
+			AlertDialogPro.Builder builder = new AlertDialogPro.Builder(mContext,
+			                                                            theme.compareToIgnoreCase("light") == 0?R.style.Theme_AlertDialogPro_Material_Light:R.style.Theme_AlertDialogPro_Material);
 			builder
 					.setTitle( mContext.getResources().getString( R.string.permission_needed ) )
 					.setPositiveButton( android.R.string.yes, new DialogInterface.OnClickListener()
@@ -135,9 +135,7 @@ public class SetPermissionsActivity extends AppCompatActivity
 							dialog.dismiss();
 
 							ActivityCompat.requestPermissions( getActivity(),
-							                                   new String[]{ Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS,
-									                                   Manifest.permission.READ_PHONE_STATE, Manifest.permission.RECORD_AUDIO,
-									                                   Manifest.permission.MODIFY_AUDIO_SETTINGS },
+							                                   new String[]{ Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION },
 							                                   PERMISSIONS_REQUEST );
 						}
 					} )

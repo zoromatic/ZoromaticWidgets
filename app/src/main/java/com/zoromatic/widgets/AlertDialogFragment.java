@@ -10,7 +10,6 @@ import android.widget.EditText;
 
 public class AlertDialogFragment extends DialogFragment
 {
-	public static final int TEXT_ID = 0x2906;
 	public AlertDialogFragment() {
 
     }
@@ -25,7 +24,7 @@ public class AlertDialogFragment extends DialogFragment
         Boolean locationDisabled = args.getBoolean("locationdisabled", false);
         Boolean deleteWidgets = args.getBoolean("deletewidgets", false);
         final EditText input = new EditText(getActivity());
-        input.setId(TEXT_ID);
+        input.setId(R.id.text_id);
         
         String theme = Preferences.getMainTheme(getActivity());    	
     	AlertDialogPro.Builder builder = null;
