@@ -28,7 +28,7 @@ public class ZoromaticWidgetsActivity extends ThemeActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+       /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Check permissions and open request if not granted
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                 // Should we show an explanation?
@@ -65,7 +65,8 @@ public class ZoromaticWidgetsActivity extends ThemeActivity {
             }
         } else {
             initializeActivity();
-        }
+        }*/
+	    initializeActivity();
     }
 
     private void initializeActivity() {
