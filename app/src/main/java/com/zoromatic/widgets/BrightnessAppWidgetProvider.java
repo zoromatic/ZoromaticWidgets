@@ -8,14 +8,14 @@ import android.content.Intent;
 import android.util.Log;
 
 public class BrightnessAppWidgetProvider extends AppWidgetProvider {
-	private static final String LOG_TAG = "BrightnessWidget";
-	
-	@Override
+    private static final String LOG_TAG = "BrightnessWidget";
+
+    @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-    	Log.d(LOG_TAG, "BrightnessAppWidgetProvider onUpdate");
-    	
+        Log.d(LOG_TAG, "BrightnessAppWidgetProvider onUpdate");
+
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-        
+
         Intent startIntent = new Intent(context, WidgetUpdateService.class);
         startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.UPDATE_SINGLE_BRIGHTNESS_WIDGET);
 

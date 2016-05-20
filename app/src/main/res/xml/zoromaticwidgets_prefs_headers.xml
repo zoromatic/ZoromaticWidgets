@@ -3,9 +3,9 @@
     <header
         android:title="@string/main_settings"
         android:icon="@drawable/settings"
-        android:fragment="com.zoromatic.widgets.ZoromaticWidgetsPreferenceFragment" >
+        android:fragment="com.zoromatic.widgets.ZoromaticWidgetsPreferenceFragment">
         <extra
             android:name="category"
             android:value="@string/category_general" />
-    </header>    
+    </header>
 </preference-headers>

@@ -44,7 +44,7 @@ public class AlertDialogPro extends AlertDialog implements DialogInterface {
 
     /**
      * Gets one of the buttons used in the dialog.
-     * <p/>
+     * <p>
      * If a button does not exist in the dialog, null will be returned.
      *
      * @param whichButton The identifier of the button that should be returned.
@@ -169,15 +169,17 @@ public class AlertDialogPro extends AlertDialog implements DialogInterface {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (mAlert.onKeyDown(keyCode, event))
+        if (mAlert.onKeyDown(keyCode, event)) {
             return true;
+        }
         return super.onKeyDown(keyCode, event);
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (mAlert.onKeyUp(keyCode, event))
+        if (mAlert.onKeyUp(keyCode, event)) {
             return true;
+        }
         return super.onKeyUp(keyCode, event);
     }
 

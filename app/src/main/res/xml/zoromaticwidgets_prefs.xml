@@ -1,75 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" 
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:widgets="http://schemas.android.com/apk/res/com.zoromatic.widgets"
-    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- <PreferenceCategory android:title="@string/main_settings"
         android:key="mainsettings_" > -->
-        
-        <Preference 
-	        android:title="@string/theme_colors"
-	        android:icon="?attr/iconPalette"
-	        android:summary="@string/configurethemeandcolors"
-	        android:key="@string/category_theme" >        
-	    </Preference>
-        
-        <PreferenceScreen android:title="@string/widgets_settings"
-            android:key="widgetssettings_"
-            android:icon="?attr/iconWidgets"
-            android:summary="@string/configurehomescreenwidgets">
-			<intent android:action="android.intent.action.VIEW"
-			         android:targetPackage="com.zoromatic.widgets"
-			         android:targetClass="com.zoromatic.widgets.ConfigureWidgetsActivity">					    
-			</intent>
-		</PreferenceScreen>
-	        
-	    <Preference 
-	        android:title="@string/batterynotification"
-	        android:icon="?attr/iconBattery"
-	        android:summary="@string/showbatterynotification"
-	        android:key="@string/category_notification" >        
-	    </Preference>
-	    
-        <com.zoromatic.widgets.ImageListPreference
-            android:defaultValue="0"
-            android:key="soundoptions_"
-            android:icon="?attr/iconSound"
-            android:entries="@array/soundArray"
-            android:entryValues="@array/soundValues"
-            android:summary="@string/selectsoundtoggle"
-            android:title="@string/soundtoggle" />
-		
-		<com.zoromatic.widgets.ImageListPreference
-            android:defaultValue="0"
-            android:key="brightnessoptions_"
-            android:icon="?attr/iconBrightness"
-            android:entries="@array/brightnessArray"
-            android:entryValues="@array/brightnessValues"
-            android:summary="@string/selectbrightnesstoggle"
-            android:title="@string/brightnesstoggle" />
-		
-		<com.zoromatic.widgets.ImageListPreference
-            android:defaultValue="0"
-            android:key="languageoptions_"
-            android:icon="?attr/iconLanguage"
-            android:entries="@array/languageArray"
-            android:entryValues="@array/languageValues"
-            android:summary="@string/selectlanguage"
-            android:title="@string/language" />
-		
-		<PreferenceScreen
-			android:key="restartservice_" 
-			android:icon="?attr/iconRestart"
-			android:summary="@string/restartservicedesc"
-			android:title="@string/restartservice">		        
-		</PreferenceScreen>
-		
-        <PreferenceScreen
-			android:key="zoromaticabout_" 
-			android:icon="?attr/iconAbout"
-			android:summary="@string/about_app"
-			android:title="@string/app_name">		        
-		</PreferenceScreen>
-                                
-    <!-- </PreferenceCategory> -->    
+
+    <Preference
+        android:title="@string/theme_colors"
+        android:icon="?attr/iconPalette"
+        android:summary="@string/configurethemeandcolors"
+        android:key="@string/category_theme"></Preference>
+
+    <PreferenceScreen
+        android:title="@string/widgets_settings"
+        android:key="widgetssettings_"
+        android:icon="?attr/iconWidgets"
+        android:summary="@string/configurehomescreenwidgets">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.zoromatic.widgets"
+            android:targetClass="com.zoromatic.widgets.ConfigureWidgetsActivity"></intent>
+    </PreferenceScreen>
+
+    <Preference
+        android:title="@string/batterynotification"
+        android:icon="?attr/iconBattery"
+        android:summary="@string/showbatterynotification"
+        android:key="@string/category_notification"></Preference>
+
+    <com.zoromatic.widgets.ImageListPreference
+        android:defaultValue="0"
+        android:key="soundoptions_"
+        android:icon="?attr/iconSound"
+        android:entries="@array/soundArray"
+        android:entryValues="@array/soundValues"
+        android:summary="@string/selectsoundtoggle"
+        android:title="@string/soundtoggle" />
+
+    <com.zoromatic.widgets.ImageListPreference
+        android:defaultValue="0"
+        android:key="brightnessoptions_"
+        android:icon="?attr/iconBrightness"
+        android:entries="@array/brightnessArray"
+        android:entryValues="@array/brightnessValues"
+        android:summary="@string/selectbrightnesstoggle"
+        android:title="@string/brightnesstoggle" />
+
+    <com.zoromatic.widgets.ImageListPreference
+        android:defaultValue="0"
+        android:key="languageoptions_"
+        android:icon="?attr/iconLanguage"
+        android:entries="@array/languageArray"
+        android:entryValues="@array/languageValues"
+        android:summary="@string/selectlanguage"
+        android:title="@string/language" />
+
+    <PreferenceScreen
+        android:key="restartservice_"
+        android:icon="?attr/iconRestart"
+        android:summary="@string/restartservicedesc"
+        android:title="@string/restartservice"></PreferenceScreen>
+
+    <PreferenceScreen
+        android:key="zoromaticabout_"
+        android:icon="?attr/iconAbout"
+        android:summary="@string/about_app"
+        android:title="@string/app_name"></PreferenceScreen>
+
+    <!-- </PreferenceCategory> -->
 
 </PreferenceScreen>

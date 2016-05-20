@@ -3,8 +3,8 @@
     android:id="@+id/powerWidgetContainer"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal"       
-    android:background="@android:color/transparent" >
+    android:orientation="horizontal"
+    android:background="@android:color/transparent">
 
     <ImageView
         android:id="@+id/backgroundImage"
@@ -21,14 +21,14 @@
         android:baselineAligned="false"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/indicator_margin"
-        android:paddingRight="@dimen/indicator_margin" >
+        android:paddingRight="@dimen/indicator_margin">
 
         <LinearLayout
             android:id="@+id/loadingWidget"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textViewLoading"
@@ -51,7 +51,7 @@
             android:gravity="center"
             android:background="@drawable/background_power_widget"
             android:orientation="vertical"
-            android:visibility="gone" >
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageViewWiFi"
@@ -74,7 +74,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="12sp"
                 android:textStyle="normal" />
-            
+
             <ImageView
                 android:id="@+id/imageViewWiFiInd"
                 android:layout_width="fill_parent"
@@ -93,7 +93,7 @@
             android:gravity="center"
             android:background="@drawable/background_power_widget"
             android:orientation="vertical"
-            android:visibility="gone" >
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageViewMobile"
@@ -116,7 +116,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="12sp"
                 android:textStyle="normal" />
-            
+
             <ImageView
                 android:id="@+id/imageViewMobileInd"
                 android:layout_width="fill_parent"
@@ -135,7 +135,7 @@
             android:gravity="center"
             android:background="@drawable/background_power_widget"
             android:orientation="vertical"
-            android:visibility="gone" >
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageViewBluetooth"
@@ -158,7 +158,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="12sp"
                 android:textStyle="normal" />
-            
+
             <ImageView
                 android:id="@+id/imageViewBluetoothInd"
                 android:layout_width="fill_parent"
@@ -177,7 +177,7 @@
             android:gravity="center"
             android:background="@drawable/background_power_widget"
             android:orientation="vertical"
-            android:visibility="gone" >
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageViewRinger"
@@ -200,7 +200,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="12sp"
                 android:textStyle="normal" />
-            
+
             <ImageView
                 android:id="@+id/imageViewRingerInd"
                 android:layout_width="fill_parent"
@@ -219,7 +219,7 @@
             android:gravity="center"
             android:background="@drawable/background_power_widget"
             android:orientation="vertical"
-            android:visibility="gone" >
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageViewAirplane"
@@ -242,7 +242,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="12sp"
                 android:textStyle="normal" />
-            
+
             <ImageView
                 android:id="@+id/imageViewAirplaneInd"
                 android:layout_width="fill_parent"
@@ -261,7 +261,7 @@
             android:gravity="center"
             android:background="@drawable/background_power_widget"
             android:orientation="vertical"
-            android:visibility="gone" >
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageViewBrightness"
@@ -284,7 +284,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="12sp"
                 android:textStyle="normal" />
-            
+
             <ImageView
                 android:id="@+id/imageViewBrightnessInd"
                 android:layout_width="fill_parent"
@@ -303,7 +303,7 @@
             android:gravity="center"
             android:background="@drawable/background_power_widget"
             android:orientation="vertical"
-            android:visibility="gone" >
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageViewGps"
@@ -326,7 +326,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="12sp"
                 android:textStyle="normal" />
-            
+
             <ImageView
                 android:id="@+id/imageViewGpsInd"
                 android:layout_width="fill_parent"
@@ -345,7 +345,7 @@
             android:gravity="center"
             android:background="@drawable/background_power_widget"
             android:orientation="vertical"
-            android:visibility="gone" >
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageViewNfc"
@@ -368,7 +368,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="12sp"
                 android:textStyle="normal" />
-            
+
             <ImageView
                 android:id="@+id/imageViewNfcInd"
                 android:layout_width="fill_parent"
@@ -387,7 +387,7 @@
             android:gravity="center"
             android:background="@drawable/background_power_widget"
             android:orientation="vertical"
-            android:visibility="gone" >
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageViewOrientation"
@@ -410,7 +410,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="12sp"
                 android:textStyle="normal" />
-            
+
             <ImageView
                 android:id="@+id/imageViewOrientationInd"
                 android:layout_width="fill_parent"
@@ -429,7 +429,7 @@
             android:gravity="center"
             android:background="@drawable/background_power_widget"
             android:orientation="vertical"
-            android:visibility="gone" >
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageViewSync"
@@ -452,7 +452,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="12sp"
                 android:textStyle="normal" />
-            
+
             <ImageView
                 android:id="@+id/imageViewSyncInd"
                 android:layout_width="fill_parent"
@@ -471,7 +471,7 @@
             android:gravity="center"
             android:background="@drawable/background_power_widget"
             android:orientation="vertical"
-            android:visibility="gone" >
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageViewTorch"
@@ -494,7 +494,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="12sp"
                 android:textStyle="normal" />
-            
+
             <ImageView
                 android:id="@+id/imageViewTorchInd"
                 android:layout_width="fill_parent"
@@ -513,7 +513,7 @@
             android:gravity="center"
             android:background="@drawable/background_power_widget"
             android:orientation="vertical"
-            android:visibility="gone" >
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageViewBatteryStatus"
@@ -537,7 +537,7 @@
                 android:gravity="center"
                 android:scaleType="fitCenter"
                 android:visibility="visible" />
-            
+
             <ImageView
                 android:id="@+id/imageViewBatteryStatusInd"
                 android:layout_width="fill_parent"
@@ -556,7 +556,7 @@
             android:gravity="center"
             android:background="@drawable/background_power_widget"
             android:orientation="vertical"
-            android:visibility="gone" >
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageViewSettings"
@@ -579,7 +579,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="12sp"
                 android:textStyle="normal" />
-            
+
             <ImageView
                 android:id="@+id/imageViewSettingsInd"
                 android:layout_width="fill_parent"

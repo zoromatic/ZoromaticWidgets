@@ -705,7 +705,7 @@ public class AlertController {
         }
 
         @SuppressWarnings("deprecation")
-		private void createListView(final AlertController dialog) {
+        private void createListView(final AlertController dialog) {
             final RecycleListView listView = (RecycleListView) mInflater.inflate(dialog.mListLayout,
                     null);
             ListAdapter adapter;
@@ -788,7 +788,7 @@ public class AlertController {
             if (mOnClickListener != null) {
                 listView.setOnItemClickListener(new OnItemClickListener() {
                     @SuppressWarnings("rawtypes")
-					public void onItemClick(AdapterView parent, View v,
+                    public void onItemClick(AdapterView parent, View v,
                                             int position, long id) {
                         mOnClickListener.onClick(dialog.mDialogInterface,
                                 position);
@@ -800,7 +800,7 @@ public class AlertController {
             } else if (mOnCheckboxClickListener != null) {
                 listView.setOnItemClickListener(new OnItemClickListener() {
                     @SuppressWarnings("rawtypes")
-					public void onItemClick(AdapterView parent, View v,
+                    public void onItemClick(AdapterView parent, View v,
                                             int position, long id) {
                         if (mCheckedItems != null) {
                             mCheckedItems[position] = listView.isItemChecked(position);

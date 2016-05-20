@@ -32,7 +32,7 @@ class SlidingTabStrip extends LinearLayout {
     private static final int DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS = 0;
     private static final byte DEFAULT_BOTTOM_BORDER_COLOR_ALPHA = 0x26;
     private static final int SELECTED_INDICATOR_THICKNESS_DIPS = 3;
-    private static final int DEFAULT_SELECTED_INDICATOR_COLOR = 0xFF33B5E5;    
+    private static final int DEFAULT_SELECTED_INDICATOR_COLOR = 0xFF33B5E5;
 
     private final int mBottomBorderThickness;
     private final Paint mBottomBorderPaint;
@@ -60,13 +60,13 @@ class SlidingTabStrip extends LinearLayout {
 
         TypedValue outValue = new TypedValue();
         context.getTheme().resolveAttribute(android.R.attr.colorForeground, outValue, true);
-        final int themeForegroundColor =  outValue.data;
+        final int themeForegroundColor = outValue.data;
 
         mDefaultBottomBorderColor = setColorAlpha(themeForegroundColor,
                 DEFAULT_BOTTOM_BORDER_COLOR_ALPHA);
 
         mDefaultTabColorizer = new SimpleTabColorizer();
-        mDefaultTabColorizer.setIndicatorColors(DEFAULT_SELECTED_INDICATOR_COLOR);        
+        mDefaultTabColorizer.setIndicatorColors(DEFAULT_SELECTED_INDICATOR_COLOR);
 
         mBottomBorderThickness = (int) (DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS * density);
         mBottomBorderPaint = new Paint();
@@ -87,13 +87,13 @@ class SlidingTabStrip extends LinearLayout {
         mDefaultTabColorizer.setIndicatorColors(colors);
         invalidate();
     }
-    
-    void onViewPagerPageChanged(int position, float positionOffset) {    	
-    	mSelectedPosition = position;
+
+    void onViewPagerPageChanged(int position, float positionOffset) {
+        mSelectedPosition = position;
         mSelectionOffset = positionOffset;
-        
+
         /*for (int i=0; i<getChildCount(); i++) {
-    		TextView tabTitleView = (TextView) getChildAt(i);
+            TextView tabTitleView = (TextView) getChildAt(i);
 			
 			if (i == mSelectedPosition) {
 				tabTitleView.setTypeface(null, Typeface.BOLD);            				            			
@@ -102,8 +102,8 @@ class SlidingTabStrip extends LinearLayout {
 			}
     		
     		//mViewPager.getAdapter().notifyDataSetChanged();                		
-    	}*/ 
-        
+    	}*/
+
         invalidate();
     }
 
@@ -114,7 +114,7 @@ class SlidingTabStrip extends LinearLayout {
         final SlidingTabLayout.TabColorizer tabColorizer = mCustomTabColorizer != null
                 ? mCustomTabColorizer
                 : mDefaultTabColorizer;
-        
+
         // Thick colored underline below the current selection
         if (childCount > 0) {
             View selectedTitle = getChildAt(mSelectedPosition);
@@ -169,7 +169,7 @@ class SlidingTabStrip extends LinearLayout {
 
     private static class SimpleTabColorizer implements SlidingTabLayout.TabColorizer {
         private int[] mIndicatorColors;
-        
+
         @Override
         public final int getIndicatorColor(int position) {
             return mIndicatorColors[position % mIndicatorColors.length];
@@ -177,6 +177,6 @@ class SlidingTabStrip extends LinearLayout {
 
         void setIndicatorColors(int... colors) {
             mIndicatorColors = colors;
-        }		
+        }
     }
 }

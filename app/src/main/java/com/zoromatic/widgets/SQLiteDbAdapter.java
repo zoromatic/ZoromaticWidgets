@@ -26,12 +26,12 @@ import android.util.Log;
 
 public class SQLiteDbAdapter {
 
-	public static final String KEY_ROWID = "_id";
-	public static final String KEY_LOCATION_ID = "location_id";
-	public static final String KEY_LATITUDE = "latitude";
-	public static final String KEY_LONGITUDE = "longitude";
-	public static final String KEY_NAME = "name";
-    
+    public static final String KEY_ROWID = "_id";
+    public static final String KEY_LOCATION_ID = "location_id";
+    public static final String KEY_LATITUDE = "latitude";
+    public static final String KEY_LONGITUDE = "longitude";
+    public static final String KEY_NAME = "name";
+
     private static final String TAG = "SQLiteDbAdapter";
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
@@ -40,8 +40,8 @@ public class SQLiteDbAdapter {
      * Database creation SQL statement
      */
     private static final String DATABASE_CREATE =
-        "create table locations (_id integer primary key autoincrement, "
-        + "location_id integer not null, latitude real not null, longitude real not null, name text not null);";
+            "create table locations (_id integer primary key autoincrement, "
+                    + "location_id integer not null, latitude real not null, longitude real not null, name text not null);";
 
     private static final String DATABASE_NAME = "data";
     private static final String DATABASE_TABLE = "locations";
@@ -73,7 +73,7 @@ public class SQLiteDbAdapter {
     /**
      * Constructor - takes the context to allow the database to be
      * opened/created
-     * 
+     *
      * @param ctx the Context within which to work
      */
     public SQLiteDbAdapter(Context ctx) {
@@ -84,9 +84,9 @@ public class SQLiteDbAdapter {
      * Open the locations database. If it cannot be opened, try to create a new
      * instance of the database. If it cannot be created, throw an exception to
      * signal the failure
-     * 
+     *
      * @return this (self reference, allowing this to be chained in an
-     *         initialization call)
+     * initialization call)
      * @throws SQLException if the database could be neither opened or created
      */
     public SQLiteDbAdapter open() throws SQLException {
@@ -104,7 +104,7 @@ public class SQLiteDbAdapter {
      * Create a new location using data provided. If the location is
      * successfully created return the new rowId for that location, otherwise return
      * a -1 to indicate failure.
-     * 
+     *
      * @param location_id
      * @param latitude
      * @param longitude
@@ -116,14 +116,14 @@ public class SQLiteDbAdapter {
         initialValues.put(KEY_LOCATION_ID, location_id);
         initialValues.put(KEY_LATITUDE, latitude);
         initialValues.put(KEY_LONGITUDE, longitude);
-        initialValues.put(KEY_NAME, name);        
+        initialValues.put(KEY_NAME, name);
 
         return mDb.insert(DATABASE_TABLE, null, initialValues);
     }
 
     /**
      * Delete the location with the given rowId
-     * 
+     *
      * @param rowId id of locations to delete
      * @return true if deleted, false otherwise
      */
@@ -134,19 +134,19 @@ public class SQLiteDbAdapter {
 
     /**
      * Return a Cursor over the list of all locations in the database
-     * 
+     *
      * @return Cursor over all locations
      */
     public Cursor fetchAllLocations() {
 
-        return mDb.query(DATABASE_TABLE, 
-        		new String[] {KEY_ROWID, KEY_LOCATION_ID, KEY_LATITUDE, KEY_LONGITUDE, KEY_NAME}, 
-        		null, null, null, null, null);
+        return mDb.query(DATABASE_TABLE,
+                new String[]{KEY_ROWID, KEY_LOCATION_ID, KEY_LATITUDE, KEY_LONGITUDE, KEY_NAME},
+                null, null, null, null, null);
     }
 
     /**
      * Return a Cursor positioned at the location that matches the given rowId
-     * 
+     *
      * @param rowId id of location to retrieve
      * @return Cursor positioned to matching location, if found
      * @throws SQLException if location could not be found/retrieved
@@ -155,10 +155,10 @@ public class SQLiteDbAdapter {
 
         Cursor mCursor =
 
-            mDb.query(true, DATABASE_TABLE, 
-            		new String[] {KEY_ROWID, KEY_LOCATION_ID, KEY_LATITUDE, KEY_LONGITUDE, KEY_NAME}, 
-            		KEY_ROWID + "=" + rowId, 
-            		null, null, null, null, null);
+                mDb.query(true, DATABASE_TABLE,
+                        new String[]{KEY_ROWID, KEY_LOCATION_ID, KEY_LATITUDE, KEY_LONGITUDE, KEY_NAME},
+                        KEY_ROWID + "=" + rowId,
+                        null, null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -169,8 +169,8 @@ public class SQLiteDbAdapter {
     /**
      * Update the location using the details provided. The location to be updated is
      * specified using the rowId, and it is altered to use the values passed in
-     * 
-     * @param rowId id of location to update
+     *
+     * @param rowId       id of location to update
      * @param location_id
      * @param latitude
      * @param longitude
@@ -182,7 +182,7 @@ public class SQLiteDbAdapter {
         args.put(KEY_LOCATION_ID, location_id);
         args.put(KEY_LATITUDE, latitude);
         args.put(KEY_LONGITUDE, longitude);
-        args.put(KEY_NAME, name);        
+        args.put(KEY_NAME, name);
 
         return mDb.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
     }

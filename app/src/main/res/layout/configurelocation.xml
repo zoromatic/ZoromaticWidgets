@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical">
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <View
         android:id="@+id/statusBarBackground"
         android:layout_width="match_parent"
         android:layout_height="0dp" />
 
-    <android.support.v7.widget.Toolbar
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/toolbar"
         app:theme="?attr/toolbarNewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize" >
-    </android.support.v7.widget.Toolbar>
-    
+        android:minHeight="?attr/actionBarSize"></android.support.v7.widget.Toolbar>
+
     <CheckBox
         android:id="@+id/checkCurrent"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/locationcurrent" />
-    
+
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
@@ -37,7 +35,7 @@
         android:layout_height="wrap_content"
         android:text=""
         android:textAppearance="?android:attr/textAppearanceMedium" />
-    
+
     <TextView
         android:id="@+id/textViewCustom"
         android:layout_width="fill_parent"
@@ -45,12 +43,12 @@
         android:text="@string/custom_locations"
         android:textStyle="bold|italic"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-	    
+
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:background="#808080" />
-    
+
     <ListView
         android:id="@+id/listLocations"
         android:layout_width="fill_parent"
@@ -60,6 +58,6 @@
         android:divider="#808080"
         android:dividerHeight="1px"
         android:fastScrollEnabled="false"
-        android:smoothScrollbar="true" />    
+        android:smoothScrollbar="true" />
 
 </LinearLayout>

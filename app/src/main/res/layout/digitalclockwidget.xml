@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widgetLayout"
-    android:layout_width="fill_parent" 
-    android:layout_height="fill_parent"    
-    android:background="@android:color/transparent">   
-    
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/transparent">
+
     <ImageView
         android:id="@+id/backgroundImage"
         android:layout_width="match_parent"
@@ -12,18 +12,18 @@
         android:contentDescription="@string/app_name"
         android:scaleType="fitXY"
         android:src="@drawable/background" />
-	    
-	<LinearLayout
+
+    <LinearLayout
         android:id="@+id/loadingWidget"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
-       <TextView
+        <TextView
             android:id="@+id/textViewLoading"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"            
+            android:layout_height="fill_parent"
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
@@ -32,138 +32,138 @@
             android:textSize="12sp"
             android:textStyle="normal" />
     </LinearLayout>
-    
+
     <LinearLayout
-	    android:id="@+id/clockWidget"
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-	    android:gravity="center"	 
-	    android:weightSum="1.0"
-	    android:background="@drawable/background_power_widget"
-	    android:baselineAligned="false"
-	    android:orientation="vertical"
-	    android:visibility="gone" >
-	    
+        android:id="@+id/clockWidget"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:weightSum="1.0"
+        android:background="@drawable/background_power_widget"
+        android:baselineAligned="false"
+        android:orientation="vertical"
+        android:visibility="gone">
+
         <LinearLayout
-		    android:id="@+id/clockLayout"
-		    android:layout_width="match_parent"
-		    android:layout_height="0dp"
-		    android:layout_weight=".65"
-		    android:gravity="center"
-		    android:orientation="vertical" >
+            android:id="@+id/clockLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".65"
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageView
-		        android:id="@+id/imageViewDate"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:gravity="center"
-		        android:text="@string/datebatterytxt"
-		        android:contentDescription="@string/datebatterytxt"		       
-		        android:textSize="14sp" 
-		        android:visibility="invisible" />
-            
-            <LinearLayout
-			        android:id="@+id/timeLayout"
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"			        
-			        android:weightSum="1.0"
-			        android:gravity="center"			               
-			        android:orientation="horizontal" >
-            
-				    <ImageView
-				        android:id="@+id/imageViewClockHour"
-				        android:layout_width="0dp"
-				        android:layout_height="wrap_content"
-				        android:layout_weight=".45"
-				        android:gravity="center|fill_vertical"
-				        android:text="@string/tempempty"
-				        android:contentDescription="@string/weatherdesc"
-				        android:background="@drawable/bck_left"
-				        android:textSize="96sp" />
-				    
-				    <ImageView
-				        android:id="@+id/imageViewClockSpace"
-				        android:layout_width="0dp"
-				        android:layout_height="wrap_content"
-				        android:layout_weight=".1"
-				        android:gravity="center|fill_vertical"
-				        android:text=""
-				        android:contentDescription="@string/weatherdesc"
-				        android:textSize="96sp" />
-				    
-				    <ImageView
-				        android:id="@+id/imageViewClockMinute"
-				        android:layout_width="0dp"
-				        android:layout_height="wrap_content"
-				        android:layout_weight=".45"
-				        android:gravity="center|fill_vertical"
-				        android:text="@string/tempempty"
-				        android:contentDescription="@string/weatherdesc"
-				        android:background="@drawable/bck_right"
-				        android:textSize="96sp" />
-			</LinearLayout>
-				    		    
-		</LinearLayout>
-	    
-		<LinearLayout
-		    android:id="@+id/weatherLayout"
-		    android:layout_width="match_parent"
-		    android:layout_height="0dp"
-		    android:layout_weight=".35"
-		    android:weightSum="1.0"
-		    android:layout_gravity="top"
-		    android:orientation="horizontal" >
-		    
-		  <LinearLayout
-		        android:id="@+id/locationLayout"
-		        android:layout_width="0dp"
-		        android:layout_height="match_parent"
-		        android:layout_weight=".3"
-		        android:gravity="center"
-		        android:orientation="vertical" >
-			    
-			    <ImageView
-			        android:id="@+id/imageViewLoc"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:gravity="center|fill_vertical"
-			        android:text="@string/locationempty"
-			        android:contentDescription="@string/locationempty"
-			        android:textSize="12sp" />			   
-	
-			    <ImageView
-			        android:id="@+id/imageViewDesc"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:gravity="center|fill_vertical"
-			        android:text="@string/locationempty"
-			        android:contentDescription="@string/locationempty"
-			        android:textSize="12sp" />
-			    
-			</LinearLayout>
-			
-		    <TextView
-		        android:id="@+id/spaceLayout"
-		        android:layout_width="0dp"
-		        android:layout_height="match_parent"
-		        android:layout_weight=".4"
-		        android:gravity="center"		        
-		        android:text=""
-		        android:textSize="32sp" />		    
-		    
-		    <ImageView
-		        android:id="@+id/imageViewTemp"
-		        android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:layout_weight=".3"
-		        android:gravity="center|fill_vertical"
-		        android:text="@string/tempempty"
-		        android:contentDescription="@string/tempempty"
-		        android:textSize="32sp" />
+                android:id="@+id/imageViewDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/datebatterytxt"
+                android:contentDescription="@string/datebatterytxt"
+                android:textSize="14sp"
+                android:visibility="invisible" />
 
-		</LinearLayout>		
-	</LinearLayout>
-	
+            <LinearLayout
+                android:id="@+id/timeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1.0"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageViewClockHour"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:gravity="center|fill_vertical"
+                    android:text="@string/tempempty"
+                    android:contentDescription="@string/weatherdesc"
+                    android:background="@drawable/bck_left"
+                    android:textSize="96sp" />
+
+                <ImageView
+                    android:id="@+id/imageViewClockSpace"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".1"
+                    android:gravity="center|fill_vertical"
+                    android:text=""
+                    android:contentDescription="@string/weatherdesc"
+                    android:textSize="96sp" />
+
+                <ImageView
+                    android:id="@+id/imageViewClockMinute"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:gravity="center|fill_vertical"
+                    android:text="@string/tempempty"
+                    android:contentDescription="@string/weatherdesc"
+                    android:background="@drawable/bck_right"
+                    android:textSize="96sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/weatherLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".35"
+            android:weightSum="1.0"
+            android:layout_gravity="top"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/locationLayout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".3"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imageViewLoc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|fill_vertical"
+                    android:text="@string/locationempty"
+                    android:contentDescription="@string/locationempty"
+                    android:textSize="12sp" />
+
+                <ImageView
+                    android:id="@+id/imageViewDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|fill_vertical"
+                    android:text="@string/locationempty"
+                    android:contentDescription="@string/locationempty"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/spaceLayout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".4"
+                android:gravity="center"
+                android:text=""
+                android:textSize="32sp" />
+
+            <ImageView
+                android:id="@+id/imageViewTemp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".3"
+                android:gravity="center|fill_vertical"
+                android:text="@string/tempempty"
+                android:contentDescription="@string/tempempty"
+                android:textSize="32sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/imageViewWeather"
         android:layout_width="wrap_content"
@@ -176,8 +176,8 @@
         android:visibility="gone"
         android:background="@drawable/background_power_widget"
         android:src="@drawable/tick_weather_unknown" />
-    
-     <RelativeLayout
+
+    <RelativeLayout
         android:id="@+id/refresh_container"
         android:layout_width="24dp"
         android:layout_height="24dp"
@@ -185,7 +185,7 @@
         android:layout_alignParentBottom="true"
         android:visibility="gone">
 
-         <ImageView 
+        <ImageView
             android:id="@+id/viewButtonRefresh"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -195,7 +195,7 @@
             android:scaleType="fitCenter"
             android:background="@drawable/background_power_widget"
             android:adjustViewBounds="true"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <ProgressBar
             android:id="@+id/progressRefresh"
@@ -203,10 +203,10 @@
             android:layout_height="fill_parent"
             android:layout_centerInParent="true"
             style="?android:attr/progressBarStyleLarge"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
     </RelativeLayout>
-    
+
     <!-- <ImageView
         android:id="@+id/viewButtonRefresh"
         android:layout_width="wrap_content"

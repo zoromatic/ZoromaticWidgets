@@ -12,15 +12,15 @@ import android.content.Intent;
 import android.util.Log;
 
 public class PowerAppWidgetProvider extends AppWidgetProvider {
-	private static final String LOG_TAG = "PowerWidget";
-	
-	@SuppressLint("InlinedApi")
-	@Override
+    private static final String LOG_TAG = "PowerWidget";
+
+    @SuppressLint("InlinedApi")
+    @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-    	Log.d(LOG_TAG, "PowerAppWidgetProvider onUpdate");
-    	
+        Log.d(LOG_TAG, "PowerAppWidgetProvider onUpdate");
+
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-        
+
         /*int currentapiVersion = android.os.Build.VERSION.SDK_INT;        
         String[] intentExtras = new String[] {WifiManager.WIFI_STATE_CHANGED_ACTION, AudioManager.RINGER_MODE_CHANGED_ACTION,
         		ConnectivityManager.CONNECTIVITY_ACTION, BluetoothAdapter.ACTION_STATE_CHANGED,
@@ -38,20 +38,20 @@ public class PowerAppWidgetProvider extends AppWidgetProvider {
 
     		context.startService(startIntent);
     	}*/
-        
-        Intent startIntent = new Intent(context, WidgetUpdateService.class);
-		startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.POWER_WIDGET_UPDATE_ALL);
 
-		context.startService(startIntent);
+        Intent startIntent = new Intent(context, WidgetUpdateService.class);
+        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.POWER_WIDGET_UPDATE_ALL);
+
+        context.startService(startIntent);
     }
-	
-	@Override
+
+    @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        
-        Intent startIntent = new Intent(context, WidgetUpdateService.class);
-		startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.POWER_WIDGET_UPDATE_ALL);
 
-		context.startService(startIntent);
-	}
+        Intent startIntent = new Intent(context, WidgetUpdateService.class);
+        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.POWER_WIDGET_UPDATE_ALL);
+
+        context.startService(startIntent);
+    }
 };

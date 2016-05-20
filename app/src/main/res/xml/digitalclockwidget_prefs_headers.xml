@@ -3,7 +3,7 @@
     <header
         android:title="@string/generalsettings"
         android:icon="@drawable/settings"
-        android:fragment="com.zoromatic.widgets.DigitalClockAppWidgetPreferenceFragment" >
+        android:fragment="com.zoromatic.widgets.DigitalClockAppWidgetPreferenceFragment">
         <extra
             android:name="category"
             android:value="@string/category_general" />
@@ -11,7 +11,7 @@
     <header
         android:title="@string/weathersettings"
         android:icon="@drawable/weather"
-        android:fragment="com.zoromatic.widgets.DigitalClockAppWidgetPreferenceFragment" >
+        android:fragment="com.zoromatic.widgets.DigitalClockAppWidgetPreferenceFragment">
         <extra
             android:name="category"
             android:value="@string/category_weather" />
@@ -19,7 +19,7 @@
     <header
         android:title="@string/lookandfeel"
         android:icon="@drawable/palette"
-        android:fragment="com.zoromatic.widgets.DigitalClockAppWidgetPreferenceFragment" >
+        android:fragment="com.zoromatic.widgets.DigitalClockAppWidgetPreferenceFragment">
         <extra
             android:name="category"
             android:value="@string/category_look" />

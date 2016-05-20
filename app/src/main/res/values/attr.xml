@@ -3,29 +3,29 @@
 
     <declare-styleable name="ImageListPreference">
         <attr name="entryImages" format="reference" />
-        <attr name="entryColors" format="reference" />  
+        <attr name="entryColors" format="reference" />
         <attr name="entryFonts" format="reference" />
         <attr name="entryBatteries" format="reference" />
-        <attr name="entryColorSchemes" format="reference" />      
+        <attr name="entryColorSchemes" format="reference" />
     </declare-styleable>
-    
-    <attr name="iconRefresh" format="reference"/>
-    <attr name="iconSettings" format="reference"/>
-    <attr name="iconAdd" format="reference"/>
-    <attr name="iconGeneralSettings" format="reference"/>
-    <attr name="iconPalette" format="reference"/>
-    <attr name="iconWeather" format="reference"/>
-    <attr name="iconBattery" format="reference"/>
-    <attr name="iconBrightness" format="reference"/>
-    <attr name="iconAbout" format="reference"/>
-    <attr name="iconLanguage" format="reference"/>
-    <attr name="iconWidgets" format="reference"/>
-    <attr name="iconRestart" format="reference"/>
-    <attr name="iconSound" format="reference"/>
-    <attr name="iconDelete" format="reference"/>
-    <attr name="tabTextColor" format="reference"/>
-    <attr name="toolbarNewStyle" format="reference"/>
-    
+
+    <attr name="iconRefresh" format="reference" />
+    <attr name="iconSettings" format="reference" />
+    <attr name="iconAdd" format="reference" />
+    <attr name="iconGeneralSettings" format="reference" />
+    <attr name="iconPalette" format="reference" />
+    <attr name="iconWeather" format="reference" />
+    <attr name="iconBattery" format="reference" />
+    <attr name="iconBrightness" format="reference" />
+    <attr name="iconAbout" format="reference" />
+    <attr name="iconLanguage" format="reference" />
+    <attr name="iconWidgets" format="reference" />
+    <attr name="iconRestart" format="reference" />
+    <attr name="iconSound" format="reference" />
+    <attr name="iconDelete" format="reference" />
+    <attr name="tabTextColor" format="reference" />
+    <attr name="toolbarNewStyle" format="reference" />
+
     <declare-styleable name="asb_SwitchPreference">
         <!--
              The summary for the Preference in a PreferenceActivity screen when the

@@ -15,51 +15,51 @@ import android.widget.TextView;
 @SuppressLint("NewApi")
 public class ToolbarPreference extends Preference {
 
-	public ToolbarPreference(Context context) {
-		super(context);
-		// TODO Auto-generated constructor stub
-	}
+    public ToolbarPreference(Context context) {
+        super(context);
+        // TODO Auto-generated constructor stub
+    }
 
-	public ToolbarPreference(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		// TODO Auto-generated constructor stub
-	}
+    public ToolbarPreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        // TODO Auto-generated constructor stub
+    }
 
-	public ToolbarPreference(Context context, AttributeSet attrs,
-			int defStyleAttr) {
-		super(context, attrs, defStyleAttr);
-		// TODO Auto-generated constructor stub
-	}
+    public ToolbarPreference(Context context, AttributeSet attrs,
+                             int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        // TODO Auto-generated constructor stub
+    }
 
-	public ToolbarPreference(Context context, AttributeSet attrs,
-			int defStyleAttr, int defStyleRes) {
-		super(context, attrs, defStyleAttr, defStyleRes);
-		// TODO Auto-generated constructor stub
-	}
+    public ToolbarPreference(Context context, AttributeSet attrs,
+                             int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        // TODO Auto-generated constructor stub
+    }
 
-	@Override
-	protected View onCreateView(ViewGroup parent) {
-		parent.setPadding(0, 0, 0, 0);
+    @Override
+    protected View onCreateView(ViewGroup parent) {
+        parent.setPadding(0, 0, 0, 0);
 
-		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View layout = inflater.inflate(R.layout.prefs_toolbar, parent, false);
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.prefs_toolbar, parent, false);
 
-		Toolbar toolbar = (Toolbar) layout.findViewById(R.id.toolbar);
-		toolbar.setTitle(null);
+        Toolbar toolbar = (Toolbar) layout.findViewById(R.id.toolbar);
+        toolbar.setTitle(null);
 
-		ImageView back = (ImageView) layout.findViewById(R.id.back);
-		back.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				PreferenceScreen prefScreen = (PreferenceScreen) getPreferenceManager().findPreference(getKey());
-				prefScreen.getDialog().dismiss();
-			}
-		});
+        ImageView back = (ImageView) layout.findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PreferenceScreen prefScreen = (PreferenceScreen) getPreferenceManager().findPreference(getKey());
+                prefScreen.getDialog().dismiss();
+            }
+        });
 
-		TextView title = (TextView) layout.findViewById(R.id.title);
-		title.setText(getTitle());
+        TextView title = (TextView) layout.findViewById(R.id.title);
+        title.setText(getTitle());
 
-		return layout;
-	}
+        return layout;
+    }
 
 }

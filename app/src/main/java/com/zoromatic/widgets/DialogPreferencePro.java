@@ -14,62 +14,62 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class DialogPreferencePro extends DialogPreference {
-	private AlertDialogPro.Builder mBuilder;
-	private Dialog mDialog;
-	private int mWhichButtonClicked;
-	
-	private Context context;
-	
-	public DialogPreferencePro(Context context, AttributeSet attrs) {
-		super(context, attrs); 	
-		
-		this.context = context;			
-	}
+    private AlertDialogPro.Builder mBuilder;
+    private Dialog mDialog;
+    private int mWhichButtonClicked;
 
-	public DialogPreferencePro(Context context, AttributeSet attrs,
-			int defStyle) {
-		super(context, attrs, defStyle);			
-	}	
-	
-	@Override
-	protected void showDialog(Bundle state) {
-		mWhichButtonClicked = DialogInterface.BUTTON_NEGATIVE;
-		
-		String theme = Preferences.getMainTheme(getContext());    
+    private Context context;
 
-		mBuilder = new AlertDialogPro.Builder(context, 
-				theme.compareToIgnoreCase("light") == 0?R.style.Theme_AlertDialogPro_Material_Light:R.style.Theme_AlertDialogPro_Material);
-		mBuilder.setTitle(getTitle());
-		mBuilder.setIcon(getDialogIcon());
-		mBuilder.setNegativeButton(getNegativeButtonText(), this);
-		mBuilder.setPositiveButton(getPositiveButtonText(), this);
+    public DialogPreferencePro(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
-		final View contentView = onCreateDialogView();
-		
-	    if (contentView != null) {
-	      onBindDialogView(contentView);
-	      mBuilder.setView(contentView);
-	    }
-	    else
-	      mBuilder.setMessage(getDialogMessage());
-	    
-	    // Create the dialog
+        this.context = context;
+    }
+
+    public DialogPreferencePro(Context context, AttributeSet attrs,
+                               int defStyle) {
+        super(context, attrs, defStyle);
+    }
+
+    @Override
+    protected void showDialog(Bundle state) {
+        mWhichButtonClicked = DialogInterface.BUTTON_NEGATIVE;
+
+        String theme = Preferences.getMainTheme(getContext());
+
+        mBuilder = new AlertDialogPro.Builder(context,
+                theme.compareToIgnoreCase("light") == 0 ? R.style.Theme_AlertDialogPro_Material_Light : R.style.Theme_AlertDialogPro_Material);
+        mBuilder.setTitle(getTitle());
+        mBuilder.setIcon(getDialogIcon());
+        mBuilder.setNegativeButton(getNegativeButtonText(), this);
+        mBuilder.setPositiveButton(getPositiveButtonText(), this);
+
+        final View contentView = onCreateDialogView();
+
+        if (contentView != null) {
+            onBindDialogView(contentView);
+            mBuilder.setView(contentView);
+        } else {
+            mBuilder.setMessage(getDialogMessage());
+        }
+
+        // Create the dialog
         final Dialog dialog = mDialog = mBuilder.create();
-        
+
         if (state != null) {
             dialog.onRestoreInstanceState(state);
         }
-        
+
         dialog.setOnDismissListener(this);
         dialog.show();
-	}
-	
-	public void onClick(DialogInterface dialog, int which) {
+    }
+
+    public void onClick(DialogInterface dialog, int which) {
         mWhichButtonClicked = which;
     }
-    
+
     public void onDismiss(DialogInterface dialog) {
-        
+
         mDialog = null;
         onDialogClosed(mWhichButtonClicked == DialogInterface.BUTTON_POSITIVE);
     }
@@ -77,16 +77,16 @@ public class DialogPreferencePro extends DialogPreference {
     /**
      * Called when the dialog is dismissed and should be used to save data to
      * the {@link SharedPreferences}.
-     * 
+     *
      * @param positiveResult Whether the positive button was clicked (true), or
-     *            the negative button was clicked or the dialog was canceled (false).
+     *                       the negative button was clicked or the dialog was canceled (false).
      */
     protected void onDialogClosed(boolean positiveResult) {
     }
 
     /**
      * Gets the dialog that is shown by this preference.
-     * 
+     *
      * @return The dialog, or null if a dialog is not being shown.
      */
     public Dialog getDialog() {
@@ -97,11 +97,11 @@ public class DialogPreferencePro extends DialogPreference {
      * {@inheritDoc}
      */
     public void onActivityDestroy() {
-        
+
         if (mDialog == null || !mDialog.isShowing()) {
             return;
         }
-        
+
         mDialog.dismiss();
     }
 
@@ -136,7 +136,7 @@ public class DialogPreferencePro extends DialogPreference {
     private static class SavedState extends BaseSavedState {
         boolean isDialogShowing;
         Bundle dialogBundle;
-        
+
         public SavedState(Parcel source) {
             super(source);
             isDialogShowing = source.readInt() == 1;
@@ -155,15 +155,15 @@ public class DialogPreferencePro extends DialogPreference {
         }
 
         @SuppressWarnings("unused")
-		public static final Parcelable.Creator<SavedState> CREATOR =
+        public static final Parcelable.Creator<SavedState> CREATOR =
                 new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
 
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
     }
 }

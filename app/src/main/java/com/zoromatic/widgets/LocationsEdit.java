@@ -9,77 +9,77 @@ import android.widget.EditText;
 
 public class LocationsEdit extends Activity {
 
-	private EditText mTitleText;
-	private EditText mBodyText;
-	private Long mRowId;
-	private SQLiteDbAdapter mDbHelper;
+    private EditText mTitleText;
+    private EditText mBodyText;
+    private Long mRowId;
+    private SQLiteDbAdapter mDbHelper;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.locations_edit);
+        setContentView(R.layout.locations_edit);
 
-		mTitleText = (EditText) findViewById(R.id.title);
-		mBodyText = (EditText) findViewById(R.id.body);
+        mTitleText = (EditText) findViewById(R.id.title);
+        mBodyText = (EditText) findViewById(R.id.body);
 
-		Button confirmButton = (Button) findViewById(R.id.confirm);
+        Button confirmButton = (Button) findViewById(R.id.confirm);
 
-		mRowId = (savedInstanceState == null) ? null :
-		    (Long) savedInstanceState.getSerializable(SQLiteDbAdapter.KEY_ROWID);
-		if (mRowId == null) {
-		    Bundle extras = getIntent().getExtras();
-		    mRowId = extras != null ? extras.getLong(SQLiteDbAdapter.KEY_ROWID)
-		                            : null;
-		}
+        mRowId = (savedInstanceState == null) ? null :
+                (Long) savedInstanceState.getSerializable(SQLiteDbAdapter.KEY_ROWID);
+        if (mRowId == null) {
+            Bundle extras = getIntent().getExtras();
+            mRowId = extras != null ? extras.getLong(SQLiteDbAdapter.KEY_ROWID)
+                    : null;
+        }
 
-		mDbHelper = new SQLiteDbAdapter(this);
-		mDbHelper.open();
-		populateFields();
-		mDbHelper.close();
+        mDbHelper = new SQLiteDbAdapter(this);
+        mDbHelper.open();
+        populateFields();
+        mDbHelper.close();
 
-		confirmButton.setOnClickListener(new View.OnClickListener() {
+        confirmButton.setOnClickListener(new View.OnClickListener() {
 
-		    public void onClick(View view) {
-		        setResult(RESULT_OK);
-		        finish();
-		    }
+            public void onClick(View view) {
+                setResult(RESULT_OK);
+                finish();
+            }
 
-		});
-	}
-	
-	@SuppressWarnings("deprecation")
-	private void populateFields() {
-	    if (mRowId != null) {
-	        Cursor location = mDbHelper.fetchLocation(mRowId);
-	        startManagingCursor(location);
-	        mTitleText.setText(location.getString(
-	                    location.getColumnIndexOrThrow(SQLiteDbAdapter.KEY_NAME)));
-	        mBodyText.setText(location.getString(
-	                location.getColumnIndexOrThrow(SQLiteDbAdapter.KEY_LOCATION_ID)));
-	    }
-	}
-	
-	@Override
+        });
+    }
+
+    @SuppressWarnings("deprecation")
+    private void populateFields() {
+        if (mRowId != null) {
+            Cursor location = mDbHelper.fetchLocation(mRowId);
+            startManagingCursor(location);
+            mTitleText.setText(location.getString(
+                    location.getColumnIndexOrThrow(SQLiteDbAdapter.KEY_NAME)));
+            mBodyText.setText(location.getString(
+                    location.getColumnIndexOrThrow(SQLiteDbAdapter.KEY_LOCATION_ID)));
+        }
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         saveState();
         outState.putSerializable(SQLiteDbAdapter.KEY_ROWID, mRowId);
     }
-	
-	@Override
+
+    @Override
     protected void onPause() {
         super.onPause();
         saveState();
     }
-	
-	@Override
+
+    @Override
     protected void onResume() {
         super.onResume();
         populateFields();
     }
-	
-	private void saveState() {
+
+    private void saveState() {
         /*String title = mTitleText.getText().toString();
         String body = mBodyText.getText().toString();
 
