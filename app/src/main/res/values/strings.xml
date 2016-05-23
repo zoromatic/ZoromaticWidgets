@@ -372,7 +372,8 @@
 
     <string name="title_activity_set_permissions">SetPermissions</string>
     <string name="permission_request">Permissions request.</string>
-    <string name="permission_needed">Permissions needed to access location information</string>
+    <string name="permission_needed_location">Permissions needed to access location information</string>
+    <string name="permission_needed_camera">Permissions needed to access camera for turning flashlight on and off</string>
 
     <string name="title_activity_write_settings">Write Settings</string>
     <string name="permissions_denied_message">Please give Zoromatic Widgets app requested permissions in order to be able to use it. By clicking OK app will shut down and you can accept giving requested permissions to app after starting it again</string>

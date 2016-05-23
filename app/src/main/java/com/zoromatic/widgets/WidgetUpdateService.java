@@ -168,7 +168,6 @@ public class WidgetUpdateService extends Service {
 	public static String APPWIDGET_RESIZE = "com.sec.android.widgetapp.APPWIDGET_RESIZE";
 	public static String APPWIDGET_UPDATE_OPTIONS = "android.appwidget.action.APPWIDGET_UPDATE_OPTIONS";
 
-
 	protected static long GPS_UPDATE_TIME_INTERVAL = 3000; // milliseconds
 	protected static float GPS_UPDATE_DISTANCE_INTERVAL = 0; // meters
 	private LocationManager mLocManager = null;
@@ -2590,8 +2589,26 @@ public class WidgetUpdateService extends Service {
 	public void toggleTorch() {
 		Boolean torchState = getFlashOn();
 		// ignore toggle requests if the flashlight is currently changing state
-		if (torchState != null) {
-			setTorchState(!torchState);
+		if (torchState != null)
+		{
+			if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M )
+			{
+				if ( ContextCompat.checkSelfPermission( this, Manifest.permission.CAMERA ) != PackageManager.PERMISSION_GRANTED )
+				{
+					Intent permissionsIntent = new Intent( this, SetPermissionsActivity.class );
+					permissionsIntent.putExtra( SetPermissionsActivity.PERMISSIONS_TYPE, SetPermissionsActivity.PERMISSIONS_REQUEST_CAMERA );
+					permissionsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity( permissionsIntent );
+				}
+				else
+				{
+					setTorchState( !torchState );
+				}
+			}
+			else
+			{
+				setTorchState( !torchState );
+			}
 		}
 	}
 
@@ -3573,6 +3590,8 @@ public class WidgetUpdateService extends Service {
 					writeSettingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity( writeSettingsIntent );
 				}
+			} else {
+				realToggleBrightness();
 			}
 			/*else {
 				// Check permissions and open request if not granted

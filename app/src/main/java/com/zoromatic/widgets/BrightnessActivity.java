@@ -58,7 +58,6 @@ public class BrightnessActivity extends ThemeActivity {
 
 		if (  Build.VERSION.SDK_INT >= Build.VERSION_CODES.M )
 		{
-
 			if ( isMarshmallowSixPointZiro() )
 			{
 				if ( Settings.System.canWrite( this ) )
@@ -75,6 +74,13 @@ public class BrightnessActivity extends ThemeActivity {
 
 					finish();
 				}
+			}
+			else
+			{
+				mBrightnessActivity = this;
+
+				getWindow().setBackgroundDrawable( new ColorDrawable( 0 ) );
+				displayDialog();
 			}
 		}
 		else {

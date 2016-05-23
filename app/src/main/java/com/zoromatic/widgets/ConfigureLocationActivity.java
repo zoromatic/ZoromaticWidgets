@@ -20,15 +20,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -320,7 +317,7 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity
 			{
 				if ( isChecked && getLocationType() != LOCATION_TYPE_CURRENT )
 				{
-					showCurrentLocationInfo();
+					checkCurrentLocationInfo();
 				}
 				else if ( !isChecked && getLocationType() != LOCATION_TYPE_CUSTOM )
 				{
@@ -1413,33 +1410,45 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity
 		}
 	}
 
-	public void showCurrentLocationInfo()
+	public void checkCurrentLocationInfo()
 	{
-		if ( ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ||
-				ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED )
+		if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M )
 		{
-			Intent permissionsIntent = new Intent( this, SetPermissionsActivity.class );
-			//permissionsIntent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
-			startActivityForResult( permissionsIntent, ACTIVITY_PERMISSION );
-		}
-		else
-		{
-			mCheckCurrent.setChecked( false );
-			mCheckCurrent.setText( getResources().getText( R.string.locationcurrent ) );
-
-			showProgressDialog( true );
-
-			LocationManager locationManager = ( LocationManager ) getSystemService( Context.LOCATION_SERVICE );
-			List< String >  providers       = locationManager.getProviders( new Criteria(), true );
-
-			if ( !providers.isEmpty() )
+			if ( ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ||
+					ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED )
 			{
-				getLocation();
+				Intent permissionsIntent = new Intent( this, SetPermissionsActivity.class );
+				permissionsIntent.putExtra( SetPermissionsActivity.PERMISSIONS_TYPE, SetPermissionsActivity.PERMISSIONS_REQUEST_LOCATION );
+				startActivityForResult( permissionsIntent, ACTIVITY_PERMISSION );
 			}
 			else
 			{
-				showLocationDisabledAlertDialog();
+				showCurrentLocationInfo();
 			}
+		}
+		else
+		{
+			showCurrentLocationInfo();
+		}
+	}
+
+	public void showCurrentLocationInfo()
+	{
+		mCheckCurrent.setChecked( false );
+		mCheckCurrent.setText( getResources().getText( R.string.locationcurrent ) );
+
+		showProgressDialog( true );
+
+		LocationManager locationManager = ( LocationManager ) getSystemService( Context.LOCATION_SERVICE );
+		List< String >  providers       = locationManager.getProviders( new Criteria(), true );
+
+		if ( !providers.isEmpty() )
+		{
+			getLocation();
+		}
+		else
+		{
+			showLocationDisabledAlertDialog();
 		}
 	}
 
