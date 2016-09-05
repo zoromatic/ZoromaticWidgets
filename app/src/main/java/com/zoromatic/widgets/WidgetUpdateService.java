@@ -3581,7 +3581,7 @@ public class WidgetUpdateService extends Service {
 	public void toggleBrightness() {
 		if (  Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
 
-			if ( isMarshmallowSixPointZiro() ) {
+			//if ( isMarshmallowSixPointZiro() ) {
 				if ( Settings.System.canWrite( this ) ) {
 					realToggleBrightness();
 				}
@@ -3590,19 +3590,8 @@ public class WidgetUpdateService extends Service {
 					writeSettingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity( writeSettingsIntent );
 				}
-			} else {
+			/*} else {
 				realToggleBrightness();
-			}
-			/*else {
-				// Check permissions and open request if not granted
-				if ( ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ||
-						ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-					Intent permissionsIntent = new Intent(this, SetPermissionsActivity.class);
-					permissionsIntent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
-					startActivity( permissionsIntent );
-				} else {
-					realToggleBrightness();
-				}
 			}*/
 		} else {
 			realToggleBrightness();
