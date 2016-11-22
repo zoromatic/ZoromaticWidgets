@@ -35,14 +35,14 @@ public class ZoromaticWidgetsPreferenceActivity extends ThemeActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        TypedValue outValue = new TypedValue();
+        /*TypedValue outValue = new TypedValue();
         getTheme().resolveAttribute(R.attr.colorPrimary,
                 outValue,
                 true);
         int primaryColor = outValue.resourceId;
 
         setStatusBarColor(findViewById(R.id.statusBarBackground),
-                getResources().getColor(primaryColor));
+                getResources().getColor(primaryColor));*/
 
         PreferenceFragment existingFragment = (PreferenceFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 

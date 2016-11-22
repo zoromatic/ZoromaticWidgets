@@ -828,7 +828,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
             if (dateColorPicker != null) {
                 Preferences.setDateColor(context, mAppWidgetId, dateColorPicker.getValue());
                 dateColorPicker.onColorChanged(Preferences.getDateColor(context, mAppWidgetId));
-	        	
+
 	        	/*CheckBoxPreference show24hrs = (CheckBoxPreference)findPreference(Preferences.PREF_24HRS_KEY);
 	            
 	            if (show24hrs != null) {

@@ -246,6 +246,9 @@ public class WeatherContentFragment extends Fragment {
 
         parseString.trim();
 
+        if (parseString.endsWith("\n"))
+            parseString = parseString.substring(0, parseString.length() - 1);
+
         String start = parseString.substring(0, 1);
         String end = parseString.substring(parseString.length() - 1, parseString.length());
 
@@ -561,6 +564,9 @@ public class WeatherContentFragment extends Fragment {
         }
 
         parseString.trim();
+
+        if (parseString.endsWith("\n"))
+            parseString = parseString.substring(0, parseString.length() - 1);
 
         String start = parseString.substring(0, 1);
         String end = parseString.substring(parseString.length() - 1, parseString.length());

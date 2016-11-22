@@ -66,7 +66,7 @@ public class ZoromaticWidgetsActivity extends ThemeActivity {
         } else {
             initializeActivity();
         }*/
-	    initializeActivity();
+        initializeActivity();
     }
 
     private void initializeActivity() {

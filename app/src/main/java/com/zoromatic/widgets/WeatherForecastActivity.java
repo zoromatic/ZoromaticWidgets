@@ -119,14 +119,14 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
         setSupportActionBar(toolbar);
         initDrawer();
 
-        TypedValue outValue = new TypedValue();
+        /*TypedValue outValue = new TypedValue();
         getTheme().resolveAttribute(R.attr.colorPrimary,
                 outValue,
                 true);
         int primaryColor = outValue.resourceId;
 
         setStatusBarColor(findViewById(R.id.statusBarBackground),
-                getResources().getColor(primaryColor));
+                getResources().getColor(primaryColor));*/
 
 		/*inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 

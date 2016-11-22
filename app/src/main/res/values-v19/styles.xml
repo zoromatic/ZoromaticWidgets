@@ -13,14 +13,14 @@
 
     <style name="ThemeLight" parent="ThemeLightBasic">
         <item name="android:alertDialogTheme">@style/AlertDialogLight</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>-->
     </style>
 
     <style name="ThemeDark" parent="ThemeDarkBasic">
         <item name="android:alertDialogTheme">@style/AlertDialogDark</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>-->
     </style>
 
 </resources>

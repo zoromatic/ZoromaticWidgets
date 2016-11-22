@@ -64,14 +64,14 @@ public class ConfigureWidgetsActivity extends ThemeActionBarActivity {
             actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
         }
 
-        TypedValue outValue = new TypedValue();
+        /*TypedValue outValue = new TypedValue();
         getTheme().resolveAttribute(R.attr.colorPrimary,
                 outValue,
                 true);
         int primaryColor = outValue.resourceId;
 
         setStatusBarColor(findViewById(R.id.statusBarBackground),
-                getResources().getColor(primaryColor));
+                getResources().getColor(primaryColor));*/
 
         // Show the ProgressDialog on this thread
         mProgressFragment = new ProgressDialogFragment();
