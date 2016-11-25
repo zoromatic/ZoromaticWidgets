@@ -6,11 +6,12 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
 
-public class ThemeActionBarActivity extends ActionBarActivity {
+public class ThemeActionBarActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         setCustomTheme();

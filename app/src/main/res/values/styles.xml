@@ -144,7 +144,7 @@
         <item name="iconAdd">@drawable/ic_add_white_48dp</item>
         <item name="iconDelete">@drawable/ic_delete_white_48dp</item>
         <item name="tabTextColor">@color/sysWhite</item>
-        <item name="toolbarNewStyle">@style/ToolbarLight</item>
+        <item name="toolbarNewStyle">@style/ToolbarDark</item>
     </style>
 
     <style name="ThemeLightBasic" parent="Theme.AppCompat.Light.NoActionBar">
@@ -179,7 +179,7 @@
         <item name="iconAdd">@drawable/ic_add_white_48dp</item>
         <item name="iconDelete">@drawable/ic_delete_white_48dp</item>
         <item name="tabTextColor">@color/sysWhite</item>
-        <item name="toolbarNewStyle">@style/ToolbarDark</item>
+        <item name="toolbarNewStyle">@style/ToolbarLight</item>
     </style>
 
     <style name="ThemeLight" parent="ThemeLightBasic"></style>
