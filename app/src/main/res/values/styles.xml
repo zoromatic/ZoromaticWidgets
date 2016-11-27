@@ -90,11 +90,22 @@
         <item name="android:checkboxStyle">@style/MaterialCheckBox</item>
     </style>
 
-    <style name="ToolbarLight" parent="Widget.AppCompat.Toolbar">
+    <style name="ToolbarLightBlack" parent="Widget.AppCompat.Toolbar">
         <item name="android:gravity">left|fill_vertical</item>
         <item name="android:textColorPrimary">@color/sysBlack</item>
         <item name="actionMenuTextColor">@color/sysBlack</item>
         <item name="android:textColorSecondary">@color/sysBlack</item>
+        <item name="actionButtonStyle">@style/Widget.AppCompat.Light.ActionButton</item>
+        <item name="selectableItemBackground">@drawable/background_control_borderless</item>
+        <item name="selectableItemBackgroundBorderless">@drawable/background_control_borderless
+        </item>
+    </style>
+
+    <style name="ToolbarLight" parent="Widget.AppCompat.Toolbar">
+        <item name="android:gravity">left|fill_vertical</item>
+        <item name="android:textColorPrimary">@color/sysWhite</item>
+        <item name="actionMenuTextColor">@color/sysWhite</item>
+        <item name="android:textColorSecondary">@color/sysWhite</item>
         <item name="actionButtonStyle">@style/Widget.AppCompat.Light.ActionButton</item>
         <item name="selectableItemBackground">@drawable/background_control_borderless</item>
         <item name="selectableItemBackgroundBorderless">@drawable/background_control_borderless
@@ -145,6 +156,7 @@
         <item name="iconDelete">@drawable/ic_delete_white_48dp</item>
         <item name="tabTextColor">@color/sysWhite</item>
         <item name="toolbarNewStyle">@style/ToolbarDark</item>
+        <item name="colorSwitchStyle">@style/ColorSwitchWhite</item>
     </style>
 
     <style name="ThemeLightBasic" parent="Theme.AppCompat.Light.NoActionBar">
@@ -180,21 +192,34 @@
         <item name="iconDelete">@drawable/ic_delete_white_48dp</item>
         <item name="tabTextColor">@color/sysWhite</item>
         <item name="toolbarNewStyle">@style/ToolbarLight</item>
+        <item name="colorSwitchStyle">@style/ColorSwitchWhite</item>
     </style>
 
-    <style name="ThemeLight" parent="ThemeLightBasic"></style>
+    <style name="ThemeLight" parent="ThemeLightBasic" />
 
-    <style name="ThemeDark" parent="ThemeDarkBasic"></style>
+    <style name="ThemeDark" parent="ThemeDarkBasic" />
+
+    <style name="ColorSwitchWhite" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="switch_colorControlActivated">@color/sysWhite</item>
+        <item name="switch_colorSwitchThumbNormal">@color/md_grey_400</item>
+        <item name="switch_colorForeground">@color/md_grey_300</item>
+    </style>
+
+    <style name="ColorSwitchBlack" parent="Theme.AppCompat.NoActionBar">
+        <item name="switch_colorControlActivated">@color/sysBlack</item>
+        <item name="switch_colorSwitchThumbNormal">@color/md_grey_400</item>
+        <item name="switch_colorForeground">@color/md_grey_300</item>
+    </style>
 
     <style name="ThemeDarkBlack" parent="ThemeDark">
         <item name="colorPrimary">@color/sysBlack</item>
-        <item name="colorPrimaryDark">@color/sysWhite</item>
+        <item name="colorPrimaryDark">@color/sysBlack</item>
         <item name="colorAccent">@color/sysWhite</item>
     </style>
 
     <style name="ThemeLightBlack" parent="ThemeLight">
         <item name="colorPrimary">@color/sysBlack</item>
-        <item name="colorPrimaryDark">@color/sysWhite</item>
+        <item name="colorPrimaryDark">@color/sysBlack</item>
         <item name="colorAccent">@color/sysBlack</item>
     </style>
 
@@ -202,7 +227,8 @@
         <item name="colorPrimary">@color/sysWhite</item>
         <item name="colorPrimaryDark">@color/sysBlack</item>
         <item name="colorAccent">@color/sysWhite</item>
-        <item name="toolbarNewStyle">@style/ToolbarLight</item>
+        <item name="toolbarNewStyle">@style/ToolbarLightBlack</item>
+        <item name="colorSwitchStyle">@style/ColorSwitchBlack</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyleLight</item>
         <item name="iconRefresh">@drawable/ic_refresh_black_48dp</item>
@@ -216,7 +242,8 @@
         <item name="colorPrimary">@color/sysWhite</item>
         <item name="colorPrimaryDark">@color/sysBlack</item>
         <item name="colorAccent">@color/sysBlack</item>
-        <item name="toolbarNewStyle">@style/ToolbarLight</item>
+        <item name="toolbarNewStyle">@style/ToolbarLightBlack</item>
+        <item name="colorSwitchStyle">@style/ColorSwitchBlack</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyleLight</item>
         <item name="iconRefresh">@drawable/ic_refresh_black_48dp</item>
@@ -380,7 +407,8 @@
         <item name="colorPrimary">@color/md_yellow_500</item>
         <item name="colorPrimaryDark">@color/md_yellow_900</item>
         <item name="colorAccent">@color/md_yellow_900</item>
-        <item name="toolbarNewStyle">@style/ToolbarLight</item>
+        <item name="toolbarNewStyle">@style/ToolbarLightBlack</item>
+        <item name="colorSwitchStyle">@style/ColorSwitchBlack</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyleLight</item>
         <item name="iconRefresh">@drawable/ic_refresh_black_48dp</item>

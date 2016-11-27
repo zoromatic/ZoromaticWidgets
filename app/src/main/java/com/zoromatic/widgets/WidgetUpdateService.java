@@ -5001,6 +5001,36 @@ public class WidgetUpdateService extends Service {
                     Preferences.setWeatherSuccess(this, appWidgetId, true);
             }
 
+            long lastrefresh = Preferences.getLastRefresh(this, appWidgetId);
+
+            if (lastrefresh > 0) {
+                boolean bShow24Hrs = Preferences.getShow24Hrs(this, appWidgetId);
+                int iDateFormatItem = Preferences.getDateFormatItem(this, appWidgetId);
+                Date resultdate = new Date(lastrefresh);
+
+                String currentTime;
+
+                if (bShow24Hrs) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                    currentTime = String.format(sdf.format(resultdate));
+                } else {
+                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+                    currentTime = String.format(sdf.format(resultdate));
+                }
+
+                String currentDate = "";
+                String[] mTestArray = getResources().getStringArray(R.array.dateFormat);
+
+                SimpleDateFormat sdf = new SimpleDateFormat(mTestArray[iDateFormatItem]);
+                currentDate = String.format(sdf.format(resultdate));
+
+                updateViews.setImageViewBitmap(R.id.imageViewLast,
+                        getFontBitmap(this, currentDate + ", " + currentTime, systemWeatherColor, font, bold, 12));
+            } else {
+                updateViews.setImageViewBitmap(R.id.imageViewLast,
+                        getFontBitmap(this, getResources().getString(R.string.lastrefreshnever), systemWeatherColor, font, bold, 12));
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

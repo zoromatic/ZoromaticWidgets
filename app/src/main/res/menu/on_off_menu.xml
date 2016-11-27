@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/onoffswitch"
+        android:id="@+id/on_off_switch"
         android:title=""
         app:showAsAction="always"
         app:actionLayout="@layout/on_off_switch"

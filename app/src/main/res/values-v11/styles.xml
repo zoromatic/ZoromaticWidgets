@@ -17,11 +17,23 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
-    <style name="ToolbarLight" parent="Widget.AppCompat.Toolbar">
+    <style name="ToolbarLightBlack" parent="Widget.AppCompat.Toolbar">
         <item name="android:gravity">left|fill_vertical</item>
         <item name="android:textColorPrimary">@color/sysBlack</item>
         <item name="actionMenuTextColor">@color/sysBlack</item>
         <item name="android:textColorSecondary">@color/sysBlack</item>
+        <item name="actionButtonStyle">@style/Widget.AppCompat.Light.ActionButton</item>
+        <item name="android:actionButtonStyle">@style/Widget.AppCompat.Light.ActionButton</item>
+        <item name="selectableItemBackground">@drawable/background_control_borderless</item>
+        <item name="selectableItemBackgroundBorderless">@drawable/background_control_borderless
+        </item>
+    </style>
+
+    <style name="ToolbarLight" parent="Widget.AppCompat.Toolbar">
+        <item name="android:gravity">left|fill_vertical</item>
+        <item name="android:textColorPrimary">@color/sysWhite</item>
+        <item name="actionMenuTextColor">@color/sysWhite</item>
+        <item name="android:textColorSecondary">@color/sysWhite</item>
         <item name="actionButtonStyle">@style/Widget.AppCompat.Light.ActionButton</item>
         <item name="android:actionButtonStyle">@style/Widget.AppCompat.Light.ActionButton</item>
         <item name="selectableItemBackground">@drawable/background_control_borderless</item>

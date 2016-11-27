@@ -2,9 +2,13 @@ package com.zoromatic.widgets;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SwitchCompat;
@@ -99,7 +103,7 @@ public class ZoromaticWidgetsPreferenceActivity extends ThemeActionBarActivity {
                 // Inflate the menu; this adds items to the action bar if it is present.
                 getMenuInflater().inflate(R.menu.on_off_menu, menu);
 
-                MenuItem switchItem = menu.findItem(R.id.onoffswitch);
+                MenuItem switchItem = menu.findItem(R.id.on_off_switch);
                 SwitchCompat switchCompat = (SwitchCompat) MenuItemCompat.getActionView(switchItem);
 
                 //SwitchCompat switchCompat = (SwitchCompat) menu.findItem(R.id.onoffswitch).getActionView().findViewById(R.id.switchForActionBar);
@@ -109,25 +113,90 @@ public class ZoromaticWidgetsPreferenceActivity extends ThemeActionBarActivity {
 
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            //Toast.makeText(getApplicationContext(), "Monitored switch is " + (isChecked ? "on" : "off"),
-                            //		Toast.LENGTH_SHORT).show();
-
                             Preferences.setShowBatteryNotif(getApplicationContext(), isChecked);
 
-                            ListPreference batteryIcons = (ListPreference) prefs.findPreference(Preferences.PREF_BATTERY_ICONS);
+                            if (prefs == null) {
+                                PreferenceFragment existingFragment = (PreferenceFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 
-                            if (batteryIcons != null) {
-                                batteryIcons.setEnabled(isChecked);
+                                if (existingFragment != null && existingFragment.getClass().equals(ZoromaticWidgetsPreferenceFragment.class)) {
+                                    prefs = (ZoromaticWidgetsPreferenceFragment) existingFragment;
+                                }
                             }
 
-                            Intent startIntent = new Intent(getApplicationContext(), WidgetUpdateService.class);
-                            startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_BATTERY_CHANGED);
+                            if (prefs != null) {
+                                ListPreference batteryIcons = (ListPreference) prefs.findPreference(Preferences.PREF_BATTERY_ICONS);
 
-                            startService(startIntent);
+                                if (batteryIcons != null) {
+                                    batteryIcons.setEnabled(isChecked);
+                                }
+
+                                Intent startIntent = new Intent(getApplicationContext(), WidgetUpdateService.class);
+                                startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_BATTERY_CHANGED);
+
+                                startService(startIntent);
+                            }
+
                         }
                     });
 
                     switchCompat.setChecked(Preferences.getShowBatteryNotif(getApplicationContext()));
+
+                    int[][] states = new int[][]{
+                            new int[]{-android.R.attr.state_checked},
+                            new int[]{android.R.attr.state_checked},
+                    };
+
+                    /*TypedArray a = getApplicationContext().obtainStyledAttributes(null,
+                            R.styleable.colorSwitch,
+                            R.attr.switch_colorControlActivated, 0);
+                    int color1 = a.getColor(
+                            R.styleable.colorSwitch_switch_colorControlActivated, Color.DKGRAY);
+                    a.recycle();*/
+
+                    /*int[] colorSwitchAttrs = new int[]{R.attr.switch_colorControlActivated,
+                            R.attr.switch_colorSwitchThumbNormal,
+                            R.attr.switch_colorForeground};*/
+
+                    String theme = Preferences.getMainTheme(this);
+                    int colorScheme = Preferences.getMainColorScheme(this);
+                    TypedArray a = null;
+
+                    if (colorScheme == 1 || colorScheme == 14) { // white & yellow
+                        a = getApplicationContext().obtainStyledAttributes(R.style.ColorSwitchBlack, R.styleable.ColorSwitch);
+                    } else {
+                        a = getApplicationContext().obtainStyledAttributes(R.style.ColorSwitchWhite, R.styleable.ColorSwitch);
+                    }
+
+                    int colorOn = a.getColor(R.styleable.ColorSwitch_switch_colorControlActivated, Color.DKGRAY);
+                    int colorOff = a.getColor(R.styleable.ColorSwitch_switch_colorSwitchThumbNormal, Color.DKGRAY);
+                    int colorTrack = a.getColor(R.styleable.ColorSwitch_switch_colorForeground, Color.GRAY);
+
+                    a.recycle();
+
+                    /*int[] thumbColors = new int[] {
+                            Color.DKGRAY,
+                            Color.RED,
+                    };
+
+                    int[] trackColors = new int[] {
+                            Color.GRAY,
+                            Color.RED,
+                    };*/
+
+                    int[] thumbColors = new int[]{
+                            colorOff,
+                            colorOn,
+                    };
+
+                    int[] trackColors = new int[]{
+                            colorTrack,
+                            colorTrack,
+                    };
+
+                    DrawableCompat.setTintList(DrawableCompat.wrap(switchCompat.getThumbDrawable()),
+                            new ColorStateList(states, thumbColors));
+                    DrawableCompat.setTintList(DrawableCompat.wrap(switchCompat.getTrackDrawable()),
+                            new ColorStateList(states, trackColors));
                 }
             }
         }

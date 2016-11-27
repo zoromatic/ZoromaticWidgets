@@ -140,6 +140,23 @@
                     android:contentDescription="@string/locationempty"
                     android:textSize="12sp" />
 
+                <TextView
+                    android:id="@+id/locSpaceLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|fill_vertical"
+                    android:text=""
+                    android:textSize="12sp" />
+
+                <ImageView
+                    android:id="@+id/imageViewLast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|fill_vertical"
+                    android:text="@string/tempempty"
+                    android:contentDescription="@string/tempempty"
+                    android:textSize="12sp" />
+
             </LinearLayout>
 
             <TextView

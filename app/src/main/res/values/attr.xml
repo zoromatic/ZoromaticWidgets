@@ -25,6 +25,13 @@
     <attr name="iconDelete" format="reference" />
     <attr name="tabTextColor" format="reference" />
     <attr name="toolbarNewStyle" format="reference" />
+    <attr name="colorSwitchStyle" format="reference" />
+
+    <declare-styleable name="ColorSwitch">
+        <attr name="switch_colorControlActivated" format="reference" />
+        <attr name="switch_colorSwitchThumbNormal" format="reference" />
+        <attr name="switch_colorForeground" format="reference" />
+    </declare-styleable>
 
     <declare-styleable name="asb_SwitchPreference">
         <!--
