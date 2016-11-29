@@ -380,4 +380,7 @@
     <string name="marshmallow_text">Please, find Zoromatic Widgets in the list and allow it write settings permission to be able to toggle brightness.</string>
     <string name="marshmallow_title">Not enough permissions to toggle brightness</string>
 
+    <string name="main_theme_colors">Main Theme and Colors</string>
+    <string name="config_main_theme_colors">Configure main theme and colors</string>
+
 </resources>

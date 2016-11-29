@@ -1579,7 +1579,7 @@ public class WidgetUpdateService extends Service {
                 updateViews.setOnClickPendingIntent(R.id.mobileWidget,
                         pendingIntent);
             } else {
-                try {
+                /*try {
                     Process p;
                     // Perform su to get root privileges
                     p = Runtime.getRuntime().exec("su");
@@ -1612,7 +1612,7 @@ public class WidgetUpdateService extends Service {
                                 pendingIntent);
                     }
                 } catch (Exception e) {
-                    Log.e(LOG_TAG, "", e);
+                    Log.e(LOG_TAG, "", e);*/
 
                     Intent intentData = new Intent(Intent.ACTION_MAIN);
                     intentData.setComponent(new ComponentName("com.android.settings",
@@ -1623,7 +1623,7 @@ public class WidgetUpdateService extends Service {
                             intentData, PendingIntent.FLAG_UPDATE_CURRENT);
                     updateViews.setOnClickPendingIntent(R.id.mobileWidget,
                             pendingIntent);
-                }
+                /*}*/
 
             }
 

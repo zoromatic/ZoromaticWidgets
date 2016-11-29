@@ -49,7 +49,7 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
 
     private static String LOG_TAG = "WeatherForecastActivity";
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    private static final int ACTIVITY_SETTINGS = 0;
+    public static final int ACTIVITY_SETTINGS = 0;
     private BroadcastReceiver mReceiver;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;

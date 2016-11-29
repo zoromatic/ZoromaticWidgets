@@ -83,7 +83,7 @@ public class ZoromaticWidgetsActivity extends ThemeActivity {
         finish();
     }
 
-    @Override
+    /*@Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST: {
@@ -104,9 +104,9 @@ public class ZoromaticWidgetsActivity extends ThemeActivity {
             // other 'case' lines to check for other
             // permissions this app might request
         }
-    }
+    }*/
 
-    public static class ExplanationDialogFragment extends DialogFragment {
+    /*public static class ExplanationDialogFragment extends DialogFragment {
         Context mContext;
 
         public ExplanationDialogFragment() {
@@ -139,5 +139,5 @@ public class ZoromaticWidgetsActivity extends ThemeActivity {
 
             return builder.create();
         }
-    }
+    }*/
 }
