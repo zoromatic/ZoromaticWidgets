@@ -1444,6 +1444,52 @@ public class WidgetItemAdapter extends BaseAdapter {
                                     }
                                 }
                             }
+
+                            tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewLast);
+                            long lastrefresh = Preferences.getLastRefresh(context, appWidgetId);
+
+                            if (lastrefresh > 0) {
+                                boolean bShow24Hrs = Preferences.getShow24Hrs(context, appWidgetId);
+                                int iDateFormatItem = Preferences.getDateFormatItem(context, appWidgetId);
+                                Date resultdate = new Date(lastrefresh);
+
+                                String currentTime;
+
+                                if (bShow24Hrs) {
+                                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                                    currentTime = String.format(sdf.format(resultdate));
+                                } else {
+                                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+                                    currentTime = String.format(sdf.format(resultdate));
+                                }
+
+                                String currentDate = "";
+                                String[] mTestArray = context.getResources().getStringArray(R.array.dateFormat);
+
+                                SimpleDateFormat sdf = new SimpleDateFormat(mTestArray[iDateFormatItem]);
+                                currentDate = String.format(sdf.format(resultdate));
+
+                                if (tempImageView != null) {
+                                    tempImageView.setImageBitmap(WidgetUpdateService.getFontBitmap(context, currentDate + ", " + currentTime, systemWeatherColor, font, bold, 12));
+                                }
+
+                                LinearLayout linearLayout = (LinearLayout) holder.linearLayout.findViewById(R.id.refresh_container);
+
+                                if (linearLayout != null) {
+                                    linearLayout.setVisibility(View.VISIBLE);
+                                }
+
+                            } else {
+                                if (tempImageView != null) {
+                                    tempImageView.setImageBitmap(WidgetUpdateService.getFontBitmap(context, context.getResources().getString(R.string.lastrefreshnever), systemWeatherColor, font, bold, 12));
+                                }
+
+                                LinearLayout linearLayout = (LinearLayout) holder.linearLayout.findViewById(R.id.refresh_container);
+
+                                if (linearLayout != null) {
+                                    linearLayout.setVisibility(View.GONE);
+                                }
+                            }
                         }
                     } catch (JSONException e) {
                         //no weather type
@@ -1459,7 +1505,6 @@ public class WidgetItemAdapter extends BaseAdapter {
         } catch (IOException e2) {
             e2.printStackTrace();
         }
-
     }
 
     @Override
