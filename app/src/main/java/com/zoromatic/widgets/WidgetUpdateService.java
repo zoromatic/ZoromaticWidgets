@@ -4092,7 +4092,6 @@ public class WidgetUpdateService extends Service {
         appWidgetManager.updateAppWidget(appWidgetId, updateViews);
 
         try {
-
             if (!scheduledUpdate)
                 Toast.makeText(getApplicationContext(), getResources().getText(R.string.updatingweather), Toast.LENGTH_LONG).show();
 
@@ -4198,7 +4197,7 @@ public class WidgetUpdateService extends Service {
                 } while (!locationsCursor.isAfterLast());
             }
 
-            if (bFound == false && locationIDPref >= 0) {
+            if (!bFound && locationIDPref >= 0) {
                 dbHelper.createLocation(locationIDPref, latPref, lonPref, locationPref);
             }
 

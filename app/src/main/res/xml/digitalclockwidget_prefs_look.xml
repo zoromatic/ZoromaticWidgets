@@ -3,10 +3,10 @@
     xmlns:widgets="http://schemas.android.com/apk/res/com.zoromatic.widgets"
     android:key="com.zoromatic.widgets.Preferences">
 
-    <Preference
+    <!--<Preference
         android:title="@string/main_theme_colors"
         android:summary="@string/config_main_theme_colors"
-        android:key="@string/category_theme"/>
+        android:key="@string/category_theme"/>-->
 
     <!-- <PreferenceCategory android:title="@string/lookandfeel" > -->
     <com.margaritov.preference.colorpicker.ColorPickerPreference
