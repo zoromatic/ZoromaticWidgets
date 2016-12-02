@@ -458,12 +458,14 @@ public class PowerAppWidgetPreferenceFragment extends PreferenceFragment impleme
 
         String key = preference.getKey();
 
-        if (key.equalsIgnoreCase(getResources().getString(R.string.category_general))
-                || key.equalsIgnoreCase(getResources().getString(R.string.category_look))) {
-            Intent settingsIntent = new Intent(context, PowerAppWidgetPreferenceActivity.class);
-            settingsIntent.setAction(key);
-            settingsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-            startActivity(settingsIntent);
+        if (key != null) {
+            if (key.equalsIgnoreCase(getResources().getString(R.string.category_general))
+                    || key.equalsIgnoreCase(getResources().getString(R.string.category_look))) {
+                Intent settingsIntent = new Intent(context, PowerAppWidgetPreferenceActivity.class);
+                settingsIntent.setAction(key);
+                settingsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+                startActivity(settingsIntent);
+            }
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);

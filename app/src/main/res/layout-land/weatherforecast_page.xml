@@ -131,6 +131,15 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/textViewDay1"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight=".3"
+                            android:gravity="center|center_vertical"
+                            android:text="@string/locationempty"
+                            android:textSize="12sp" />
+
+                        <TextView
                             android:id="@+id/textViewDate1"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
@@ -143,10 +152,11 @@
                             android:id="@+id/textViewDesc1"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_weight=".7"
+                            android:layout_weight=".4"
+                            android:scrollHorizontally="true"
                             android:ellipsize="end"
+                            android:maxLines="1"
                             android:gravity="center|center_vertical"
-                            android:maxLines="2"
                             android:text="@string/locationempty"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -214,6 +224,15 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/textViewDay2"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight=".3"
+                            android:gravity="center|center_vertical"
+                            android:text="@string/locationempty"
+                            android:textSize="12sp" />
+
+                        <TextView
                             android:id="@+id/textViewDate2"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
@@ -226,10 +245,11 @@
                             android:id="@+id/textViewDesc2"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_weight=".7"
+                            android:layout_weight=".4"
+                            android:scrollHorizontally="true"
                             android:ellipsize="end"
+                            android:maxLines="1"
                             android:gravity="center|center_vertical"
-                            android:maxLines="2"
                             android:text="@string/locationempty"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -297,6 +317,15 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/textViewDay3"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight=".3"
+                            android:gravity="center|center_vertical"
+                            android:text="@string/locationempty"
+                            android:textSize="12sp" />
+
+                        <TextView
                             android:id="@+id/textViewDate3"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
@@ -309,10 +338,11 @@
                             android:id="@+id/textViewDesc3"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_weight=".7"
+                            android:layout_weight=".4"
+                            android:scrollHorizontally="true"
                             android:ellipsize="end"
+                            android:maxLines="1"
                             android:gravity="center|center_vertical"
-                            android:maxLines="2"
                             android:text="@string/locationempty"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -380,6 +410,15 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/textViewDay4"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight=".3"
+                            android:gravity="center|center_vertical"
+                            android:text="@string/locationempty"
+                            android:textSize="12sp" />
+
+                        <TextView
                             android:id="@+id/textViewDate4"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
@@ -392,10 +431,11 @@
                             android:id="@+id/textViewDesc4"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_weight=".7"
+                            android:layout_weight=".4"
+                            android:scrollHorizontally="true"
                             android:ellipsize="end"
+                            android:maxLines="1"
                             android:gravity="center|center_vertical"
-                            android:maxLines="2"
                             android:text="@string/locationempty"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -463,6 +503,15 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/textViewDay5"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight=".3"
+                            android:gravity="center|center_vertical"
+                            android:text="@string/locationempty"
+                            android:textSize="12sp" />
+
+                        <TextView
                             android:id="@+id/textViewDate5"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
@@ -475,10 +524,11 @@
                             android:id="@+id/textViewDesc5"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_weight=".7"
+                            android:layout_weight=".4"
+                            android:scrollHorizontally="true"
                             android:ellipsize="end"
+                            android:maxLines="1"
                             android:gravity="center|center_vertical"
-                            android:maxLines="2"
                             android:text="@string/locationempty"
                             android:textSize="12sp" />
                     </LinearLayout>

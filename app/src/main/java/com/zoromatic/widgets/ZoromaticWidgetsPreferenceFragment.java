@@ -265,14 +265,16 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
 
         String key = preference.getKey();
 
-        if (key.equalsIgnoreCase(getResources().getString(R.string.category_theme))) {
-            Intent settingsIntent = new Intent(context, ZoromaticWidgetsPreferenceActivity.class);
-            settingsIntent.setAction(key);
-            startActivityForResult(settingsIntent, REQUEST_THEME);
-        } else if (key.equalsIgnoreCase(getResources().getString(R.string.category_notification))) {
-            Intent settingsIntent = new Intent(context, ZoromaticWidgetsPreferenceActivity.class);
-            settingsIntent.setAction(key);
-            startActivity(settingsIntent);
+        if (key != null) {
+            if (key.equalsIgnoreCase(getResources().getString(R.string.category_theme))) {
+                Intent settingsIntent = new Intent(context, ZoromaticWidgetsPreferenceActivity.class);
+                settingsIntent.setAction(key);
+                startActivityForResult(settingsIntent, REQUEST_THEME);
+            } else if (key.equalsIgnoreCase(getResources().getString(R.string.category_notification))) {
+                Intent settingsIntent = new Intent(context, ZoromaticWidgetsPreferenceActivity.class);
+                settingsIntent.setAction(key);
+                startActivity(settingsIntent);
+            }
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);

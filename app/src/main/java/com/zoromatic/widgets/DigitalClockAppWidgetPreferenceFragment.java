@@ -752,17 +752,19 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
 
         String key = preference.getKey();
 
-        if (key.equalsIgnoreCase(getResources().getString(R.string.category_general))
-                || key.equalsIgnoreCase(getResources().getString(R.string.category_weather))
-                || key.equalsIgnoreCase(getResources().getString(R.string.category_look))) {
-            Intent settingsIntent = new Intent(context, DigitalClockAppWidgetPreferenceActivity.class);
-            settingsIntent.setAction(key);
-            settingsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-            startActivity(settingsIntent);
-        } else if (key.equalsIgnoreCase(getResources().getString(R.string.category_theme))) {
-            Intent settingsIntent = new Intent(context, ZoromaticWidgetsPreferenceActivity.class);
-            settingsIntent.setAction(key);
-            startActivityForResult(settingsIntent, REQUEST_THEME);
+        if (key != null) {
+            if (key.equalsIgnoreCase(getResources().getString(R.string.category_general))
+                    || key.equalsIgnoreCase(getResources().getString(R.string.category_weather))
+                    || key.equalsIgnoreCase(getResources().getString(R.string.category_look))) {
+                Intent settingsIntent = new Intent(context, DigitalClockAppWidgetPreferenceActivity.class);
+                settingsIntent.setAction(key);
+                settingsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+                startActivity(settingsIntent);
+            } else if (key.equalsIgnoreCase(getResources().getString(R.string.category_theme))) {
+                Intent settingsIntent = new Intent(context, ZoromaticWidgetsPreferenceActivity.class);
+                settingsIntent.setAction(key);
+                startActivityForResult(settingsIntent, REQUEST_THEME);
+            }
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);

@@ -122,10 +122,19 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/textViewDay1"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight=".1"
+                        android:gravity="center|bottom"
+                        android:text="@string/locationempty"
+                        android:textSize="12sp" />
+
+                    <TextView
                         android:id="@+id/textViewDate1"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".15"
+                        android:layout_weight=".1"
                         android:gravity="center|bottom"
                         android:text="@string/locationempty"
                         android:textSize="12sp" />
@@ -134,10 +143,11 @@
                         android:id="@+id/textViewDesc1"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".35"
+                        android:layout_weight=".3"
+                        android:scrollHorizontally="true"
                         android:ellipsize="end"
+                        android:maxLines="1"
                         android:gravity="center|center_vertical"
-                        android:maxLines="2"
                         android:text="@string/locationempty"
                         android:textSize="12sp" />
 
@@ -145,7 +155,7 @@
                         android:id="@+id/imageViewWeather1"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="0.4"
+                        android:layout_weight=".4"
                         android:contentDescription="@string/weatherdesc"
                         android:gravity="center|bottom"
                         android:scaleType="fitCenter"
@@ -155,7 +165,7 @@
                         android:id="@+id/textViewTempHigh1"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".15"
+                        android:layout_weight=".1"
                         android:gravity="center|center_vertical"
                         android:text="@string/tempempty"
                         android:textSize="12sp" />
@@ -164,7 +174,7 @@
                         android:id="@+id/textViewTempLow1"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".15"
+                        android:layout_weight=".1"
                         android:gravity="center|center_vertical"
                         android:text="@string/tempempty"
                         android:textSize="12sp" />
@@ -185,10 +195,19 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/textViewDay2"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight=".1"
+                        android:gravity="center|bottom"
+                        android:text="@string/locationempty"
+                        android:textSize="12sp" />
+
+                    <TextView
                         android:id="@+id/textViewDate2"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".15"
+                        android:layout_weight=".1"
                         android:gravity="center|bottom"
                         android:text="@string/locationempty"
                         android:textSize="12sp" />
@@ -197,10 +216,11 @@
                         android:id="@+id/textViewDesc2"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".35"
+                        android:layout_weight=".3"
+                        android:scrollHorizontally="true"
                         android:ellipsize="end"
+                        android:maxLines="1"
                         android:gravity="center|center_vertical"
-                        android:maxLines="2"
                         android:text="@string/locationempty"
                         android:textSize="12sp" />
 
@@ -208,7 +228,7 @@
                         android:id="@+id/imageViewWeather2"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="0.4"
+                        android:layout_weight=".4"
                         android:contentDescription="@string/weatherdesc"
                         android:gravity="center|bottom"
                         android:scaleType="fitCenter"
@@ -218,7 +238,7 @@
                         android:id="@+id/textViewTempHigh2"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".15"
+                        android:layout_weight=".1"
                         android:gravity="center|center_vertical"
                         android:text="@string/tempempty"
                         android:textSize="12sp" />
@@ -227,7 +247,7 @@
                         android:id="@+id/textViewTempLow2"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".15"
+                        android:layout_weight=".1"
                         android:gravity="center|center_vertical"
                         android:text="@string/tempempty"
                         android:textSize="12sp" />
@@ -248,10 +268,19 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/textViewDay3"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight=".1"
+                        android:gravity="center|bottom"
+                        android:text="@string/locationempty"
+                        android:textSize="12sp" />
+
+                    <TextView
                         android:id="@+id/textViewDate3"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".15"
+                        android:layout_weight=".1"
                         android:gravity="center|bottom"
                         android:text="@string/locationempty"
                         android:textSize="12sp" />
@@ -260,10 +289,11 @@
                         android:id="@+id/textViewDesc3"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".35"
+                        android:layout_weight=".3"
+                        android:scrollHorizontally="true"
                         android:ellipsize="end"
+                        android:maxLines="1"
                         android:gravity="center|center_vertical"
-                        android:maxLines="2"
                         android:text="@string/locationempty"
                         android:textSize="12sp" />
 
@@ -271,7 +301,7 @@
                         android:id="@+id/imageViewWeather3"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="0.4"
+                        android:layout_weight=".4"
                         android:contentDescription="@string/weatherdesc"
                         android:gravity="center|bottom"
                         android:scaleType="fitCenter"
@@ -281,7 +311,7 @@
                         android:id="@+id/textViewTempHigh3"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".15"
+                        android:layout_weight=".1"
                         android:gravity="center|center_vertical"
                         android:text="@string/tempempty"
                         android:textSize="12sp" />
@@ -290,7 +320,7 @@
                         android:id="@+id/textViewTempLow3"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".15"
+                        android:layout_weight=".1"
                         android:gravity="center|center_vertical"
                         android:text="@string/tempempty"
                         android:textSize="12sp" />
@@ -311,10 +341,19 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/textViewDay4"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight=".1"
+                        android:gravity="center|bottom"
+                        android:text="@string/locationempty"
+                        android:textSize="12sp" />
+
+                    <TextView
                         android:id="@+id/textViewDate4"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".15"
+                        android:layout_weight=".1"
                         android:gravity="center|bottom"
                         android:text="@string/locationempty"
                         android:textSize="12sp" />
@@ -323,10 +362,11 @@
                         android:id="@+id/textViewDesc4"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".35"
+                        android:layout_weight=".3"
+                        android:scrollHorizontally="true"
                         android:ellipsize="end"
+                        android:maxLines="1"
                         android:gravity="center|center_vertical"
-                        android:maxLines="2"
                         android:text="@string/locationempty"
                         android:textSize="12sp" />
 
@@ -334,7 +374,7 @@
                         android:id="@+id/imageViewWeather4"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="0.4"
+                        android:layout_weight=".4"
                         android:contentDescription="@string/weatherdesc"
                         android:gravity="center|bottom"
                         android:scaleType="fitCenter"
@@ -344,7 +384,7 @@
                         android:id="@+id/textViewTempHigh4"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".15"
+                        android:layout_weight=".1"
                         android:gravity="center|center_vertical"
                         android:text="@string/tempempty"
                         android:textSize="12sp" />
@@ -353,7 +393,7 @@
                         android:id="@+id/textViewTempLow4"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".15"
+                        android:layout_weight=".1"
                         android:gravity="center|center_vertical"
                         android:text="@string/tempempty"
                         android:textSize="12sp" />
@@ -374,10 +414,19 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/textViewDay5"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight=".1"
+                        android:gravity="center|bottom"
+                        android:text="@string/locationempty"
+                        android:textSize="12sp" />
+
+                    <TextView
                         android:id="@+id/textViewDate5"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".15"
+                        android:layout_weight=".1"
                         android:gravity="center|bottom"
                         android:text="@string/locationempty"
                         android:textSize="12sp" />
@@ -386,10 +435,11 @@
                         android:id="@+id/textViewDesc5"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".35"
+                        android:layout_weight=".3"
+                        android:scrollHorizontally="true"
                         android:ellipsize="end"
+                        android:maxLines="1"
                         android:gravity="center|center_vertical"
-                        android:maxLines="2"
                         android:text="@string/locationempty"
                         android:textSize="12sp" />
 
@@ -397,7 +447,7 @@
                         android:id="@+id/imageViewWeather5"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="0.4"
+                        android:layout_weight=".4"
                         android:contentDescription="@string/weatherdesc"
                         android:gravity="center|bottom"
                         android:scaleType="fitCenter"
@@ -407,7 +457,7 @@
                         android:id="@+id/textViewTempHigh5"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".15"
+                        android:layout_weight=".1"
                         android:gravity="center|center_vertical"
                         android:text="@string/tempempty"
                         android:textSize="12sp" />
@@ -416,7 +466,7 @@
                         android:id="@+id/textViewTempLow5"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight=".15"
+                        android:layout_weight=".1"
                         android:gravity="center|center_vertical"
                         android:text="@string/tempempty"
                         android:textSize="12sp" />

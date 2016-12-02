@@ -598,6 +598,7 @@ public class WeatherContentFragment extends Fragment {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(timestamp * 1000);
 
+                TextView textDay = null;
                 TextView textDate = null;
                 TextView textTempHigh = null;
                 TextView textTempLow = null;
@@ -691,9 +692,13 @@ public class WeatherContentFragment extends Fragment {
                 String weatherMain = "";
                 String weatherDesc = "";
                 String date = "";
+                String day = "";
 
                 SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
                 date = String.format(sdf.format(calendar.getTime()));
+
+                sdf = new SimpleDateFormat("EEE");
+                day = String.format(sdf.format(calendar.getTime()));
 
                 JSONObject tempJSON = null;
                 try {
@@ -742,6 +747,7 @@ public class WeatherContentFragment extends Fragment {
 
                 switch (i) {
                     case 1:
+                        textDay = (TextView) view.findViewById(R.id.textViewDay1);
                         textDate = (TextView) view.findViewById(R.id.textViewDate1);
                         textTempHigh = (TextView) view.findViewById(R.id.textViewTempHigh1);
                         textTempLow = (TextView) view.findViewById(R.id.textViewTempLow1);
@@ -749,6 +755,7 @@ public class WeatherContentFragment extends Fragment {
                         image = (ImageView) view.findViewById(R.id.imageViewWeather1);
                         break;
                     case 2:
+                        textDay = (TextView) view.findViewById(R.id.textViewDay2);
                         textDate = (TextView) view.findViewById(R.id.textViewDate2);
                         textTempHigh = (TextView) view.findViewById(R.id.textViewTempHigh2);
                         textTempLow = (TextView) view.findViewById(R.id.textViewTempLow2);
@@ -756,6 +763,7 @@ public class WeatherContentFragment extends Fragment {
                         image = (ImageView) view.findViewById(R.id.imageViewWeather2);
                         break;
                     case 3:
+                        textDay = (TextView) view.findViewById(R.id.textViewDay3);
                         textDate = (TextView) view.findViewById(R.id.textViewDate3);
                         textTempHigh = (TextView) view.findViewById(R.id.textViewTempHigh3);
                         textTempLow = (TextView) view.findViewById(R.id.textViewTempLow3);
@@ -763,6 +771,7 @@ public class WeatherContentFragment extends Fragment {
                         image = (ImageView) view.findViewById(R.id.imageViewWeather3);
                         break;
                     case 4:
+                        textDay = (TextView) view.findViewById(R.id.textViewDay4);
                         textDate = (TextView) view.findViewById(R.id.textViewDate4);
                         textTempHigh = (TextView) view.findViewById(R.id.textViewTempHigh4);
                         textTempLow = (TextView) view.findViewById(R.id.textViewTempLow4);
@@ -770,6 +779,7 @@ public class WeatherContentFragment extends Fragment {
                         image = (ImageView) view.findViewById(R.id.imageViewWeather4);
                         break;
                     case 5:
+                        textDay = (TextView) view.findViewById(R.id.textViewDay5);
                         textDate = (TextView) view.findViewById(R.id.textViewDate5);
                         textTempHigh = (TextView) view.findViewById(R.id.textViewTempHigh5);
                         textTempLow = (TextView) view.findViewById(R.id.textViewTempLow5);
@@ -780,6 +790,7 @@ public class WeatherContentFragment extends Fragment {
                         break;
                 }
 
+                textDay.setText(day);
                 textDate.setText(date);
                 textTempHigh.setText(sTempHigh);
                 textTempLow.setText(sTempLow);
