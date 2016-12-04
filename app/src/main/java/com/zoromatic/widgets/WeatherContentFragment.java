@@ -471,6 +471,40 @@ public class WeatherContentFragment extends Fragment {
                 }
             }
 
+            long lastrefresh = Preferences.getLastRefresh(context, appWidgetId);
+
+            text = (TextView) view.findViewById(R.id.textViewLast);
+
+            if (lastrefresh > 0) {
+                boolean bShow24Hrs = Preferences.getShow24Hrs(context, appWidgetId);
+                int iDateFormatItem = Preferences.getDateFormatItem(context, appWidgetId);
+                Date resultdate = new Date(lastrefresh);
+
+                String currentTime;
+
+                if (bShow24Hrs) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                    currentTime = String.format(sdf.format(resultdate));
+                } else {
+                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+                    currentTime = String.format(sdf.format(resultdate));
+                }
+
+                String currentDate = "";
+                String[] mTestArray = getResources().getStringArray(R.array.dateFormat);
+
+                SimpleDateFormat sdf = new SimpleDateFormat(mTestArray[iDateFormatItem]);
+                currentDate = String.format(sdf.format(resultdate));
+
+                if (text != null) {
+                    text.setText(currentDate + ", " + currentTime);
+                }
+            } else {
+                if (text != null) {
+                    text.setText(getResources().getString(R.string.lastrefreshnever));
+                }
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

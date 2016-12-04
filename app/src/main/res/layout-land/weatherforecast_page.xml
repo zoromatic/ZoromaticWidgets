@@ -92,14 +92,28 @@
                             android:textSize="16sp" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/textViewTempToday"
+                    <LinearLayout
+                        android:id="@+id/tempLayoutToday"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="0.5"
                         android:gravity="center|center_vertical"
-                        android:text="@string/tempempty"
-                        android:textSize="48sp" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textViewTempToday"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/tempempty"
+                            android:textSize="48sp" />
+
+                        <TextView
+                            android:id="@+id/textViewLast"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/tempempty"
+                            android:textSize="12sp" />
+                    </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>
 
