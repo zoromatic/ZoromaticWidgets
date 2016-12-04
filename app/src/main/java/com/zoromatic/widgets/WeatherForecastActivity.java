@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -60,7 +61,7 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
     public static final String DRAWEROPEN = "draweropen";
     private boolean mDrawerOpen = false;
 
-    private SlidingTabLayout mSlidingTabLayout;
+    private TabLayout mSlidingTabLayout;
     private ViewPager mViewPager;
     private ForecastFragmentPagerAdapter mFragmentPagerAdapter;
 
@@ -506,10 +507,19 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
             getTheme().resolveAttribute(R.attr.colorPrimary,
                     outValue,
                     true);
-            int primaryColor = outValue.resourceId;
-            int colorTabs = getResources().getColor(primaryColor);
+            int primaryColor = getResources().getColor(outValue.resourceId);
 
-            mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+            getTheme().resolveAttribute(R.attr.colorPrimaryDark,
+                    outValue,
+                    true);
+            int primaryColorDark = getResources().getColor(outValue.resourceId);
+
+            getTheme().resolveAttribute(R.attr.tabTextColor,
+                    outValue,
+                    true);
+            int tabTextColor = getResources().getColor(outValue.resourceId);
+
+            mSlidingTabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
             mViewPager = (ViewPager) findViewById(R.id.viewpager);
             mFragmentPagerAdapter = new ForecastFragmentPagerAdapter(getSupportFragmentManager());
 
@@ -519,10 +529,14 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
                     .getDisplayMetrics());
             mViewPager.setPageMargin(pageMargin);
 
-            mSlidingTabLayout.setTabsColor(colorTabs);
-            mSlidingTabLayout.setViewPager(mViewPager);
+            //mSlidingTabLayout.setTabsColor(colorTabs);
+            mSlidingTabLayout.setBackgroundColor(primaryColor);
+            mSlidingTabLayout.setSelectedTabIndicatorColor(tabTextColor);
+            mSlidingTabLayout.setTabTextColors(primaryColorDark, tabTextColor);
 
-            mSlidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+            mSlidingTabLayout.setupWithViewPager(mViewPager);
+
+            /*mSlidingTabLayout.setCustomTabColorizer(new TabLayout.TabColorizer() {
 
                 @Override
                 public int getIndicatorColor(int position) {
@@ -537,7 +551,7 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
                         return colorIndicator;
                     }
                 }
-            });
+            });*/
 
             if (mViewPager != null && mViewPager.getChildCount() > 0) {
                 mViewPager.setCurrentItem(Math.min(mCurrentItem, mTabs.size() - 1));
