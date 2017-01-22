@@ -1,8 +1,10 @@
 <h3>Zoromatic Widgets</h3>
 
-Version 1.9<br>
-Copyright 2013-2014<br>
+Version 2.1<br>
+Copyright 2013-2017<br>
 <b>zoromaticsoftware.blogspot.com</b><br><br>
+Privacy Policy:<br>
+<b>zoromaticsoftware.blogspot.rs/p/zoromaticwidgets-privacy-policy.html</b><br><br>
 Icon sets by:<br>
 <b>xiao4.deviantart.com</b><br>
 <b>mohitg.deviantart.com</b><br>

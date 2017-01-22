@@ -258,157 +258,159 @@
     </style>
 
     <style name="ThemeDarkRed" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_red_900</item>
-        <item name="colorPrimaryDark">@color/md_red_500</item>
-        <item name="colorAccent">@color/md_red_900</item>
+        <item name="colorPrimary">@color/md_red_700</item>
+        <item name="colorPrimaryDark">@color/md_red_900</item>
+        <item name="colorAccent">@color/md_red_700</item>
     </style>
 
     <style name="ThemeLightRed" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_red_500</item>
+        <item name="colorPrimary">@color/md_red_700</item>
         <item name="colorPrimaryDark">@color/md_red_900</item>
-        <item name="colorAccent">@color/md_red_500</item>
+        <item name="colorAccent">@color/md_red_700</item>
     </style>
 
     <style name="ThemeDarkPink" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_pink_900</item>
-        <item name="colorPrimaryDark">@color/md_pink_500</item>
-        <item name="colorAccent">@color/md_pink_900</item>
+        <item name="colorPrimary">@color/md_pink_700</item>
+        <item name="colorPrimaryDark">@color/md_pink_900</item>
+        <item name="colorAccent">@color/md_pink_700</item>
     </style>
 
     <style name="ThemeLightPink" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_pink_500</item>
+        <item name="colorPrimary">@color/md_pink_700</item>
         <item name="colorPrimaryDark">@color/md_pink_900</item>
-        <item name="colorAccent">@color/md_pink_500</item>
+        <item name="colorAccent">@color/md_pink_700</item>
     </style>
 
     <style name="ThemeDarkPurple" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_purple_900</item>
-        <item name="colorPrimaryDark">@color/md_purple_500</item>
-        <item name="colorAccent">@color/md_purple_900</item>
+        <item name="colorPrimary">@color/md_purple_700</item>
+        <item name="colorPrimaryDark">@color/md_purple_900</item>
+        <item name="colorAccent">@color/md_purple_700</item>
     </style>
 
     <style name="ThemeLightPurple" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_purple_500</item>
+        <item name="colorPrimary">@color/md_purple_700</item>
         <item name="colorPrimaryDark">@color/md_purple_900</item>
-        <item name="colorAccent">@color/md_purple_500</item>
+        <item name="colorAccent">@color/md_purple_700</item>
     </style>
 
     <style name="ThemeDarkDeepPurple" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_deep_purple_900</item>
-        <item name="colorPrimaryDark">@color/md_deep_purple_500</item>
-        <item name="colorAccent">@color/md_deep_purple_900</item>
+        <item name="colorPrimary">@color/md_deep_purple_700</item>
+        <item name="colorPrimaryDark">@color/md_deep_purple_900</item>
+        <item name="colorAccent">@color/md_deep_purple_700</item>
     </style>
 
     <style name="ThemeLightDeepPurple" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_deep_purple_500</item>
+        <item name="colorPrimary">@color/md_deep_purple_700</item>
         <item name="colorPrimaryDark">@color/md_deep_purple_900</item>
-        <item name="colorAccent">@color/md_deep_purple_500</item>
+        <item name="colorAccent">@color/md_deep_purple_700</item>
     </style>
 
     <style name="ThemeDarkIndigo" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_indigo_900</item>
-        <item name="colorPrimaryDark">@color/md_indigo_500</item>
-        <item name="colorAccent">@color/md_indigo_900</item>
+        <item name="colorPrimary">@color/md_indigo_700</item>
+        <item name="colorPrimaryDark">@color/md_indigo_900</item>
+        <item name="colorAccent">@color/md_indigo_700</item>
     </style>
 
     <style name="ThemeLightIndigo" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_indigo_500</item>
+        <item name="colorPrimary">@color/md_indigo_700</item>
         <item name="colorPrimaryDark">@color/md_indigo_900</item>
-        <item name="colorAccent">@color/md_indigo_500</item>
+        <item name="colorAccent">@color/md_indigo_700</item>
     </style>
 
     <style name="ThemeDarkBlue" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_blue_900</item>
-        <item name="colorPrimaryDark">@color/md_blue_500</item>
-        <item name="colorAccent">@color/md_blue_900</item>
+        <item name="colorPrimary">@color/md_blue_700</item>
+        <item name="colorPrimaryDark">@color/md_blue_900</item>
+        <item name="colorAccent">@color/md_blue_700</item>
     </style>
 
     <style name="ThemeLightBlue" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_blue_500</item>
+        <item name="colorPrimary">@color/md_blue_700</item>
         <item name="colorPrimaryDark">@color/md_blue_900</item>
-        <item name="colorAccent">@color/md_blue_500</item>
+        <item name="colorAccent">@color/md_blue_700</item>
     </style>
 
     <style name="ThemeDarkLightBlue" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_light_blue_900</item>
-        <item name="colorPrimaryDark">@color/md_light_blue_500</item>
-        <item name="colorAccent">@color/md_light_blue_900</item>
+        <item name="colorPrimary">@color/md_light_blue_700</item>
+        <item name="colorPrimaryDark">@color/md_light_blue_900</item>
+        <item name="colorAccent">@color/md_light_blue_700</item>
     </style>
 
     <style name="ThemeLightLightBlue" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_light_blue_500</item>
+        <item name="colorPrimary">@color/md_light_blue_700</item>
         <item name="colorPrimaryDark">@color/md_light_blue_900</item>
-        <item name="colorAccent">@color/md_light_blue_500</item>
+        <item name="colorAccent">@color/md_light_blue_700</item>
     </style>
 
     <style name="ThemeDarkCyan" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_cyan_900</item>
-        <item name="colorPrimaryDark">@color/md_cyan_500</item>
-        <item name="colorAccent">@color/md_cyan_900</item>
+        <item name="colorPrimary">@color/md_cyan_700</item>
+        <item name="colorPrimaryDark">@color/md_cyan_900</item>
+        <item name="colorAccent">@color/md_cyan_700</item>
     </style>
 
     <style name="ThemeLightCyan" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_cyan_500</item>
+        <item name="colorPrimary">@color/md_cyan_700</item>
         <item name="colorPrimaryDark">@color/md_cyan_900</item>
-        <item name="colorAccent">@color/md_cyan_500</item>
+        <item name="colorAccent">@color/md_cyan_700</item>
     </style>
 
     <style name="ThemeDarkTeal" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_teal_900</item>
-        <item name="colorPrimaryDark">@color/md_teal_500</item>
-        <item name="colorAccent">@color/md_teal_900</item>
+        <item name="colorPrimary">@color/md_teal_700</item>
+        <item name="colorPrimaryDark">@color/md_teal_900</item>
+        <item name="colorAccent">@color/md_teal_700</item>
     </style>
 
     <style name="ThemeLightTeal" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_teal_500</item>
+        <item name="colorPrimary">@color/md_teal_700</item>
         <item name="colorPrimaryDark">@color/md_teal_900</item>
-        <item name="colorAccent">@color/md_teal_500</item>
+        <item name="colorAccent">@color/md_teal_700</item>
     </style>
 
     <style name="ThemeDarkGreen" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_green_900</item>
-        <item name="colorPrimaryDark">@color/md_green_500</item>
-        <item name="colorAccent">@color/md_green_900</item>
+        <item name="colorPrimary">@color/md_green_700</item>
+        <item name="colorPrimaryDark">@color/md_green_900</item>
+        <item name="colorAccent">@color/md_green_700</item>
     </style>
 
     <style name="ThemeLightGreen" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_green_500</item>
+        <item name="colorPrimary">@color/md_green_700</item>
         <item name="colorPrimaryDark">@color/md_green_900</item>
-        <item name="colorAccent">@color/md_green_500</item>
+        <item name="colorAccent">@color/md_green_700</item>
     </style>
 
     <style name="ThemeDarkLightGreen" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_light_green_900</item>
-        <item name="colorPrimaryDark">@color/md_light_green_500</item>
-        <item name="colorAccent">@color/md_light_green_900</item>
+        <item name="colorPrimary">@color/md_light_green_700</item>
+        <item name="colorPrimaryDark">@color/md_light_green_900</item>
+        <item name="colorAccent">@color/md_light_green_700</item>
     </style>
 
     <style name="ThemeLightLightGreen" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_light_green_500</item>
+        <item name="colorPrimary">@color/md_light_green_700</item>
         <item name="colorPrimaryDark">@color/md_light_green_900</item>
-        <item name="colorAccent">@color/md_light_green_500</item>
+        <item name="colorAccent">@color/md_light_green_700</item>
     </style>
 
     <style name="ThemeDarkLime" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_lime_900</item>
-        <item name="colorPrimaryDark">@color/md_lime_500</item>
-        <item name="colorAccent">@color/md_lime_900</item>
+        <item name="colorPrimary">@color/md_lime_700</item>
+        <item name="colorPrimaryDark">@color/md_lime_900</item>
+        <item name="colorAccent">@color/md_lime_700</item>
     </style>
 
     <style name="ThemeLightLime" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_lime_500</item>
+        <item name="colorPrimary">@color/md_lime_700</item>
         <item name="colorPrimaryDark">@color/md_lime_900</item>
-        <item name="colorAccent">@color/md_lime_500</item>
+        <item name="colorAccent">@color/md_lime_900</item>
     </style>
 
     <style name="ThemeDarkYellow" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_yellow_900</item>
-        <item name="colorPrimaryDark">@color/md_yellow_500</item>
-        <item name="colorAccent">@color/md_yellow_900</item>
+        <item name="colorPrimary">@color/md_yellow_700</item>
+        <item name="colorPrimaryDark">@color/md_yellow_900</item>
+        <item name="colorAccent">@color/md_yellow_700</item>
+        <item name="toolbarNewStyle">@style/ToolbarLightBlack</item>
+        <item name="colorSwitchStyle">@style/ColorSwitchBlack</item>
     </style>
 
     <style name="ThemeLightYellow" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_yellow_500</item>
+        <item name="colorPrimary">@color/md_yellow_700</item>
         <item name="colorPrimaryDark">@color/md_yellow_900</item>
         <item name="colorAccent">@color/md_yellow_900</item>
         <item name="toolbarNewStyle">@style/ToolbarLightBlack</item>
@@ -423,75 +425,75 @@
     </style>
 
     <style name="ThemeDarkAmber" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_amber_900</item>
-        <item name="colorPrimaryDark">@color/md_amber_500</item>
-        <item name="colorAccent">@color/md_amber_900</item>
+        <item name="colorPrimary">@color/md_amber_700</item>
+        <item name="colorPrimaryDark">@color/md_amber_900</item>
+        <item name="colorAccent">@color/md_amber_700</item>
     </style>
 
     <style name="ThemeLightAmber" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_amber_500</item>
+        <item name="colorPrimary">@color/md_amber_700</item>
         <item name="colorPrimaryDark">@color/md_amber_900</item>
-        <item name="colorAccent">@color/md_amber_500</item>
+        <item name="colorAccent">@color/md_amber_700</item>
     </style>
 
     <style name="ThemeDarkOrange" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_orange_900</item>
-        <item name="colorPrimaryDark">@color/md_orange_500</item>
-        <item name="colorAccent">@color/md_orange_900</item>
+        <item name="colorPrimary">@color/md_orange_700</item>
+        <item name="colorPrimaryDark">@color/md_orange_900</item>
+        <item name="colorAccent">@color/md_orange_700</item>
     </style>
 
     <style name="ThemeLightOrange" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_orange_500</item>
+        <item name="colorPrimary">@color/md_orange_700</item>
         <item name="colorPrimaryDark">@color/md_orange_900</item>
-        <item name="colorAccent">@color/md_orange_500</item>
+        <item name="colorAccent">@color/md_orange_700</item>
     </style>
 
     <style name="ThemeDarkDeepOrange" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_deep_orange_900</item>
-        <item name="colorPrimaryDark">@color/md_deep_orange_500</item>
-        <item name="colorAccent">@color/md_deep_orange_900</item>
+        <item name="colorPrimary">@color/md_deep_orange_700</item>
+        <item name="colorPrimaryDark">@color/md_deep_orange_900</item>
+        <item name="colorAccent">@color/md_deep_orange_700</item>
     </style>
 
     <style name="ThemeLightDeepOrange" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_deep_orange_500</item>
+        <item name="colorPrimary">@color/md_deep_orange_700</item>
         <item name="colorPrimaryDark">@color/md_deep_orange_900</item>
-        <item name="colorAccent">@color/md_deep_orange_500</item>
+        <item name="colorAccent">@color/md_deep_orange_700</item>
     </style>
 
     <style name="ThemeDarkBrown" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_brown_900</item>
-        <item name="colorPrimaryDark">@color/md_brown_500</item>
-        <item name="colorAccent">@color/md_brown_900</item>
+        <item name="colorPrimary">@color/md_brown_700</item>
+        <item name="colorPrimaryDark">@color/md_brown_900</item>
+        <item name="colorAccent">@color/md_brown_700</item>
     </style>
 
     <style name="ThemeLightBrown" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_brown_500</item>
+        <item name="colorPrimary">@color/md_brown_700</item>
         <item name="colorPrimaryDark">@color/md_brown_900</item>
-        <item name="colorAccent">@color/md_brown_500</item>
+        <item name="colorAccent">@color/md_brown_700</item>
     </style>
 
     <style name="ThemeDarkGrey" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_grey_900</item>
-        <item name="colorPrimaryDark">@color/md_grey_500</item>
-        <item name="colorAccent">@color/md_grey_900</item>
+        <item name="colorPrimary">@color/md_grey_700</item>
+        <item name="colorPrimaryDark">@color/md_grey_900</item>
+        <item name="colorAccent">@color/md_grey_700</item>
     </style>
 
     <style name="ThemeLightGrey" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_grey_500</item>
+        <item name="colorPrimary">@color/md_grey_700</item>
         <item name="colorPrimaryDark">@color/md_grey_900</item>
-        <item name="colorAccent">@color/md_grey_500</item>
+        <item name="colorAccent">@color/md_grey_700</item>
     </style>
 
     <style name="ThemeDarkBlueGrey" parent="ThemeDark">
-        <item name="colorPrimary">@color/md_blue_grey_900</item>
-        <item name="colorPrimaryDark">@color/md_blue_grey_500</item>
-        <item name="colorAccent">@color/md_blue_grey_900</item>
+        <item name="colorPrimary">@color/md_blue_grey_700</item>
+        <item name="colorPrimaryDark">@color/md_blue_grey_900</item>
+        <item name="colorAccent">@color/md_blue_grey_700</item>
     </style>
 
     <style name="ThemeLightBlueGrey" parent="ThemeLight">
-        <item name="colorPrimary">@color/md_blue_grey_500</item>
+        <item name="colorPrimary">@color/md_blue_grey_700</item>
         <item name="colorPrimaryDark">@color/md_blue_grey_900</item>
-        <item name="colorAccent">@color/md_blue_grey_500</item>
+        <item name="colorAccent">@color/md_blue_grey_700</item>
     </style>
 
 </resources>

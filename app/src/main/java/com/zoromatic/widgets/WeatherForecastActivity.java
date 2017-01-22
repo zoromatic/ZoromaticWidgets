@@ -20,6 +20,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -532,7 +533,20 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
             //mSlidingTabLayout.setTabsColor(colorTabs);
             mSlidingTabLayout.setBackgroundColor(primaryColor);
             mSlidingTabLayout.setSelectedTabIndicatorColor(tabTextColor);
-            mSlidingTabLayout.setTabTextColors(primaryColorDark, tabTextColor);
+
+            int colorScheme = Preferences.getMainColorScheme(this);
+
+            switch (colorScheme) {
+                case 0: // black
+                    mSlidingTabLayout.setTabTextColors(ContextCompat.getColor(this, R.color.sysWhite), tabTextColor);
+                    break;
+                case 1: // white
+                    mSlidingTabLayout.setTabTextColors(ContextCompat.getColor(this, R.color.sysBlack), tabTextColor);
+                    break;
+                default:
+                    mSlidingTabLayout.setTabTextColors(primaryColorDark, tabTextColor);
+                    break;
+            }
 
             mSlidingTabLayout.setupWithViewPager(mViewPager);
 
