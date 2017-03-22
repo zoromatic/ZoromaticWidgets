@@ -29,23 +29,23 @@
     <uses-permission
         android:name="android.permission.FLASHLIGHT"
         android:permissionGroup="android.permission-group.HARDWARE_CONTROLS"
-        android:protectionLevel="normal"></uses-permission>
+        android:protectionLevel="normal" />
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false"></uses-feature>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.bluetooth"
-        android:required="false"></uses-feature>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.location"
-        android:required="false"></uses-feature>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.telephony"
-        android:required="false"></uses-feature>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.wifi"
-        android:required="false"></uses-feature>
+        android:required="false" />
 
     <supports-screens
         android:anyDensity="true"
@@ -96,7 +96,7 @@
 
         <receiver
             android:name=".WidgetInfoReceiver"
-            android:label="WidgetInfoReceiver"></receiver>
+            android:label="WidgetInfoReceiver" />
         <receiver
             android:name=".DigitalClockAppWidgetProvider"
             android:icon="@drawable/weather_clock"
@@ -332,16 +332,16 @@
         </activity>
         <activity
             android:name=".BatteryInfoActivity"
-            android:label="@string/batteryinfo"></activity>
+            android:label="@string/batteryinfo" />
         <activity
             android:name=".BrightnessActivity"
             android:excludeFromRecents="true"
             android:label="@string/brightnessdesc"
             android:noHistory="true"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".LocationsEdit"
-            android:label="@string/menu_update_location"></activity>
+            android:label="@string/menu_update_location" />
         <activity
             android:name=".ConfigureWidgetsActivity"
             android:label="@string/widgets_settings">
@@ -354,11 +354,11 @@
         <activity
             android:name=".SetPermissionsActivity"
             android:label="@string/title_activity_set_permissions"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".WriteSettingsActivity"
             android:label="@string/title_activity_set_permissions"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
 
 </manifest>
