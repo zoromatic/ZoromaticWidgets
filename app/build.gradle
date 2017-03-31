@@ -5,6 +5,10 @@ android {
     buildToolsVersion "23.0.3"
     useLibrary 'org.apache.http.legacy'
 
+    lintOptions {
+        abortOnError false
+    }
+
     defaultConfig {
         applicationId "com.zoromatic.widgets"
         minSdkVersion 8
