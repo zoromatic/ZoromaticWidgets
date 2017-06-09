@@ -1894,12 +1894,16 @@ public class WidgetUpdateService extends Service {
 
             // Verify clock implementation
             String clockImpls[][] = {
-                    {"Standard Alarm Clock", "com.android.deskclock", "com.android.deskclock.AlarmClock"},
+                    {"Standard Alarm Clock", "com.android.alarmclock", "com.android.alarmclock.AlarmClock"},
                     {"Standard Desk Clock", "com.android.deskclock", "com.android.deskclock.DeskClock"},
                     {"HTC Alarm Clock", "com.htc.android.worldclock", "com.htc.android.worldclock.WorldClockTabControl"},
                     {"Froyo Nexus Alarm Clock", "com.google.android.deskclock", "com.android.deskclock.DeskClock"},
                     {"Moto Blur Alarm Clock", "com.motorola.blur.alarmclock", "com.motorola.blur.alarmclock.AlarmClock"},
-                    {"Samsung Galaxy Clock", "com.sec.android.app.clockpackage", "com.sec.android.app.clockpackage.ClockPackage"}
+                    {"Samsung Galaxy Clock", "com.sec.android.app.clockpackage", "com.sec.android.app.clockpackage.ClockPackage"},
+                    {"Sony Alarm", "com.sonyericsson.alarm", "com.sonyericsson.alarm.Alarm" },
+                    {"Sony Ericsson Xperia Z", "com.sonyericsson.organizer", "com.sonyericsson.organizer.Organizer_WorldClock" },
+                    {"ASUS Alarm Clock", "com.asus.alarmclock", "com.asus.alarmclock.AlarmClock" },
+                    {"ASUS Desk Clock", "com.asus.deskclock", "com.asus.deskclock.DeskClock" },
             };
 
             boolean foundClockImpl = false;
