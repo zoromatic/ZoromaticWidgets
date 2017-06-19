@@ -1614,15 +1614,15 @@ public class WidgetUpdateService extends Service {
                 } catch (Exception e) {
                     Log.e(LOG_TAG, "", e);*/
 
-                    Intent intentData = new Intent(Intent.ACTION_MAIN);
-                    intentData.setComponent(new ComponentName("com.android.settings",
-                            "com.android.settings.Settings$DataUsageSummaryActivity"));
-                    intentData.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Intent intentData = new Intent(Intent.ACTION_MAIN);
+                intentData.setComponent(new ComponentName("com.android.settings",
+                        "com.android.settings.Settings$DataUsageSummaryActivity"));
+                intentData.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                    pendingIntent = PendingIntent.getActivity(this, 0,
-                            intentData, PendingIntent.FLAG_UPDATE_CURRENT);
-                    updateViews.setOnClickPendingIntent(R.id.mobileWidget,
-                            pendingIntent);
+                pendingIntent = PendingIntent.getActivity(this, 0,
+                        intentData, PendingIntent.FLAG_UPDATE_CURRENT);
+                updateViews.setOnClickPendingIntent(R.id.mobileWidget,
+                        pendingIntent);
                 /*}*/
 
             }
@@ -1900,10 +1900,10 @@ public class WidgetUpdateService extends Service {
                     {"Froyo Nexus Alarm Clock", "com.google.android.deskclock", "com.android.deskclock.DeskClock"},
                     {"Moto Blur Alarm Clock", "com.motorola.blur.alarmclock", "com.motorola.blur.alarmclock.AlarmClock"},
                     {"Samsung Galaxy Clock", "com.sec.android.app.clockpackage", "com.sec.android.app.clockpackage.ClockPackage"},
-                    {"Sony Alarm", "com.sonyericsson.alarm", "com.sonyericsson.alarm.Alarm" },
-                    {"Sony Ericsson Xperia Z", "com.sonyericsson.organizer", "com.sonyericsson.organizer.Organizer_WorldClock" },
-                    {"ASUS Alarm Clock", "com.asus.alarmclock", "com.asus.alarmclock.AlarmClock" },
-                    {"ASUS Desk Clock", "com.asus.deskclock", "com.asus.deskclock.DeskClock" },
+                    {"Sony Alarm", "com.sonyericsson.alarm", "com.sonyericsson.alarm.Alarm"},
+                    {"Sony Ericsson Xperia Z", "com.sonyericsson.organizer", "com.sonyericsson.organizer.Organizer_WorldClock"},
+                    {"ASUS Alarm Clock", "com.asus.alarmclock", "com.asus.alarmclock.AlarmClock"},
+                    {"ASUS Desk Clock", "com.asus.deskclock", "com.asus.deskclock.DeskClock"},
             };
 
             boolean foundClockImpl = false;
@@ -3587,7 +3587,7 @@ public class WidgetUpdateService extends Service {
                 writeSettingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(writeSettingsIntent);
             }
-			/*} else {
+            /*} else {
 				realToggleBrightness();
 			}*/
         } else {

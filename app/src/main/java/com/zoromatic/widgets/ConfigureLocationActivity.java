@@ -257,7 +257,7 @@ public class ConfigureLocationActivity extends ThemeActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-				/*Intent i = new Intent(view.getContext(), LocationsEdit.class);
+                /*Intent i = new Intent(view.getContext(), LocationsEdit.class);
 		        i.putExtra(SQLiteDbAdapter.KEY_ROWID, id);
 		        startActivityForResult(i, ACTIVITY_EDIT);*/
 

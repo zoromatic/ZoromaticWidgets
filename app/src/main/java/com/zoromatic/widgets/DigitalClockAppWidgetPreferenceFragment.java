@@ -84,7 +84,6 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
     }
 
 
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -111,7 +110,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
                     addPreferencesFromResource(R.xml.digitalclockwidget_prefs_look);
                 } else if (category.equals(getString(R.string.category_theme))) {
                     addPreferencesFromResource(R.xml.zoromaticwidgets_prefs_theme);
-                }else {
+                } else {
                     addPreferencesFromResource(R.xml.digitalclockwidget_prefs);
                 }
             } else {
@@ -921,7 +920,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
                 dateColorPicker.onColorChanged(Preferences.getDateColor(context, mAppWidgetId));
 
 	        	/*CheckBoxPreference show24hrs = (CheckBoxPreference)findPreference(Preferences.PREF_24HRS_KEY);
-	            
+
 	            if (show24hrs != null) {
 	            	boolean show = Preferences.getShow24Hrs(context, mAppWidgetId);
 	            	show24hrs.setChecked(!show);
