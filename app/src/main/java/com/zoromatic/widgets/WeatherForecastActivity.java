@@ -57,26 +57,22 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private ListView leftDrawerList;
-    private List<RowItem> rowItems;
 
     public static final String DRAWEROPEN = "draweropen";
     private boolean mDrawerOpen = false;
 
-    private TabLayout mSlidingTabLayout;
     private ViewPager mViewPager;
-    private ForecastFragmentPagerAdapter mFragmentPagerAdapter;
 
-    private List<ForecastPagerItem> mTabs = new ArrayList<ForecastPagerItem>();
+    private List<ForecastPagerItem> mTabs = new ArrayList<>();
     private int mCurrentItem = 0;
     private static final String KEY_CURRENT_ITEM = "key_current_item";
 
     private ProgressDialogFragment mProgressFragment = null;
 
     static DataProviderTask mDataProviderTask;
-    static WeatherForecastActivity mWeatherForecastActivity;
+    public WeatherForecastActivity mWeatherForecastActivity;
     private MenuItem refreshItem = null;
     LayoutInflater inflater = null;
-    ImageView imageView = null;
     Animation rotation = null;
 
     @Override
@@ -121,32 +117,6 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
         setSupportActionBar(toolbar);
         initDrawer();
 
-        /*TypedValue outValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimary,
-                outValue,
-                true);
-        int primaryColor = outValue.resourceId;
-
-        setStatusBarColor(findViewById(R.id.statusBarBackground),
-                getResources().getColor(primaryColor));*/
-
-		/*inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-		if (inflater != null) {
-			imageView = (ImageView)inflater.inflate(R.layout.refresh_menuitem, null);
-								
-			if (imageView != null) {
-				outValue = new TypedValue();
-				getTheme().resolveAttribute(R.attr.iconRefresh,
-						outValue,
-						true);
-				int refreshIcon = outValue.resourceId;
-				imageView.setImageResource(refreshIcon);
-				
-				rotation = AnimationUtils.loadAnimation(this, R.anim.animate_menu);
-			}
-		}*/
-
         rotation = AnimationUtils.loadAnimation(this, R.anim.animate_menu);
 
         // Show the ProgressDialogFragment on this thread
@@ -161,22 +131,6 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
         mDataProviderTask = new DataProviderTask();
         mDataProviderTask.setActivity(mWeatherForecastActivity);
         mDataProviderTask.execute();
-    }
-
-    @SuppressLint("InlinedApi")
-    public void setStatusBarColor(View statusBar, int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window w = getWindow();
-            w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //status bar height
-            //int actionBarHeight = getActionBarHeight();
-            int statusBarHeight = getStatusBarHeight();
-            //action bar height
-            statusBar.getLayoutParams().height = /*actionBarHeight + */statusBarHeight;
-            statusBar.setBackgroundColor(color);
-        } else {
-            statusBar.setVisibility(View.GONE);
-        }
     }
 
     @SuppressLint("NewApi")
@@ -196,17 +150,12 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
             refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
             getApplicationContext().startService(refreshIntent);
 
-            if (refreshItem != null && /*imageView != null && */rotation != null) {
+            if (refreshItem != null && rotation != null) {
 
                 if (MenuItemCompat.getActionView(refreshItem) != null) {
                     MenuItemCompat.getActionView(refreshItem).startAnimation(rotation);
                 }
-
-                //imageView.startAnimation(rotation);
-                //MenuItemCompat.setActionView(refreshItem, imageView);
             }
-
-            //Toast.makeText(getApplicationContext(), "Updating weather.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -216,30 +165,10 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
 
         Intent settingsIntent = new Intent(getApplicationContext(), DigitalClockAppWidgetPreferenceActivity.class);
 
-        if (settingsIntent != null) {
-            settingsIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-            settingsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+        settingsIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        settingsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
 
-            startActivityForResult(settingsIntent, ACTIVITY_SETTINGS);
-        }
-    }
-
-    public int getActionBarHeight() {
-        int actionBarHeight = 0;
-        TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-        return actionBarHeight;
-    }
-
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
+        startActivityForResult(settingsIntent, ACTIVITY_SETTINGS);
     }
 
     private void initView() {
@@ -249,7 +178,7 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
 
-        rowItems = new ArrayList<RowItem>();
+        List<RowItem> rowItems = new ArrayList<RowItem>();
 
         RowItem item = new RowItem(theme.compareToIgnoreCase("light") == 0 ? R.drawable.ic_refresh_black_48dp : R.drawable.ic_refresh_white_48dp,
                 (String) getResources().getText(R.string.refresh), false);
@@ -286,6 +215,7 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
                 mDrawerOpen = true;
             }
         };
+
         drawerLayout.setDrawerListener(drawerToggle);
     }
 
@@ -477,19 +407,17 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
                     // insert other locations
                     locationsCursor.moveToFirst();
 
-                    if (locationsCursor != null) {
-                        do {
-                            String title = locationsCursor.getString(locationsCursor.getColumnIndex(SQLiteDbAdapter.KEY_NAME));
-                            long locId = locationsCursor.getLong(locationsCursor.getColumnIndex(SQLiteDbAdapter.KEY_LOCATION_ID));
+                    do {
+                        String title = locationsCursor.getString(locationsCursor.getColumnIndex(SQLiteDbAdapter.KEY_NAME));
+                        long locId = locationsCursor.getLong(locationsCursor.getColumnIndex(SQLiteDbAdapter.KEY_LOCATION_ID));
 
-                            if (locIdTemp < 0 || locId != locIdTemp) {
-                                mTabs.add(new ForecastPagerItem(title, colorIndicator, mAppWidgetId, locId));
-                            }
-
-                            locationsCursor.moveToNext();
+                        if (locIdTemp < 0 || locId != locIdTemp) {
+                            mTabs.add(new ForecastPagerItem(title, colorIndicator, mAppWidgetId, locId));
                         }
-                        while (!locationsCursor.isAfterLast());
+
+                        locationsCursor.moveToNext();
                     }
+                    while (!locationsCursor.isAfterLast());
                 }
 
                 dbHelper.close();
@@ -520,9 +448,9 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
                     true);
             int tabTextColor = getResources().getColor(outValue.resourceId);
 
-            mSlidingTabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+            TabLayout mSlidingTabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
             mViewPager = (ViewPager) findViewById(R.id.viewpager);
-            mFragmentPagerAdapter = new ForecastFragmentPagerAdapter(getSupportFragmentManager());
+            ForecastFragmentPagerAdapter mFragmentPagerAdapter = new ForecastFragmentPagerAdapter(getSupportFragmentManager());
 
             mViewPager.setAdapter(mFragmentPagerAdapter);
 
@@ -530,42 +458,26 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
                     .getDisplayMetrics());
             mViewPager.setPageMargin(pageMargin);
 
-            //mSlidingTabLayout.setTabsColor(colorTabs);
-            mSlidingTabLayout.setBackgroundColor(primaryColor);
-            mSlidingTabLayout.setSelectedTabIndicatorColor(tabTextColor);
+            if (mSlidingTabLayout != null) {
+                mSlidingTabLayout.setBackgroundColor(primaryColor);
+                mSlidingTabLayout.setSelectedTabIndicatorColor(tabTextColor);
 
-            int colorScheme = Preferences.getMainColorScheme(this);
+                int colorScheme = Preferences.getMainColorScheme(this);
 
-            switch (colorScheme) {
-                case 0: // black
-                    mSlidingTabLayout.setTabTextColors(ContextCompat.getColor(this, R.color.sysWhite), tabTextColor);
-                    break;
-                case 1: // white
-                    mSlidingTabLayout.setTabTextColors(ContextCompat.getColor(this, R.color.sysBlack), tabTextColor);
-                    break;
-                default:
-                    mSlidingTabLayout.setTabTextColors(primaryColorDark, tabTextColor);
-                    break;
-            }
-
-            mSlidingTabLayout.setupWithViewPager(mViewPager);
-
-            /*mSlidingTabLayout.setCustomTabColorizer(new TabLayout.TabColorizer() {
-
-                @Override
-                public int getIndicatorColor(int position) {
-                    if (mTabs.size() > position) {
-                        return mTabs.get(position).getIndicatorColor();
-                    } else {
-                        TypedValue outValue = new TypedValue();
-                        getTheme().resolveAttribute(R.attr.tabTextColor, outValue, true);
-                        int textColor = outValue.resourceId;
-                        int colorIndicator = getResources().getColor(textColor);
-
-                        return colorIndicator;
-                    }
+                switch (colorScheme) {
+                    case 0: // black
+                        mSlidingTabLayout.setTabTextColors(ContextCompat.getColor(this, R.color.sysWhite), tabTextColor);
+                        break;
+                    case 1: // white
+                        mSlidingTabLayout.setTabTextColors(ContextCompat.getColor(this, R.color.sysBlack), tabTextColor);
+                        break;
+                    default:
+                        mSlidingTabLayout.setTabTextColors(primaryColorDark, tabTextColor);
+                        break;
                 }
-            });*/
+
+                mSlidingTabLayout.setupWithViewPager(mViewPager);
+            }
 
             if (mViewPager != null && mViewPager.getChildCount() > 0) {
                 mViewPager.setCurrentItem(Math.min(mCurrentItem, mTabs.size() - 1));
@@ -621,7 +533,6 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
 
                 if (MenuItemCompat.getActionView(refreshItem) != null) {
                     MenuItemCompat.getActionView(refreshItem).clearAnimation();
-                    //MenuItemCompat.setActionView(refreshItem, null);
                 }
             }
 
@@ -668,15 +579,6 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(this.mReceiver);
-
-		/*if (mTabs != null) {
-
-        	for (ForecastPagerItem tab : mTabs) {
-        		tab.setFragment(null);
-        	}
-
-        	mTabs.clear();			        
-        }*/
 
         if (mViewPager != null) {
             mViewPager.getAdapter().notifyDataSetChanged();
@@ -730,10 +632,6 @@ public class WeatherForecastActivity extends ThemeActionBarActivity {
 
         void setTitle(CharSequence title) {
             mTitle = title;
-        }
-
-        int getIndicatorColor() {
-            return mIndicatorColor;
         }
 
         public WeatherContentFragment getFragment() {
