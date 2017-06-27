@@ -4,17 +4,14 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,7 +23,6 @@ import java.util.TimeZone;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -37,7 +33,6 @@ import org.json.JSONTokener;
 
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.luckycatlabs.sunrisesunset.dto.SunriseSunsetLocation;
-import com.zoromatic.widgets.R;
 import com.zoromatic.widgets.LocationProvider.LocationResult;
 
 import android.Manifest;
@@ -82,6 +77,7 @@ import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
@@ -163,30 +159,24 @@ public class WidgetUpdateService extends Service {
     public static String POWER_NFC_WIDGET_UPDATE = "com.zoromatic.widgets.POWER_NFC_WIDGET_UPDATE";
     public static String POWER_SYNC_WIDGET_UPDATE = "com.zoromatic.widgets.POWER_SYNC_WIDGET_UPDATE";
     public static String POWER_ORIENTATION_WIDGET_UPDATE = "com.zoromatic.widgets.POWER_ORIENTATION_WIDGET_UPDATE";
-    public static String POWER_AUTO_ROTATE_CHANGED = "com.zoromatic.widgets.POWER_AUTO_ROTATE_CHANGED";
     public static String POWER_TORCH_WIDGET_UPDATE = "com.zoromatic.widgets.POWER_TORCH_WIDGET_UPDATE";
     public static String APPWIDGET_RESIZE = "com.sec.android.widgetapp.APPWIDGET_RESIZE";
     public static String APPWIDGET_UPDATE_OPTIONS = "android.appwidget.action.APPWIDGET_UPDATE_OPTIONS";
 
     protected static long GPS_UPDATE_TIME_INTERVAL = 3000; // milliseconds
     protected static float GPS_UPDATE_DISTANCE_INTERVAL = 0; // meters
-    private LocationManager mLocManager = null;
     private WidgetGPSListener mGpsListener = null;
     private WidgetLocationListener mLocListener = null;
-    private static BrightnessObserver sSettingsObserver;
-    private static RotationObserver sRotationObserver;
+    private BrightnessObserver sSettingsObserver;
+    private RotationObserver sRotationObserver;
     private static Camera camera;
     private static boolean flashOn = false;
-
-    private static android.support.v4.app.NotificationCompat.Builder notification;
-    private static NotificationManager notificationManager;
 
     private static IntentFilter mIntentFilter;
     private WidgetInfoReceiver mWidgetInfo = null;
 
     public static String WEATHER_SERVICE_COORD_URL = "http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
     public static String WEATHER_SERVICE_ID_URL = "http://api.openweathermap.org/data/2.5/weather?id=%d&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
-    public static String WEATHER_SERVICE_GROUP_ID_URL = "http://api.openweathermap.org/data/2.5/group?id=%d&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
     public static String WEATHER_FORECAST_COORD_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=%f&lon=%f&cnt=7&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
     public static String WEATHER_FORECAST_ID_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?id=%d&cnt=7&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
 
@@ -360,7 +350,7 @@ public class WidgetUpdateService extends Service {
         }
     }
 
-    public class WidgetLocationListener implements LocationListener {
+    private class WidgetLocationListener implements LocationListener {
         @Override
         public void onLocationChanged(Location location) {
 
@@ -470,14 +460,14 @@ public class WidgetUpdateService extends Service {
             sendBroadcast(new Intent(BRIGHTNESS_CHANGED));
         }
 
-        mLocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if (mGpsListener == null && mLocListener == null) {
-            if (mLocManager != null) {
+            if (locManager != null) {
                 boolean gps_enabled = false;
 
                 try {
-                    gps_enabled = mLocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                    gps_enabled = locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
                 } catch (Exception e) {
                     Log.e(LOG_TAG, "", e);
                 }
@@ -487,8 +477,8 @@ public class WidgetUpdateService extends Service {
                     mLocListener = new WidgetLocationListener();
 
                     try {
-                        mLocManager.addGpsStatusListener(mGpsListener);
-                        mLocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                        locManager.addGpsStatusListener(mGpsListener);
+                        locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                                 GPS_UPDATE_TIME_INTERVAL, GPS_UPDATE_DISTANCE_INTERVAL,
                                 mLocListener);
                     } catch (SecurityException e) {
@@ -573,9 +563,9 @@ public class WidgetUpdateService extends Service {
 
             updateNotificationBatteryStatus(intent);
 
-            ComponentName thisWidget = null;
-            ComponentName powerWidget = null;
-            RemoteViews remoteViews = null;
+            ComponentName thisWidget;
+            ComponentName powerWidget;
+            RemoteViews remoteViews;
 
             // update all widgets
             if (!confUpdated) {
@@ -615,142 +605,140 @@ public class WidgetUpdateService extends Service {
             }
 
             // update toggle widgets
-            Intent newIntent = null;
+            Intent newIntent;
 
-            if (appWidgetManager != null) {
-                try {
-                    //update power widget
-                    powerWidget = new ComponentName(this, PowerAppWidgetProvider.class);
-                    newIntent = new Intent(this, WidgetUpdateService.class);
-                    newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, POWER_WIDGET_UPDATE_ALL);
-                    int[] appWidgetIds = null;
+            try {
+                //update power widget
+                powerWidget = new ComponentName(this, PowerAppWidgetProvider.class);
+                newIntent = new Intent(this, WidgetUpdateService.class);
+                newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, POWER_WIDGET_UPDATE_ALL);
+                int[] appWidgetIds = null;
 
-                    if (powerWidget != null) {
-                        appWidgetIds = appWidgetManager.getAppWidgetIds(powerWidget);
-                    }
+                if (powerWidget != null) {
+                    appWidgetIds = appWidgetManager.getAppWidgetIds(powerWidget);
+                }
 
-                    if (appWidgetIds != null && appWidgetIds.length > 0) {
-                        for (int appWidgetId : appWidgetIds) {
-                            remoteViews = buildPowerUpdate(newIntent, appWidgetId);
+                if (appWidgetIds != null && appWidgetIds.length > 0) {
+                    for (int appWidgetId : appWidgetIds) {
+                        remoteViews = buildPowerUpdate(newIntent, appWidgetId);
 
-                            if (remoteViews != null) {
-                                updatePowerWidgetStatus(remoteViews, newIntent, appWidgetId);
-                            }
+                        if (remoteViews != null) {
+                            updatePowerWidgetStatus(remoteViews, newIntent, appWidgetId);
                         }
                     }
-
-                    // update single widgets
-                    thisWidget = new ComponentName(this, BatteryAppWidgetProvider.class);
-                    newIntent = new Intent(this, WidgetUpdateService.class);
-                    newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_BATTERY_WIDGET);
-
-                    remoteViews = buildUpdate(newIntent);
-                    if (thisWidget != null && remoteViews != null) {
-                        appWidgetManager.updateAppWidget(thisWidget, remoteViews);
-                    }
-
-                    thisWidget = new ComponentName(this, AirplaneAppWidgetProvider.class);
-                    newIntent = new Intent(this, WidgetUpdateService.class);
-                    newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_AIRPLANE_WIDGET);
-
-                    remoteViews = buildUpdate(newIntent);
-                    if (thisWidget != null && remoteViews != null) {
-                        appWidgetManager.updateAppWidget(thisWidget, remoteViews);
-                    }
-
-                    thisWidget = new ComponentName(this, BluetoothAppWidgetProvider.class);
-                    newIntent = new Intent(this, WidgetUpdateService.class);
-                    newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_BLUETOOTH_WIDGET);
-
-                    remoteViews = buildUpdate(newIntent);
-                    if (thisWidget != null && remoteViews != null) {
-                        appWidgetManager.updateAppWidget(thisWidget, remoteViews);
-                    }
-
-                    thisWidget = new ComponentName(this, BrightnessAppWidgetProvider.class);
-                    newIntent = new Intent(this, WidgetUpdateService.class);
-                    newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_BRIGHTNESS_WIDGET);
-
-                    remoteViews = buildUpdate(newIntent);
-                    if (thisWidget != null && remoteViews != null) {
-                        appWidgetManager.updateAppWidget(thisWidget, remoteViews);
-                    }
-
-                    thisWidget = new ComponentName(this, GpsAppWidgetProvider.class);
-                    newIntent = new Intent(this, WidgetUpdateService.class);
-                    newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_GPS_WIDGET);
-
-                    remoteViews = buildUpdate(newIntent);
-                    if (thisWidget != null && remoteViews != null) {
-                        appWidgetManager.updateAppWidget(thisWidget, remoteViews);
-                    }
-
-                    thisWidget = new ComponentName(this, MobileAppWidgetProvider.class);
-                    newIntent = new Intent(this, WidgetUpdateService.class);
-                    newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_MOBILE_DATA_WIDGET);
-
-                    remoteViews = buildUpdate(newIntent);
-                    if (thisWidget != null && remoteViews != null) {
-                        appWidgetManager.updateAppWidget(thisWidget, remoteViews);
-                    }
-
-                    thisWidget = new ComponentName(this, NfcAppWidgetProvider.class);
-                    newIntent = new Intent(this, WidgetUpdateService.class);
-                    newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_NFC_WIDGET);
-
-                    remoteViews = buildUpdate(newIntent);
-                    if (thisWidget != null && remoteViews != null) {
-                        appWidgetManager.updateAppWidget(thisWidget, remoteViews);
-                    }
-
-                    thisWidget = new ComponentName(this, OrientationAppWidgetProvider.class);
-                    newIntent = new Intent(this, WidgetUpdateService.class);
-                    newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_ORIENTATION_WIDGET);
-
-                    remoteViews = buildUpdate(newIntent);
-                    if (thisWidget != null && remoteViews != null) {
-                        appWidgetManager.updateAppWidget(thisWidget, remoteViews);
-                    }
-
-                    thisWidget = new ComponentName(this, RingerAppWidgetProvider.class);
-                    newIntent = new Intent(this, WidgetUpdateService.class);
-                    newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_RINGER_WIDGET);
-
-                    remoteViews = buildUpdate(newIntent);
-                    if (thisWidget != null && remoteViews != null) {
-                        appWidgetManager.updateAppWidget(thisWidget, remoteViews);
-                    }
-
-                    thisWidget = new ComponentName(this, SyncAppWidgetProvider.class);
-                    newIntent = new Intent(this, WidgetUpdateService.class);
-                    newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_SYNC_WIDGET);
-
-                    remoteViews = buildUpdate(newIntent);
-                    if (thisWidget != null && remoteViews != null) {
-                        appWidgetManager.updateAppWidget(thisWidget, remoteViews);
-                    }
-
-                    thisWidget = new ComponentName(this, TorchAppWidgetProvider.class);
-                    newIntent = new Intent(this, WidgetUpdateService.class);
-                    newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_TORCH_WIDGET);
-
-                    remoteViews = buildUpdate(newIntent);
-                    if (thisWidget != null && remoteViews != null) {
-                        appWidgetManager.updateAppWidget(thisWidget, remoteViews);
-                    }
-
-                    thisWidget = new ComponentName(this, WifiAppWidgetProvider.class);
-                    newIntent = new Intent(this, WidgetUpdateService.class);
-                    newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_WIFI_WIDGET);
-
-                    remoteViews = buildUpdate(newIntent);
-                    if (thisWidget != null && remoteViews != null) {
-                        appWidgetManager.updateAppWidget(thisWidget, remoteViews);
-                    }
-
-                } catch (Exception e) {
-                    Log.e(LOG_TAG, "", e);
                 }
+
+                // update single widgets
+                thisWidget = new ComponentName(this, BatteryAppWidgetProvider.class);
+                newIntent = new Intent(this, WidgetUpdateService.class);
+                newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_BATTERY_WIDGET);
+
+                remoteViews = buildUpdate(newIntent);
+                if (remoteViews != null) {
+                    appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+                }
+
+                thisWidget = new ComponentName(this, AirplaneAppWidgetProvider.class);
+                newIntent = new Intent(this, WidgetUpdateService.class);
+                newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_AIRPLANE_WIDGET);
+
+                remoteViews = buildUpdate(newIntent);
+                if (remoteViews != null) {
+                    appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+                }
+
+                thisWidget = new ComponentName(this, BluetoothAppWidgetProvider.class);
+                newIntent = new Intent(this, WidgetUpdateService.class);
+                newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_BLUETOOTH_WIDGET);
+
+                remoteViews = buildUpdate(newIntent);
+                if (remoteViews != null) {
+                    appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+                }
+
+                thisWidget = new ComponentName(this, BrightnessAppWidgetProvider.class);
+                newIntent = new Intent(this, WidgetUpdateService.class);
+                newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_BRIGHTNESS_WIDGET);
+
+                remoteViews = buildUpdate(newIntent);
+                if (remoteViews != null) {
+                    appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+                }
+
+                thisWidget = new ComponentName(this, GpsAppWidgetProvider.class);
+                newIntent = new Intent(this, WidgetUpdateService.class);
+                newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_GPS_WIDGET);
+
+                remoteViews = buildUpdate(newIntent);
+                if (remoteViews != null) {
+                    appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+                }
+
+                thisWidget = new ComponentName(this, MobileAppWidgetProvider.class);
+                newIntent = new Intent(this, WidgetUpdateService.class);
+                newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_MOBILE_DATA_WIDGET);
+
+                remoteViews = buildUpdate(newIntent);
+                if (remoteViews != null) {
+                    appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+                }
+
+                thisWidget = new ComponentName(this, NfcAppWidgetProvider.class);
+                newIntent = new Intent(this, WidgetUpdateService.class);
+                newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_NFC_WIDGET);
+
+                remoteViews = buildUpdate(newIntent);
+                if (remoteViews != null) {
+                    appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+                }
+
+                thisWidget = new ComponentName(this, OrientationAppWidgetProvider.class);
+                newIntent = new Intent(this, WidgetUpdateService.class);
+                newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_ORIENTATION_WIDGET);
+
+                remoteViews = buildUpdate(newIntent);
+                if (remoteViews != null) {
+                    appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+                }
+
+                thisWidget = new ComponentName(this, RingerAppWidgetProvider.class);
+                newIntent = new Intent(this, WidgetUpdateService.class);
+                newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_RINGER_WIDGET);
+
+                remoteViews = buildUpdate(newIntent);
+                if (remoteViews != null) {
+                    appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+                }
+
+                thisWidget = new ComponentName(this, SyncAppWidgetProvider.class);
+                newIntent = new Intent(this, WidgetUpdateService.class);
+                newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_SYNC_WIDGET);
+
+                remoteViews = buildUpdate(newIntent);
+                if (remoteViews != null) {
+                    appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+                }
+
+                thisWidget = new ComponentName(this, TorchAppWidgetProvider.class);
+                newIntent = new Intent(this, WidgetUpdateService.class);
+                newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_TORCH_WIDGET);
+
+                remoteViews = buildUpdate(newIntent);
+                if (remoteViews != null) {
+                    appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+                }
+
+                thisWidget = new ComponentName(this, WifiAppWidgetProvider.class);
+                newIntent = new Intent(this, WidgetUpdateService.class);
+                newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, UPDATE_SINGLE_WIFI_WIDGET);
+
+                remoteViews = buildUpdate(newIntent);
+                if (remoteViews != null) {
+                    appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+                }
+
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "", e);
             }
         } else {
             if (intentExtra != null && (intentExtra.equals(Intent.ACTION_TIME_CHANGED)
@@ -762,7 +750,7 @@ public class WidgetUpdateService extends Service {
                 int appWidgetIds[] = extras.getIntArray(AppWidgetManager.EXTRA_APPWIDGET_IDS);
                 int appWidgetIdSingle = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
 
-                RemoteViews updateViews = null;
+                RemoteViews updateViews;
 
                 if (appWidgetIds != null) {
                     for (int appWidgetId : appWidgetIds) {
@@ -1141,8 +1129,6 @@ public class WidgetUpdateService extends Service {
                             locationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     updateViews.setOnClickPendingIntent(R.id.gpsWidget,
                             pendingIntent);
-                } else {
-                    pendingIntent = null;
                 }
             }
         }
@@ -1210,8 +1196,6 @@ public class WidgetUpdateService extends Service {
                                 wirelessIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                         updateViews.setOnClickPendingIntent(R.id.airplaneWidget,
                                 pendingIntent);
-                    } else {
-                        pendingIntent = null;
                     }
                 }
             }
@@ -1231,7 +1215,7 @@ public class WidgetUpdateService extends Service {
 
                 int nOptions = Preferences.getBrightnessOptions(this);
 
-                PendingIntent pendingIntent = null;
+                PendingIntent pendingIntent;
 
                 switch (nOptions) {
                     case 0: // toggle
@@ -1286,7 +1270,7 @@ public class WidgetUpdateService extends Service {
                     NfcAdapter adapter = manager.getDefaultAdapter();
 
                     if (adapter != null) {
-                        Intent wirelessIntent = null;
+                        Intent wirelessIntent;
 
                         if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN)
                             wirelessIntent = new Intent(Settings.ACTION_NFC_SETTINGS);
@@ -1302,8 +1286,6 @@ public class WidgetUpdateService extends Service {
                                     wirelessIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                             updateViews.setOnClickPendingIntent(R.id.nfcWidget,
                                     pendingIntent);
-                        } else {
-                            pendingIntent = null;
                         }
                     }
                 }
@@ -1516,14 +1498,12 @@ public class WidgetUpdateService extends Service {
 
         Intent prefIntent = new Intent(this, PowerAppWidgetPreferenceActivity.class);
 
-        if (prefIntent != null) {
-            prefIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-            prefIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        prefIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        prefIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                    appWidgetId, prefIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            updateViews.setOnClickPendingIntent(R.id.settingsWidget, pendingIntent);
-        }
+        PendingIntent settingsIntent = PendingIntent.getActivity(this,
+                appWidgetId, prefIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        updateViews.setOnClickPendingIntent(R.id.settingsWidget, settingsIntent);
 
         int colorOff = WIDGET_COLOR_OFF;
         int colorBackground = WIDGET_COLOR_BACKGROUND;
@@ -1536,17 +1516,17 @@ public class WidgetUpdateService extends Service {
         }
 
         BitmapDrawable bitmapDrawable = setIconColor(this, colorOff, R.drawable.settings_on);
-        updateViews.setImageViewBitmap(R.id.imageViewSettings, bitmapDrawable.getBitmap());
+
+        if (bitmapDrawable != null)
+            updateViews.setImageViewBitmap(R.id.imageViewSettings, bitmapDrawable.getBitmap());
+
         updateViews.setInt(R.id.imageViewSettingsInd, "setColorFilter", colorOff);
-        //updateViews.setInt(R.id.layoutSettings, "setBackgroundColor", colorBackground);
-        //updateViews.setInt(R.id.powerWidget, "setBackgroundColor", colorBackground);
 
         int iOpacity = Preferences.getPowerOpacity(this, appWidgetId);
 
-        updateViews.setInt(R.id.backgroundImage, "setAlpha", (int) iOpacity * 255 / 100);
+        updateViews.setInt(R.id.backgroundImage, "setAlpha", iOpacity * 255 / 100);
         updateViews.setInt(R.id.backgroundImage, "setColorFilter", colorBackground);
 
-        //updateViews.setInt(R.id.textViewSettings, "setBackgroundColor", colorOff);
         updateViews.setTextColor(R.id.textViewSettings, colorTextOff);
 
         try {
@@ -1579,41 +1559,6 @@ public class WidgetUpdateService extends Service {
                 updateViews.setOnClickPendingIntent(R.id.mobileWidget,
                         pendingIntent);
             } else {
-                /*try {
-                    Process p;
-                    // Perform su to get root privileges
-                    p = Runtime.getRuntime().exec("su");
-
-                    // Attempt to write a file to a root-only
-                    DataOutputStream os = new DataOutputStream(p.getOutputStream());
-                    os.writeBytes("echo \"Do I have root?\" >/system/sd/temporary.txt\n");
-
-                    // Close the terminal
-                    os.writeBytes("exit\n");
-                    os.flush();
-
-                    p.waitFor();
-
-                    if (p.exitValue() != 255) {
-                        pendingIntent = PendingIntent.getBroadcast(this,
-                                0, new Intent(POWER_MOBILE_DATA_WIDGET_UPDATE),
-                                PendingIntent.FLAG_UPDATE_CURRENT);
-                        updateViews.setOnClickPendingIntent(R.id.mobileWidget,
-                                pendingIntent);
-                    } else {
-                        Intent intentData = new Intent(Intent.ACTION_MAIN);
-                        intentData.setComponent(new ComponentName("com.android.settings",
-                                "com.android.settings.Settings$DataUsageSummaryActivity"));
-                        intentData.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                        pendingIntent = PendingIntent.getActivity(this, 0,
-                                intentData, PendingIntent.FLAG_UPDATE_CURRENT);
-                        updateViews.setOnClickPendingIntent(R.id.mobileWidget,
-                                pendingIntent);
-                    }
-                } catch (Exception e) {
-                    Log.e(LOG_TAG, "", e);*/
-
                 Intent intentData = new Intent(Intent.ACTION_MAIN);
                 intentData.setComponent(new ComponentName("com.android.settings",
                         "com.android.settings.Settings$DataUsageSummaryActivity"));
@@ -1623,8 +1568,6 @@ public class WidgetUpdateService extends Service {
                         intentData, PendingIntent.FLAG_UPDATE_CURRENT);
                 updateViews.setOnClickPendingIntent(R.id.mobileWidget,
                         pendingIntent);
-                /*}*/
-
             }
 
             if (canToggleGPS()) {
@@ -1645,8 +1588,6 @@ public class WidgetUpdateService extends Service {
                             locationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     updateViews.setOnClickPendingIntent(R.id.gpsWidget,
                             pendingIntent);
-                } else {
-                    pendingIntent = null;
                 }
             }
 
@@ -1684,15 +1625,11 @@ public class WidgetUpdateService extends Service {
                                 wirelessIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                         updateViews.setOnClickPendingIntent(R.id.airplaneWidget,
                                 pendingIntent);
-                    } else {
-                        pendingIntent = null;
                     }
                 }
             }
 
             int nOptions = Preferences.getBrightnessOptions(this);
-
-            pendingIntent = null;
 
             switch (nOptions) {
                 case 0: // toggle
@@ -1729,7 +1666,7 @@ public class WidgetUpdateService extends Service {
                     NfcAdapter adapter = manager.getDefaultAdapter();
 
                     if (adapter != null) {
-                        Intent wirelessIntent = null;
+                        Intent wirelessIntent;
 
                         if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN)
                             wirelessIntent = new Intent(Settings.ACTION_NFC_SETTINGS);
@@ -1744,8 +1681,6 @@ public class WidgetUpdateService extends Service {
                                     wirelessIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                             updateViews.setOnClickPendingIntent(R.id.nfcWidget,
                                     pendingIntent);
-                        } else {
-                            pendingIntent = null;
                         }
                     }
                 }
@@ -1878,14 +1813,12 @@ public class WidgetUpdateService extends Service {
         {
             Intent intent = new Intent(this, DigitalClockAppWidgetPreferenceActivity.class);
 
-            if (intent != null) {
-                intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
-                PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                        appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                updateViews.setOnClickPendingIntent(R.id.clockWidget, pendingIntent);
-            }
+            PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                    appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            updateViews.setOnClickPendingIntent(R.id.clockWidget, pendingIntent);
         }
 
         // start clock&alarms application when clicked on clock's hours
@@ -1908,9 +1841,10 @@ public class WidgetUpdateService extends Service {
 
             boolean foundClockImpl = false;
 
-            for (int i = 0; i < clockImpls.length; i++) {
-                String packageName = clockImpls[i][1];
-                String className = clockImpls[i][2];
+            for (String[] clockImpl : clockImpls) {
+                String packageName = clockImpl[1];
+                String className = clockImpl[2];
+
                 try {
                     ComponentName cn = new ComponentName(packageName, className);
                     getPackageManager().getActivityInfo(cn, PackageManager.GET_META_DATA);
@@ -1918,7 +1852,7 @@ public class WidgetUpdateService extends Service {
                     foundClockImpl = true;
                     break;
                 } catch (NameNotFoundException nf) {
-                    continue;
+                    Log.d(LOG_TAG, "WidgetUpdateService buildClockUpdate nameNotFound");
                 }
             }
 
@@ -1927,33 +1861,28 @@ public class WidgetUpdateService extends Service {
                         this, appWidgetId, alarmClockIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
 
-                //updateViews.setOnClickPendingIntent(R.id.imageViewClockMinute,
-                //		pendingIntentClock);
                 updateViews.setOnClickPendingIntent(R.id.imageViewClockHour,
                         pendingIntentClock);
             }
         }
 
-        // start forecast when clicked on weather icon
-        {
-            // start weather forecast activity
-            Intent weatherForecastIntent = new Intent(this, WeatherForecastActivity.class);
-            weatherForecastIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        // start weather forecast activity when clicked on weather icon
+        Intent weatherForecastIntent = new Intent(this, WeatherForecastActivity.class);
+        weatherForecastIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
-            PendingIntent pendingForecastIntent = PendingIntent.getActivity(this,
-                    appWidgetId, weatherForecastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingForecastIntent = PendingIntent.getActivity(this,
+                appWidgetId, weatherForecastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            updateViews.setOnClickPendingIntent(R.id.imageViewWeather, pendingForecastIntent);
+        updateViews.setOnClickPendingIntent(R.id.imageViewWeather, pendingForecastIntent);
 
-            // refresh weather data
-            Intent refreshIntent = new Intent(this, WidgetUpdateService.class);
-            refreshIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.WEATHER_UPDATE);
-            refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        // refresh weather data
+        Intent refreshIntent = new Intent(this, WidgetUpdateService.class);
+        refreshIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.WEATHER_UPDATE);
+        refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
-            PendingIntent pendingRefreshIntent = PendingIntent.getService(this, appWidgetId, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingRefreshIntent = PendingIntent.getService(this, appWidgetId, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            updateViews.setOnClickPendingIntent(R.id.viewButtonRefresh, pendingRefreshIntent);
-        }
+        updateViews.setOnClickPendingIntent(R.id.viewButtonRefresh, pendingRefreshIntent);
 
         return (updateViews);
     }
@@ -2025,30 +1954,46 @@ public class WidgetUpdateService extends Service {
     public void updateBatteryStatus(RemoteViews updateViews, Intent intent, int appWidgetId) {
         Log.d(LOG_TAG, "WidgetUpdateService updateBatteryStatus");
 
-        int rawlevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        int rawLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
         int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS,
                 BatteryManager.BATTERY_STATUS_UNKNOWN);
         int level = -1;
         int icon = R.drawable.battery_widget_75;
 
-        if (rawlevel >= 0 && scale > 0) {
-            level = (rawlevel * 100) / scale;
+        if (rawLevel >= 0 && scale > 0) {
+            level = (rawLevel * 100) / scale;
         }
 
         if (level == -1) {
             Intent batteryIntent = this.registerReceiver(
                     null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-            int rawlevel1 = batteryIntent.getIntExtra(
-                    BatteryManager.EXTRA_LEVEL, -1);
-            int scale1 = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE,
-                    -1);
-            int status1 = batteryIntent.getIntExtra(
-                    BatteryManager.EXTRA_STATUS,
-                    BatteryManager.BATTERY_STATUS_UNKNOWN);
-            if (rawlevel1 >= 0 && scale1 > 0) {
-                level = (rawlevel1 * 100) / scale1;
+            int rawLevel1 = 0;
+
+            if (batteryIntent != null) {
+                rawLevel1 = batteryIntent.getIntExtra(
+                        BatteryManager.EXTRA_LEVEL, -1);
             }
+
+            int scale1 = 0;
+
+            if (batteryIntent != null) {
+                scale1 = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE,
+                        -1);
+            }
+
+            int status1 = 0;
+
+            if (batteryIntent != null) {
+                status1 = batteryIntent.getIntExtra(
+                        BatteryManager.EXTRA_STATUS,
+                        BatteryManager.BATTERY_STATUS_UNKNOWN);
+            }
+
+            if (rawLevel1 >= 0 && scale1 > 0) {
+                level = (rawLevel1 * 100) / scale1;
+            }
+
             status = status1;
         }
 
@@ -2094,10 +2039,6 @@ public class WidgetUpdateService extends Service {
 
             updateViews.setImageViewResource(R.id.imageViewBattery, icon);
         } else {
-            //int colorBackground = WIDGET_COLOR_BACKGROUND;
-            //colorBackground = Preferences.getColorBackground(this, appWidgetId);
-            //updateViews.setInt(R.id.layoutBatteryStatus, "setBackgroundColor", colorBackground);
-
             int threshold2 = Preferences.getThresholdBattery2(this, appWidgetId);
             int threshold3 = Preferences.getThresholdBattery3(this, appWidgetId);
             int threshold4 = Preferences.getThresholdBattery4(this, appWidgetId);
@@ -2107,7 +2048,7 @@ public class WidgetUpdateService extends Service {
             int color3 = Preferences.getColorBattery3(this, appWidgetId);
             int color4 = Preferences.getColorBattery4(this, appWidgetId);
 
-            int color = 0;
+            int color;
             String font = "fonts/Roboto.ttf";
 
             if (level < threshold2)
@@ -2119,16 +2060,16 @@ public class WidgetUpdateService extends Service {
             else
                 color = color4;
 
-            //updateViews.setInt(R.id.imageViewBatteryStatusCharge, "setBackgroundColor", color);
             updateViews.setImageViewBitmap(R.id.imageViewBatteryStatus, getFontBitmap(this, strLevel, color, font, true, 144));
             updateViews.setInt(R.id.imageViewBatteryStatusInd, "setColorFilter", color);
 
             if (status == BatteryManager.BATTERY_STATUS_CHARGING) {
                 updateViews.setViewVisibility(R.id.imageViewBatteryStatusCharge, View.VISIBLE);
                 BitmapDrawable bitmapDrawable = setIconColor(this, color, R.drawable.high_voltage);
-                updateViews.setImageViewBitmap(R.id.imageViewBatteryStatusCharge, bitmapDrawable.getBitmap());
+
+                if (bitmapDrawable != null)
+                    updateViews.setImageViewBitmap(R.id.imageViewBatteryStatusCharge, bitmapDrawable.getBitmap());
             } else {
-                //updateViews.setImageViewBitmap(R.id.imageViewBatteryStatusCharge, null);
                 updateViews.setViewVisibility(R.id.imageViewBatteryStatusCharge, View.GONE);
             }
         }
@@ -2138,14 +2079,14 @@ public class WidgetUpdateService extends Service {
     public void updateNotificationBatteryStatus(Intent intent) {
         Log.d(LOG_TAG, "WidgetUpdateService updateNotificationBatteryStatus");
 
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        if (Preferences.getShowBatteryNotif(this) == false) {
+        if (!Preferences.getShowBatteryNotif(this)) {
             notificationManager.cancel(R.string.batterynotification);
             return;
         }
 
-        int rawlevel = intent
+        int rawLevel = intent
                 .getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
         int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS,
@@ -2154,23 +2095,37 @@ public class WidgetUpdateService extends Service {
         int icons = Preferences.getBatteryIcons(this);
         int icon = (icons == 1 ? R.drawable.battery_font_charge_000 : R.drawable.battery_charge_000);
 
-        if (rawlevel >= 0 && scale > 0) {
-            level = (rawlevel * 100) / scale;
+        if (rawLevel >= 0 && scale > 0) {
+            level = (rawLevel * 100) / scale;
         }
 
         if (level == -1) {
             Intent batteryIntent = getApplicationContext().registerReceiver(
                     null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-            int rawlevel1 = batteryIntent.getIntExtra(
-                    BatteryManager.EXTRA_LEVEL, -1);
-            int scale1 = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE,
-                    -1);
-            int status1 = batteryIntent.getIntExtra(
-                    BatteryManager.EXTRA_STATUS,
-                    BatteryManager.BATTERY_STATUS_UNKNOWN);
-            if (rawlevel1 >= 0 && scale1 > 0) {
-                level = (rawlevel1 * 100) / scale1;
+            int rawLevel1 = 0;
+
+            if (batteryIntent != null) {
+                rawLevel1 = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
             }
+
+            int scale1 = 0;
+
+            if (batteryIntent != null) {
+                scale1 = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+            }
+
+            int status1 = 0;
+
+            if (batteryIntent != null) {
+                status1 = batteryIntent.getIntExtra(
+                        BatteryManager.EXTRA_STATUS,
+                        BatteryManager.BATTERY_STATUS_UNKNOWN);
+            }
+
+            if (rawLevel1 >= 0 && scale1 > 0) {
+                level = (rawLevel1 * 100) / scale1;
+            }
+
             status = status1;
         }
 
@@ -2186,16 +2141,16 @@ public class WidgetUpdateService extends Service {
                 icon = (icons == 1 ? R.drawable.battery_font_charge_000 : R.drawable.battery_charge_000) + level;
                 break;
             case (BatteryManager.BATTERY_STATUS_DISCHARGING):
+                icon = (icons == 1 ? R.drawable.battery_font_000 : R.drawable.battery_000) + level;
+                break;
             case (BatteryManager.BATTERY_STATUS_NOT_CHARGING):
                 icon = (icons == 1 ? R.drawable.battery_font_000 : R.drawable.battery_000) + level;
                 break;
         }
 
-        notification = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(this);
 
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-
-        } else {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             notification.setColor(0);
         }
 
@@ -2214,67 +2169,27 @@ public class WidgetUpdateService extends Service {
         CharSequence batteryStatus = getResources().getText(R.string.batterycurrentstatusfull);
 
         if (status == BatteryManager.BATTERY_STATUS_UNKNOWN) {
-            batteryStatus = batteryStatus + " " + (String) getResources().getText(R.string.batteryunknown);
+            batteryStatus = batteryStatus + " " + getResources().getText(R.string.batteryunknown);
         } else if (status == BatteryManager.BATTERY_STATUS_CHARGING) {
-            batteryStatus = batteryStatus + " " + (String) getResources().getText(R.string.batterycharging);
+            batteryStatus = batteryStatus + " " + getResources().getText(R.string.batterycharging);
         } else if (status == BatteryManager.BATTERY_STATUS_DISCHARGING) {
-            batteryStatus = batteryStatus + " " + (String) getResources().getText(R.string.batterydisharging);
+            batteryStatus = batteryStatus + " " + getResources().getText(R.string.batterydisharging);
         } else if (status == BatteryManager.BATTERY_STATUS_NOT_CHARGING) {
-            batteryStatus = batteryStatus + " " + (String) getResources().getText(R.string.batterydisharging);
+            batteryStatus = batteryStatus + " " + getResources().getText(R.string.batterydisharging);
         } else if (status == BatteryManager.BATTERY_STATUS_FULL) {
-            batteryStatus = batteryStatus + " " + (String) getResources().getText(R.string.batteryfull);
+            batteryStatus = batteryStatus + " " + getResources().getText(R.string.batteryfull);
         } else {
-            batteryStatus = batteryStatus + " " + (String) getResources().getText(R.string.batteryunknown);
+            batteryStatus = batteryStatus + " " + getResources().getText(R.string.batteryunknown);
         }
 
-        notification.setContentTitle((String) getResources().getText(R.string.batterylevelfull) + " " + level + "%");
+        notification.setContentTitle(getResources().getText(R.string.batterylevelfull) + " " + level + "%");
         notification.setContentText(batteryStatus);
         notification.setContentIntent(pendingIntent);
         notificationManager.notify(R.string.batterynotification, notification.build());
     }
 
-
-    /**
-     * Checks if the device is rooted.
-     *
-     * @return <code>true</code> if the device is rooted, <code>false</code> otherwise.
-     */
-    public static boolean isRooted() {
-        try {
-            Process p;
-            // Perform su to get root privileges
-            p = Runtime.getRuntime().exec("su");
-
-            // Attempt to write a file to a root-only
-            DataOutputStream os = new DataOutputStream(p.getOutputStream());
-            os.writeBytes("echo \"Do I have root?\" >/system/sd/temporary.txt\n");
-
-            // Close the terminal
-            os.writeBytes("exit\n");
-            os.flush();
-
-            p.waitFor();
-
-            if (p.exitValue() != 255) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (IOException e) {
-
-        } catch (InterruptedException e) {
-
-        }
-
-        return false;
-    }
-
     public boolean canToggleAirplane() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1/* || isRooted()*/) {
-            return true;
-        } else {
-            return false;
-        }
+        return VERSION.SDK_INT < VERSION_CODES.JELLY_BEAN_MR1;
     }
 
     public boolean getAirplaneMode() {
@@ -2310,9 +2225,7 @@ public class WidgetUpdateService extends Service {
         Boolean airplaneMode = getAirplaneMode();
         // ignore toggle requests if the Airplane mode is currently changing
         // state
-        if (airplaneMode != null) {
-            setAirplaneMode(!airplaneMode);
-        }
+        setAirplaneMode(!airplaneMode);
     }
 
     @SuppressWarnings("unused")
@@ -2333,14 +2246,12 @@ public class WidgetUpdateService extends Service {
 
         int colorOn = WIDGET_COLOR_ON;
         int colorOff = WIDGET_COLOR_OFF;
-        int colorTransition = WIDGET_COLOR_TRANSITION;
         int colorTextOn = WIDGET_COLOR_TEXT_ON;
         int colorTextOff = WIDGET_COLOR_TEXT_OFF;
 
         if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
             colorOn = Preferences.getColorOn(this, appWidgetId);
             colorOff = Preferences.getColorOff(this, appWidgetId);
-            colorTransition = Preferences.getColorTransition(this, appWidgetId);
             colorTextOn = Preferences.getColorTextOn(this, appWidgetId);
             colorTextOff = Preferences.getColorTextOff(this, appWidgetId);
         }
@@ -2349,21 +2260,13 @@ public class WidgetUpdateService extends Service {
 
         Boolean airplaneMode = getAirplaneMode();
 
-        if (airplaneMode != null) {
-            BitmapDrawable bitmapDrawable = setIconColor(this, airplaneMode ? colorOn : colorOff, R.drawable.airplane_on);
+        BitmapDrawable bitmapDrawable = setIconColor(this, airplaneMode ? colorOn : colorOff, R.drawable.airplane_on);
+
+        if (bitmapDrawable != null)
             updateViews.setImageViewBitmap(R.id.imageViewAirplane, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewAirplane, "setBackgroundColor", airplaneMode ? colorOn : colorOff);
-            updateViews.setTextColor(R.id.textViewAirplane, airplaneMode ? colorTextOn : colorTextOff);
-            updateViews.setInt(R.id.imageViewAirplaneInd, "setColorFilter", airplaneMode ? colorOn : colorOff);
-        } else {
-            BitmapDrawable bitmapDrawable = setIconColor(this, colorTransition, R.drawable.airplane_on);
-            updateViews.setImageViewBitmap(R.id.imageViewAirplane, bitmapDrawable.getBitmap());
-
-            //updateViews.setInt(R.id.textViewAirplane, "setBackgroundColor", colorTransition);
-            updateViews.setTextColor(R.id.textViewAirplane, colorTextOn);
-            updateViews.setInt(R.id.imageViewAirplaneInd, "setColorFilter", colorTransition);
-        }
+        updateViews.setTextColor(R.id.textViewAirplane, airplaneMode ? colorTextOn : colorTextOff);
+        updateViews.setInt(R.id.imageViewAirplaneInd, "setColorFilter", airplaneMode ? colorOn : colorOff);
     }
 
     protected Boolean getBluetoothState() {
@@ -2456,84 +2359,30 @@ public class WidgetUpdateService extends Service {
 
         if (bluetoothState != null) {
             BitmapDrawable bitmapDrawable = setIconColor(this, bluetoothState ? colorOn : colorOff, R.drawable.bluetooth_on);
-            updateViews.setImageViewBitmap(R.id.imageViewBluetooth, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewBluetooth, "setBackgroundColor", bluetoothState ? colorOn : colorOff);
+            if (bitmapDrawable != null)
+                updateViews.setImageViewBitmap(R.id.imageViewBluetooth, bitmapDrawable.getBitmap());
+
             updateViews.setTextColor(R.id.textViewBluetooth, bluetoothState ? colorTextOn : colorTextOff);
             updateViews.setInt(R.id.imageViewBluetoothInd, "setColorFilter", bluetoothState ? colorOn : colorOff);
         } else {
             BitmapDrawable bitmapDrawable = setIconColor(this, colorTransition, R.drawable.bluetooth_on);
-            updateViews.setImageViewBitmap(R.id.imageViewBluetooth, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewBluetooth, "setBackgroundColor", colorTransition);
+            if (bitmapDrawable != null)
+                updateViews.setImageViewBitmap(R.id.imageViewBluetooth, bitmapDrawable.getBitmap());
+
             updateViews.setTextColor(R.id.textViewBluetooth, colorTextOn);
             updateViews.setInt(R.id.imageViewBluetoothInd, "setColorFilter", colorTransition);
         }
     }
 
     private boolean isFlashSupported(PackageManager packageManager) {
-        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
-            return true;
-        }
-        return false;
+        return packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+
     }
 
     private boolean isCameraSupported(PackageManager packageManager) {
-        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            return true;
-        }
-        return false;
-    }
-
-
-    protected Boolean getTorchState() {
-
-        Boolean torchState = null;
-        PackageManager pm = getPackageManager();
-
-        if (!isCameraSupported(pm) || !isFlashSupported(pm)) {
-            torchState = false;
-        } else {
-            if (isCameraSupported(pm) && isFlashSupported(pm)) {
-                boolean wasOpen = false;
-                if (camera == null) {
-                    try {
-                        camera = Camera.open();
-                    } catch (Exception e) {
-                        torchState = false;
-                    }
-                } else {
-                    wasOpen = true;
-                }
-
-                if (camera != null) {
-                    try {
-                        Parameters param = camera.getParameters();
-                        String mode = param.getFlashMode();
-
-                        if (mode.equals(Camera.Parameters.FLASH_MODE_TORCH))
-                            torchState = true;
-                        else
-                            torchState = false;
-
-                        if (!wasOpen) {
-                            camera.release();
-                            camera = null;
-                        }
-
-                    } catch (Exception e) {
-                        torchState = false;
-                        e.printStackTrace();
-                    }
-                }
-            } else {
-                torchState = false;
-            }
-        }
-
-        Log.v(LOG_TAG, "getTorchState - " + torchState);
-
-        return torchState;
+        return packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA);
     }
 
     protected Boolean getFlashOn() {
@@ -2541,7 +2390,7 @@ public class WidgetUpdateService extends Service {
         return flashOn;
     }
 
-    public void setTorchState(/*RemoteViews updateViews, */boolean torchState/*, int appWidgetId*/) {
+    public void setTorchState(boolean torchState) {
 
         Log.v(LOG_TAG, "setTorchState - " + torchState);
 
@@ -2645,16 +2494,18 @@ public class WidgetUpdateService extends Service {
 
         if (torchState != null) {
             BitmapDrawable bitmapDrawable = setIconColor(this, torchState ? colorOn : colorOff, R.drawable.flashlight_on);
-            updateViews.setImageViewBitmap(R.id.imageViewTorch, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewTorch, "setBackgroundColor", torchState ? colorOn : colorOff);
+            if (bitmapDrawable != null)
+                updateViews.setImageViewBitmap(R.id.imageViewTorch, bitmapDrawable.getBitmap());
+
             updateViews.setTextColor(R.id.textViewTorch, torchState ? colorTextOn : colorTextOff);
             updateViews.setInt(R.id.imageViewTorchInd, "setColorFilter", torchState ? colorOn : colorOff);
         } else {
             BitmapDrawable bitmapDrawable = setIconColor(this, colorTransition, R.drawable.flashlight_on);
-            updateViews.setImageViewBitmap(R.id.imageViewTorch, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewTorch, "setBackgroundColor", colorTransition);
+            if (bitmapDrawable != null)
+                updateViews.setImageViewBitmap(R.id.imageViewTorch, bitmapDrawable.getBitmap());
+
             updateViews.setTextColor(R.id.textViewTorch, colorTextOn);
             updateViews.setInt(R.id.imageViewTorchInd, "setColorFilter", colorTransition);
         }
@@ -2662,7 +2513,7 @@ public class WidgetUpdateService extends Service {
 
     protected Boolean getWifiState() {
 
-        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         Boolean wifiState = null;
 
         if (wifiManager != null) {
@@ -2697,7 +2548,7 @@ public class WidgetUpdateService extends Service {
 
         Log.v(LOG_TAG, "setWifiState - " + wifiState);
 
-        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         if (wifiManager != null)
             wifiManager.setWifiEnabled(wifiState);
@@ -2746,16 +2597,33 @@ public class WidgetUpdateService extends Service {
 
         if (wifiState != null) {
             BitmapDrawable bitmapDrawable = setIconColor(this, wifiState ? colorOn : colorOff, R.drawable.wifi_on);
-            updateViews.setImageViewBitmap(R.id.imageViewWiFi, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewWiFi, "setBackgroundColor", wifiState ? colorOn : colorOff);
+            if (bitmapDrawable != null)
+                updateViews.setImageViewBitmap(R.id.imageViewWiFi, bitmapDrawable.getBitmap());
+
             updateViews.setTextColor(R.id.textViewWiFi, wifiState ? colorTextOn : colorTextOff);
             updateViews.setInt(R.id.imageViewWiFiInd, "setColorFilter", wifiState ? colorOn : colorOff);
+
+            if (wifiState) {
+                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+                if (wifiManager != null) {
+                    WifiInfo info = wifiManager.getConnectionInfo();
+
+                    if (info != null) {
+                        String ssid = info.getSSID();
+                        ssid = ssid.replace("\"", "");
+                        updateViews.setTextViewText(R.id.textViewWiFi, ssid);
+                    }
+                }
+            }
+
         } else {
             BitmapDrawable bitmapDrawable = setIconColor(this, colorTransition, R.drawable.wifi_on);
-            updateViews.setImageViewBitmap(R.id.imageViewWiFi, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewWiFi, "setBackgroundColor", colorTransition);
+            if (bitmapDrawable != null)
+                updateViews.setImageViewBitmap(R.id.imageViewWiFi, bitmapDrawable.getBitmap());
+
             updateViews.setTextColor(R.id.textViewWiFi, colorTextOn);
             updateViews.setInt(R.id.imageViewWiFiInd, "setColorFilter", colorTransition);
         }
@@ -2819,16 +2687,18 @@ public class WidgetUpdateService extends Service {
 
         if (syncStatus != null) {
             BitmapDrawable bitmapDrawable = setIconColor(this, syncStatus ? colorOn : colorOff, R.drawable.sync_on);
-            updateViews.setImageViewBitmap(R.id.imageViewSync, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewSync, "setBackgroundColor", syncStatus ? colorOn : colorOff);
+            if (bitmapDrawable != null)
+                updateViews.setImageViewBitmap(R.id.imageViewSync, bitmapDrawable.getBitmap());
+
             updateViews.setTextColor(R.id.textViewSync, syncStatus ? colorTextOn : colorTextOff);
             updateViews.setInt(R.id.imageViewSyncInd, "setColorFilter", syncStatus ? colorOn : colorOff);
         } else {
             BitmapDrawable bitmapDrawable = setIconColor(this, colorTransition, R.drawable.sync_on);
-            updateViews.setImageViewBitmap(R.id.imageViewSync, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewSync, "setBackgroundColor", colorTransition);
+            if (bitmapDrawable != null)
+                updateViews.setImageViewBitmap(R.id.imageViewSync, bitmapDrawable.getBitmap());
+
             updateViews.setTextColor(R.id.textViewSync, colorTextOn);
             updateViews.setInt(R.id.imageViewSyncInd, "setColorFilter", colorTransition);
         }
@@ -2836,7 +2706,7 @@ public class WidgetUpdateService extends Service {
 
     protected Boolean getOrientation() {
 
-        Boolean orientation = (Settings.System.getInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1) ? true : false;
+        Boolean orientation = (Settings.System.getInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1);
 
         Log.v(LOG_TAG, "getOrientation - " + orientation);
 
@@ -2895,16 +2765,18 @@ public class WidgetUpdateService extends Service {
 
         if (orientation != null) {
             BitmapDrawable bitmapDrawable = setIconColor(this, orientation ? colorOn : colorOff, R.drawable.orientation_on);
-            updateViews.setImageViewBitmap(R.id.imageViewOrientation, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewOrientation, "setBackgroundColor", orientation ? colorOn : colorOff);
+            if (bitmapDrawable != null)
+                updateViews.setImageViewBitmap(R.id.imageViewOrientation, bitmapDrawable.getBitmap());
+
             updateViews.setTextColor(R.id.textViewOrientation, orientation ? colorTextOn : colorTextOff);
             updateViews.setInt(R.id.imageViewOrientationInd, "setColorFilter", orientation ? colorOn : colorOff);
         } else {
             BitmapDrawable bitmapDrawable = setIconColor(this, colorTransition, R.drawable.orientation_on);
-            updateViews.setImageViewBitmap(R.id.imageViewOrientation, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewOrientation, "setBackgroundColor", colorTransition);
+            if (bitmapDrawable != null)
+                updateViews.setImageViewBitmap(R.id.imageViewOrientation, bitmapDrawable.getBitmap());
+
             updateViews.setTextColor(R.id.textViewOrientation, colorTextOn);
             updateViews.setInt(R.id.imageViewOrientationInd, "setColorFilter", colorTransition);
         }
@@ -2923,12 +2795,7 @@ public class WidgetUpdateService extends Service {
 
             if (manager != null) {
                 NfcAdapter adapter = manager.getDefaultAdapter();
-
-                if (adapter != null && adapter.isEnabled()) {
-                    nfcState = true;
-                } else {
-                    nfcState = false;
-                }
+                nfcState = adapter != null && adapter.isEnabled();
             }
         } else {
             nfcState = false;
@@ -2993,16 +2860,18 @@ public class WidgetUpdateService extends Service {
 
         if (nfcState != null) {
             BitmapDrawable bitmapDrawable = setIconColor(this, nfcState ? colorOn : colorOff, R.drawable.nfc_on);
-            updateViews.setImageViewBitmap(R.id.imageViewNfc, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewNfc, "setBackgroundColor", nfcState ? colorOn : colorOff);
+            if (bitmapDrawable != null)
+                updateViews.setImageViewBitmap(R.id.imageViewNfc, bitmapDrawable.getBitmap());
+
             updateViews.setTextColor(R.id.textViewNfc, nfcState ? colorTextOn : colorTextOff);
             updateViews.setInt(R.id.imageViewNfcInd, "setColorFilter", nfcState ? colorOn : colorOff);
         } else {
             BitmapDrawable bitmapDrawable = setIconColor(this, colorTransition, R.drawable.nfc_on);
-            updateViews.setImageViewBitmap(R.id.imageViewNfc, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewNfc, "setBackgroundColor", colorTransition);
+            if (bitmapDrawable != null)
+                updateViews.setImageViewBitmap(R.id.imageViewNfc, bitmapDrawable.getBitmap());
+
             updateViews.setTextColor(R.id.textViewNfc, colorTextOn);
             updateViews.setInt(R.id.imageViewNfcInd, "setColorFilter", colorTransition);
         }
@@ -3078,58 +2947,60 @@ public class WidgetUpdateService extends Service {
         }
         Method getITelephonyMethod = null;
         try {
-            getITelephonyMethod = telephonyManagerClass
-                    .getDeclaredMethod("getITelephony");
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        getITelephonyMethod.setAccessible(true);
-        try {
-            ITelephonyStub = getITelephonyMethod.invoke(telephonyManager);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+            if (telephonyManagerClass != null) {
+                getITelephonyMethod = telephonyManagerClass
+                        .getDeclaredMethod("getITelephony");
+            }
+        } catch (SecurityException | NoSuchMethodException e) {
             e.printStackTrace();
         }
+        if (getITelephonyMethod != null) {
+            getITelephonyMethod.setAccessible(true);
+        }
         try {
-            ITelephonyClass = Class
-                    .forName(ITelephonyStub.getClass().getName());
+            if (getITelephonyMethod != null) {
+                ITelephonyStub = getITelephonyMethod.invoke(telephonyManager);
+            }
+        } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        try {
+            if (ITelephonyStub != null) {
+                ITelephonyClass = Class
+                        .forName(ITelephonyStub.getClass().getName());
+            }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
         if (!mobileState) {
             try {
-                dataConnSwitchmethod = ITelephonyClass
-                        .getDeclaredMethod("disableDataConnectivity");
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
+                if (ITelephonyClass != null) {
+                    dataConnSwitchmethod = ITelephonyClass
+                            .getDeclaredMethod("disableDataConnectivity");
+                }
+            } catch (SecurityException | NoSuchMethodException e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                dataConnSwitchmethod = ITelephonyClass
-                        .getDeclaredMethod("enableDataConnectivity");
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
+                if (ITelephonyClass != null) {
+                    dataConnSwitchmethod = ITelephonyClass
+                            .getDeclaredMethod("enableDataConnectivity");
+                }
+            } catch (SecurityException | NoSuchMethodException e) {
                 e.printStackTrace();
             }
         }
 
-        dataConnSwitchmethod.setAccessible(true);
+        if (dataConnSwitchmethod != null) {
+            dataConnSwitchmethod.setAccessible(true);
+        }
         try {
-            dataConnSwitchmethod.invoke(ITelephonyStub);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+            if (dataConnSwitchmethod != null) {
+                dataConnSwitchmethod.invoke(ITelephonyStub);
+            }
+        } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
@@ -3149,36 +3020,40 @@ public class WidgetUpdateService extends Service {
         }
         Field iConnectivityManagerField = null;
         try {
-            iConnectivityManagerField = conmanClass
-                    .getDeclaredField("mService");
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
+            if (conmanClass != null) {
+                iConnectivityManagerField = conmanClass
+                        .getDeclaredField("mService");
+            }
+        } catch (SecurityException | NoSuchFieldException e) {
             e.printStackTrace();
         }
-        iConnectivityManagerField.setAccessible(true);
+        if (iConnectivityManagerField != null) {
+            iConnectivityManagerField.setAccessible(true);
+        }
         Object iConnectivityManager = null;
         try {
-            iConnectivityManager = iConnectivityManagerField.get(conman);
-        } catch (IllegalArgumentException e1) {
-            e1.printStackTrace();
-        } catch (IllegalAccessException e1) {
+            if (iConnectivityManagerField != null) {
+                iConnectivityManager = iConnectivityManagerField.get(conman);
+            }
+        } catch (IllegalArgumentException | IllegalAccessException e1) {
             e1.printStackTrace();
         }
         Class iConnectivityManagerClass = null;
         try {
-            iConnectivityManagerClass = Class.forName(iConnectivityManager
-                    .getClass().getName());
+            if (iConnectivityManager != null) {
+                iConnectivityManagerClass = Class.forName(iConnectivityManager
+                        .getClass().getName());
+            }
         } catch (ClassNotFoundException e1) {
             e1.printStackTrace();
         }
         Method setMobileDataEnabledMethod = null;
         try {
-            setMobileDataEnabledMethod = iConnectivityManagerClass
-                    .getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
-        } catch (SecurityException e1) {
-            e1.printStackTrace();
-        } catch (NoSuchMethodException e1) {
+            if (iConnectivityManagerClass != null) {
+                setMobileDataEnabledMethod = iConnectivityManagerClass
+                        .getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
+            }
+        } catch (SecurityException | NoSuchMethodException e1) {
             e1.printStackTrace();
         }
 
@@ -3187,11 +3062,7 @@ public class WidgetUpdateService extends Service {
                 setMobileDataEnabledMethod.setAccessible(true);
                 setMobileDataEnabledMethod.invoke(iConnectivityManager, mobileState);
             }
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
@@ -3199,7 +3070,7 @@ public class WidgetUpdateService extends Service {
 
     public void setMobileStateLollipop(boolean mobileState) {
 
-        String command = "";
+        String command;
 
         if (mobileState)
             command = COMMAND_L_ON;
@@ -3273,16 +3144,18 @@ public class WidgetUpdateService extends Service {
 
         if (mobileState != null) {
             BitmapDrawable bitmapDrawable = setIconColor(this, mobileState ? colorOn : colorOff, R.drawable.data_on);
-            updateViews.setImageViewBitmap(R.id.imageViewMobile, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewMobile, "setBackgroundColor", mobileState ? colorOn : colorOff);
+            if (bitmapDrawable != null)
+                updateViews.setImageViewBitmap(R.id.imageViewMobile, bitmapDrawable.getBitmap());
+
             updateViews.setTextColor(R.id.textViewMobile, mobileState ? colorTextOn : colorTextOff);
             updateViews.setInt(R.id.imageViewMobileInd, "setColorFilter", mobileState ? colorOn : colorOff);
         } else {
             BitmapDrawable bitmapDrawable = setIconColor(this, colorTransition, R.drawable.data_on);
-            updateViews.setImageViewBitmap(R.id.imageViewMobile, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewMobile, "setBackgroundColor", colorTransition);
+            if (bitmapDrawable != null)
+                updateViews.setImageViewBitmap(R.id.imageViewMobile, bitmapDrawable.getBitmap());
+
             updateViews.setTextColor(R.id.textViewMobile, colorTextOn);
             updateViews.setInt(R.id.imageViewMobileInd, "setColorFilter", colorTransition);
         }
@@ -3290,7 +3163,7 @@ public class WidgetUpdateService extends Service {
 
     private boolean canToggleGPS() {
         PackageManager pacman = getPackageManager();
-        PackageInfo pacInfo = null;
+        PackageInfo pacInfo;
 
         try {
             pacInfo = pacman.getPackageInfo("com.android.settings",
@@ -3315,7 +3188,7 @@ public class WidgetUpdateService extends Service {
 
     protected Boolean getGpsState() {
 
-        Boolean gpsState = null;
+        Boolean gpsState;
 
         LocationManager locationManager = (LocationManager) (getSystemService(Context.LOCATION_SERVICE));
 
@@ -3323,11 +3196,7 @@ public class WidgetUpdateService extends Service {
             return null;
         }
 
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            gpsState = true;
-        } else {
-            gpsState = false;
-        }
+        gpsState = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         Log.v(LOG_TAG, "getGpsState - " + gpsState);
 
@@ -3402,16 +3271,18 @@ public class WidgetUpdateService extends Service {
 
         if (gpsState != null) {
             BitmapDrawable bitmapDrawable = setIconColor(this, gpsState ? colorOn : colorOff, R.drawable.gps_on);
-            updateViews.setImageViewBitmap(R.id.imageViewGps, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewGps, "setBackgroundColor", gpsState ? colorOn : colorOff);
+            if (bitmapDrawable != null)
+                updateViews.setImageViewBitmap(R.id.imageViewGps, bitmapDrawable.getBitmap());
+
             updateViews.setTextColor(R.id.textViewGps, gpsState ? colorTextOn : colorTextOff);
             updateViews.setInt(R.id.imageViewGpsInd, "setColorFilter", gpsState ? colorOn : colorOff);
         } else {
             BitmapDrawable bitmapDrawable = setIconColor(this, colorTransition, R.drawable.gps_on);
-            updateViews.setImageViewBitmap(R.id.imageViewGps, bitmapDrawable.getBitmap());
 
-            //updateViews.setInt(R.id.textViewGps, "setBackgroundColor", colorTransition);
+            if (bitmapDrawable != null)
+                updateViews.setImageViewBitmap(R.id.imageViewGps, bitmapDrawable.getBitmap());
+
             updateViews.setTextColor(R.id.textViewGps, colorTextOn);
             updateViews.setInt(R.id.imageViewGpsInd, "setColorFilter", colorTransition);
         }
@@ -3444,14 +3315,12 @@ public class WidgetUpdateService extends Service {
         audioManager.setRingerMode(ringerState);
 
         if (ringerState == AudioManager.RINGER_MODE_SILENT && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            //audioManager.setStreamVolume(AudioManager.STREAM_RING, 0, AudioManager.FLAG_ALLOW_RINGER_MODES);
             try {
                 Thread.sleep(500); // Lollipop hack!
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            //Toast.makeText(getApplicationContext(), getResources().getText(R.string.allsoundsmuted), Toast.LENGTH_LONG).show();
             Handler handler = new Handler(Looper.getMainLooper());
 
             handler.postDelayed(new Runnable() {
@@ -3532,7 +3401,7 @@ public class WidgetUpdateService extends Service {
 
         updateViews.setTextViewText(R.id.textViewRinger, getResources().getText(R.string.ringer));
 
-        int resource = R.drawable.ringer_normal;
+        int resource;
         int color = colorOn;
         int textColor = colorTextOn;
 
@@ -3559,19 +3428,11 @@ public class WidgetUpdateService extends Service {
                 break;
         }
 
-		/*if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AudioManager audioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
-
-			if (audioManager.getStreamVolume(AudioManager.STREAM_RING) == 0) {
-				resource = R.drawable.ringer_silent;
-				color = colorOff;
-				textColor = colorTextOff;
-			}
-		}*/
-
         BitmapDrawable bitmapDrawable = setIconColor(this, color, resource);
-        updateViews.setImageViewBitmap(R.id.imageViewRinger, bitmapDrawable.getBitmap());
-        //updateViews.setInt(R.id.textViewRinger, "setBackgroundColor", color);
+
+        if (bitmapDrawable != null)
+            updateViews.setImageViewBitmap(R.id.imageViewRinger, bitmapDrawable.getBitmap());
+
         updateViews.setTextColor(R.id.textViewRinger, textColor);
         updateViews.setInt(R.id.imageViewRingerInd, "setColorFilter", color);
     }
@@ -3579,7 +3440,6 @@ public class WidgetUpdateService extends Service {
     public void toggleBrightness() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-            //if ( isMarshmallowSixPointZiro() ) {
             if (Settings.System.canWrite(this)) {
                 realToggleBrightness();
             } else {
@@ -3587,9 +3447,6 @@ public class WidgetUpdateService extends Service {
                 writeSettingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(writeSettingsIntent);
             }
-            /*} else {
-				realToggleBrightness();
-			}*/
         } else {
             realToggleBrightness();
         }
@@ -3600,7 +3457,7 @@ public class WidgetUpdateService extends Service {
             ContentResolver cr = this.getContentResolver();
             int brightness = Settings.System.getInt(cr,
                     Settings.System.SCREEN_BRIGHTNESS);
-            int brightnessMode = Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
+            int brightnessMode;
 
             //Only get brightness setting if available
             brightnessMode = Settings.System.getInt(cr, Settings.System.SCREEN_BRIGHTNESS_MODE);
@@ -3633,7 +3490,7 @@ public class WidgetUpdateService extends Service {
 
     protected int getBrightness() {
 
-        int brightness = 255;
+        int brightness;
 
         try {
             brightness = Settings.System.getInt(getContentResolver(),
@@ -3690,7 +3547,7 @@ public class WidgetUpdateService extends Service {
 
         updateViews.setTextViewText(R.id.textViewBrightness, getResources().getText(R.string.brightness));
 
-        int resource = R.drawable.brightness_mid;
+        int resource;
         int brightness = getBrightness();
         boolean off = false;
 
@@ -3701,7 +3558,6 @@ public class WidgetUpdateService extends Service {
                 resource = R.drawable.brightness_on; // set gray background
                 off = true;
             } else {
-
                 if (brightness >= 50 && brightness < 150) {
                     resource = R.drawable.brightness_mid;
                 } else {
@@ -3711,8 +3567,10 @@ public class WidgetUpdateService extends Service {
         }
 
         BitmapDrawable bitmapDrawable = setIconColor(this, off ? colorOff : colorOn, resource);
-        updateViews.setImageViewBitmap(R.id.imageViewBrightness, bitmapDrawable.getBitmap());
-        //updateViews.setInt(R.id.textViewBrightness, "setBackgroundColor", off ? colorOff : colorOn);
+
+        if (bitmapDrawable != null)
+            updateViews.setImageViewBitmap(R.id.imageViewBrightness, bitmapDrawable.getBitmap());
+
         updateViews.setTextColor(R.id.textViewBrightness, off ? colorTextOff : colorTextOn);
         updateViews.setInt(R.id.imageViewBrightnessInd, "setColorFilter", off ? colorOff : colorOn);
     }
@@ -3732,15 +3590,13 @@ public class WidgetUpdateService extends Service {
         int height = (int) (fontSizePX / 0.75);
         Bitmap bitmap = Bitmap.createBitmap(textWidth, height, Bitmap.Config.ARGB_4444);
         Canvas canvas = new Canvas(bitmap);
-        float xOriginal = pad;
-        canvas.drawText(text, xOriginal, fontSizePX, paint);
+        canvas.drawText(text, (float) pad, fontSizePX, paint);
 
         return bitmap;
     }
 
     public static int convertDiptoPix(Context context, float dip) {
-        int value = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
-        return value;
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
     }
 
     public void updateClockStatus(RemoteViews updateViews, int appWidgetId, boolean updateWeather) {
@@ -3766,14 +3622,14 @@ public class WidgetUpdateService extends Service {
         String currentHour, currentMinute;
 
         SimpleDateFormat sdfMinute = new SimpleDateFormat("mm");
-        currentMinute = String.format(sdfMinute.format(new Date()));
+        currentMinute = sdfMinute.format(new Date());
 
         if (bShow24Hrs) {
             SimpleDateFormat sdfHour = new SimpleDateFormat("HH");
-            currentHour = String.format(sdfHour.format(new Date()));
+            currentHour = sdfHour.format(new Date());
         } else {
             SimpleDateFormat sdfHour = new SimpleDateFormat("hh");
-            currentHour = String.format(sdfHour.format(new Date()));
+            currentHour = sdfHour.format(new Date());
         }
 
         if (bShowBattery || bShowDate) {
@@ -3784,7 +3640,7 @@ public class WidgetUpdateService extends Service {
                     View.GONE);
         }
 
-        int systemClockColor = Color.WHITE;
+        int systemClockColor;
         int iClockColorItem = Preferences.getClockColorItem(this, appWidgetId);
 
         if (iClockColorItem >= 0) {
@@ -3833,7 +3689,7 @@ public class WidgetUpdateService extends Service {
             systemClockColor = Preferences.getClockColor(this, appWidgetId);
         }
 
-        int systemDateColor = Color.WHITE;
+        int systemDateColor;
         int iDateColorItem = Preferences.getDateColorItem(this, appWidgetId);
 
         if (iDateColorItem >= 0) {
@@ -3882,7 +3738,7 @@ public class WidgetUpdateService extends Service {
             systemDateColor = Preferences.getDateColor(this, appWidgetId);
         }
 
-        int systemWidgetColor = Color.BLACK;
+        int systemWidgetColor;
         int iWidgetColorItem = Preferences.getWidgetColorItem(this, appWidgetId);
 
         if (iWidgetColorItem >= 0) {
@@ -3952,31 +3808,31 @@ public class WidgetUpdateService extends Service {
 
         if (bShowDate) {
             SimpleDateFormat sdf = new SimpleDateFormat(mTestArray[iDateFormatItem]);
-            currentDate = String.format(sdf.format(new Date()));
+            currentDate = sdf.format(new Date());
         }
 
         if (bShowBattery) {
 
             Intent intentBattery = new Intent(Intent.ACTION_BATTERY_CHANGED);
 
-            int rawlevel = intentBattery.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+            int rawLevel = intentBattery.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
             int scale = intentBattery.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
             int level = -1;
 
-            if (rawlevel >= 0 && scale > 0) {
-                level = (rawlevel * 100) / scale;
+            if (rawLevel >= 0 && scale > 0) {
+                level = (rawLevel * 100) / scale;
             }
 
             if (level == -1) {
                 Intent batteryIntent = this
                         .registerReceiver(null,
                                 new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-                int rawlevel1 = batteryIntent.getIntExtra(
+                int rawLevel1 = batteryIntent.getIntExtra(
                         BatteryManager.EXTRA_LEVEL, -1);
                 int scale1 = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE,
                         -1);
-                if (rawlevel1 >= 0 && scale1 > 0) {
-                    level = (rawlevel1 * 100) / scale1;
+                if (rawLevel1 >= 0 && scale1 > 0) {
+                    level = (rawLevel1 * 100) / scale1;
                 }
             }
 
@@ -3985,7 +3841,7 @@ public class WidgetUpdateService extends Service {
 
         updateViews.setImageViewBitmap(R.id.imageViewDate, getFontBitmap(this, currentDate, systemDateColor, dateFont, dateBold, 14));
 
-        updateViews.setInt(R.id.backgroundImage, "setAlpha", (int) iOpacity * 255 / 100);
+        updateViews.setInt(R.id.backgroundImage, "setAlpha", iOpacity * 255 / 100);
         updateViews.setInt(R.id.backgroundImage, "setColorFilter", systemWidgetColor);
 
         updateViews.setViewVisibility(R.id.imageViewClockSpace, View.INVISIBLE);
@@ -4025,7 +3881,7 @@ public class WidgetUpdateService extends Service {
             updateViews.setViewVisibility(R.id.progressRefresh, View.GONE);
             updateViews.setFloat(R.id.clockWidget, "setWeightSum", 1.0f);
 
-            int systemWeatherColor = Color.WHITE;
+            int systemWeatherColor;
             int iWeatherColorItem = Preferences.getWeatherColorItem(this, appWidgetId);
 
             if (iWeatherColorItem >= 0) {
@@ -4113,8 +3969,6 @@ public class WidgetUpdateService extends Service {
             NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
             if (activeNetworkInfo == null) {
-                //Toast.makeText(this, "No Internet connection.", Toast.LENGTH_SHORT).show();
-
                 if (scheduledUpdate)
                     Preferences.setWeatherSuccess(this, appWidgetId, false);
 
@@ -4158,11 +4012,6 @@ public class WidgetUpdateService extends Service {
                 startWeatherUpdate(updateViews, appWidgetId, scheduledUpdate);
             }
 
-        } catch (IllegalStateException e1) {
-            e1.printStackTrace();
-
-            Preferences.setWeatherSuccess(this, appWidgetId, false);
-            readCachedWeatherData(updateViews, appWidgetId);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -4210,7 +4059,7 @@ public class WidgetUpdateService extends Service {
 
         dbHelper.open();
         Cursor locationsCursor = dbHelper.fetchAllLocations();
-        List<Long> locations = new ArrayList<Long>();
+        List<Long> locations = new ArrayList<>();
 
         if (locationsCursor != null && locationsCursor.getCount() > 0) {
             locationsCursor.moveToFirst();
@@ -4239,10 +4088,7 @@ public class WidgetUpdateService extends Service {
             info.locationId = -1;
             info.context = this;
 
-            if (locations.size() > 0)
-                info.last = false;
-            else
-                info.last = true;
+            info.last = locations.size() <= 0;
 
             new HttpTask().execute(info);
         }
@@ -4255,16 +4101,13 @@ public class WidgetUpdateService extends Service {
             info.locationId = locations.get(i);
             info.context = this;
 
-            if (i == locations.size() - 1)
-                info.last = true;
-            else
-                info.last = false;
+            info.last = i == locations.size() - 1;
 
             new HttpTask().execute(info);
         }
     }
 
-    public class HttpTask extends AsyncTask<HttpTaskInfo, Void, Boolean> {
+    private class HttpTask extends AsyncTask<HttpTaskInfo, Void, Boolean> {
 
         RemoteViews updateViews = null;
         int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
@@ -4294,7 +4137,7 @@ public class WidgetUpdateService extends Service {
                 //sendBroadcast(new Intent(UPDATE_FORECAST));
 
 				/*Intent intent = new Intent(WEATHER_UPDATE);
-	    		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 	    		sendBroadcast(intent);*/
 
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
@@ -4314,7 +4157,7 @@ public class WidgetUpdateService extends Service {
         }
     }
 
-    public class HttpTaskInfo {
+    class HttpTaskInfo {
         RemoteViews updateViews;
         int appWidgetId;
         boolean scheduledUpdate;
@@ -4357,9 +4200,9 @@ public class WidgetUpdateService extends Service {
 
         boolean ret = true;
         try {
-            Reader responseReader = null;
+            Reader responseReader;
             HttpClient client = new DefaultHttpClient();
-            HttpGet request = null;
+            HttpGet request;
 
             if (locId >= 0) {
                 request = new HttpGet(String.format(WEATHER_SERVICE_ID_URL, locId/*Preferences.getLocationId(WidgetUpdateService.this, appWidgetId)*/, lang));
@@ -4382,14 +4225,6 @@ public class WidgetUpdateService extends Service {
             HttpEntity entity = response.getEntity();
             responseReader = new InputStreamReader(entity.getContent());
 
-            if (responseReader == null) {
-                if (scheduledUpdate)
-                    Preferences.setWeatherSuccess(WidgetUpdateService.this, appWidgetId, false);
-
-                readCachedWeatherData(updateViews, appWidgetId);
-                return false;
-            }
-
             char[] buf = new char[1024];
             StringBuilder result = new StringBuilder();
             int read = responseReader.read(buf);
@@ -4402,8 +4237,8 @@ public class WidgetUpdateService extends Service {
             if (result.length() > 0) {
                 String parseString = result.toString();
 
-                if (!parseString.equals(null) && !parseString.equals("") && !parseString.contains("<html>")) {
-                    parseString.trim();
+                if (!parseString.isEmpty() && !parseString.contains("<html>")) {
+                    parseString = parseString.trim();
 
                     if (parseString.endsWith("\n"))
                         parseString = parseString.substring(0, parseString.length() - 1);
@@ -4416,8 +4251,7 @@ public class WidgetUpdateService extends Service {
 
                         long locIdTemp = Preferences.getLocationId(this, appWidgetId);
 
-                        if ((locId >= 0 && locId == locIdTemp) ||
-                                (locId == -1 && lat != -222 && lon != -222 && !Float.isNaN(lat) && !Float.isNaN(lon)))
+                        if (locId >= 0 && locId == locIdTemp || locId == -1 && !Float.isNaN(lat) && !Float.isNaN(lon))
                             parseWeatherData(updateViews, appWidgetId, result.toString(), false, scheduledUpdate);
 
                         // save cache
@@ -4431,7 +4265,7 @@ public class WidgetUpdateService extends Service {
                             }
                         }
 
-                        File cacheFile = null;
+                        File cacheFile;
 
                         if (locId >= 0)
                             cacheFile = new File(parentDirectory, "weather_cache_loc_" + locId);
@@ -4447,33 +4281,6 @@ public class WidgetUpdateService extends Service {
                 }
             }
 
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-
-            if (scheduledUpdate)
-                Preferences.setWeatherSuccess(WidgetUpdateService.this, appWidgetId, false);
-
-            readCachedWeatherData(updateViews, appWidgetId);
-
-            ret = false;
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-
-            if (scheduledUpdate)
-                Preferences.setWeatherSuccess(WidgetUpdateService.this, appWidgetId, false);
-
-            readCachedWeatherData(updateViews, appWidgetId);
-
-            ret = false;
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-
-            if (scheduledUpdate)
-                Preferences.setWeatherSuccess(WidgetUpdateService.this, appWidgetId, false);
-
-            readCachedWeatherData(updateViews, appWidgetId);
-
-            ret = false;
         } catch (IOException e) {
             e.printStackTrace();
 
@@ -4520,9 +4327,9 @@ public class WidgetUpdateService extends Service {
 
         boolean ret = true;
         try {
-            Reader responseReader = null;
+            Reader responseReader;
             HttpClient client = new DefaultHttpClient();
-            HttpGet request = null;
+            HttpGet request;
 
             if (locId >= 0) {
                 request = new HttpGet(String.format(WEATHER_FORECAST_ID_URL, locId/*Preferences.getLocationId(WidgetUpdateService.this, appWidgetId)*/, lang));
@@ -4544,13 +4351,6 @@ public class WidgetUpdateService extends Service {
             HttpEntity entity = response.getEntity();
             responseReader = new InputStreamReader(entity.getContent());
 
-            if (responseReader == null) {
-                if (scheduledUpdate)
-                    Preferences.setForecastSuccess(WidgetUpdateService.this, appWidgetId, false);
-
-                return false;
-            }
-
             char[] buf = new char[1024];
             StringBuilder result = new StringBuilder();
             int read = responseReader.read(buf);
@@ -4563,8 +4363,8 @@ public class WidgetUpdateService extends Service {
             if (result.length() > 0) {
                 String parseString = result.toString();
 
-                if (!parseString.equals(null) && !parseString.equals("") && !parseString.contains("<html>")) {
-                    parseString.trim();
+                if (!parseString.isEmpty() && !parseString.contains("<html>")) {
+                    parseString = parseString.trim();
 
                     if (parseString.endsWith("\n"))
                         parseString = parseString.substring(0, parseString.length() - 1);
@@ -4585,7 +4385,7 @@ public class WidgetUpdateService extends Service {
                             }
                         }
 
-                        File cacheFile = null;
+                        File cacheFile;
 
                         if (locId >= 0)
                             cacheFile = new File(parentDirectory, "forecast_cache_loc_" + locId);
@@ -4601,27 +4401,6 @@ public class WidgetUpdateService extends Service {
                 }
             }
 
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-
-            if (scheduledUpdate)
-                Preferences.setForecastSuccess(WidgetUpdateService.this, appWidgetId, false);
-
-            ret = false;
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-
-            if (scheduledUpdate)
-                Preferences.setForecastSuccess(WidgetUpdateService.this, appWidgetId, false);
-
-            ret = false;
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-
-            if (scheduledUpdate)
-                Preferences.setForecastSuccess(WidgetUpdateService.this, appWidgetId, false);
-
-            ret = false;
         } catch (IOException e) {
             e.printStackTrace();
 
@@ -4652,11 +4431,6 @@ public class WidgetUpdateService extends Service {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         sendBroadcast(intent);
 
-        if (updateViews == null) {
-            updateViews = new RemoteViews(getPackageName(),
-                    R.layout.digitalclockwidget);
-        }
-
         try {
             File parentDirectory = new File(this.getFilesDir().getAbsolutePath());
 
@@ -4668,7 +4442,7 @@ public class WidgetUpdateService extends Service {
                 }
             }
 
-            File cacheFile = null;
+            File cacheFile;
 
             long locId = Preferences.getLocationId(this, appWidgetId);
 
@@ -4702,8 +4476,6 @@ public class WidgetUpdateService extends Service {
 
             parseWeatherData(updateViews, appWidgetId, result.toString(), true, false);
 
-        } catch (FileNotFoundException e1) {
-            e1.printStackTrace();
         } catch (IOException e2) {
             e2.printStackTrace();
         }
@@ -4723,10 +4495,10 @@ public class WidgetUpdateService extends Service {
                     R.layout.digitalclockwidget);
         }
 
-        if (parseString.equals(null) || parseString.equals("") || parseString.contains("<html>"))
+        if (parseString.isEmpty() || parseString.contains("<html>"))
             return;
 
-        parseString.trim();
+        parseString = parseString.trim();
 
         if (parseString.endsWith("\n"))
             parseString = parseString.substring(0, parseString.length() - 1);
@@ -4741,7 +4513,7 @@ public class WidgetUpdateService extends Service {
         int iFontItem = Preferences.getWeatherFontItem(this, appWidgetId);
         boolean bold = Preferences.getWeatherBoldText(this, appWidgetId);
 
-        int systemWeatherColor = Color.WHITE;
+        int systemWeatherColor;
         int iWeatherColorItem = Preferences.getWeatherColorItem(this, appWidgetId);
 
         if (iWeatherColorItem >= 0) {
@@ -4802,7 +4574,7 @@ public class WidgetUpdateService extends Service {
             int tempScale = Preferences.getTempScale(this, appWidgetId);
 
             JSONObject query = (JSONObject) parser.nextValue();
-            JSONObject weatherJSON = null;
+            JSONObject weatherJSON;
 
             if (query.has("list")) {
 
@@ -4819,7 +4591,7 @@ public class WidgetUpdateService extends Service {
 
             int cityId = weatherJSON.getInt("id");
             String location = weatherJSON.getString("name");
-            String temp = "";
+            String temp;
 
             int locationType = Preferences.getLocationType(this, appWidgetId);
 
@@ -4836,6 +4608,7 @@ public class WidgetUpdateService extends Service {
             try {
                 main = weatherJSON.getJSONObject("main");
             } catch (JSONException e) {
+                Log.d(LOG_TAG, "WidgetUpdateService parseWeatherData JSONException");
             }
             try {
                 double currentTemp = main.getDouble("temp") - 273.15;
@@ -4848,25 +4621,30 @@ public class WidgetUpdateService extends Service {
                 updateViews.setImageViewBitmap(R.id.imageViewTemp, getFontBitmap(this, temp, systemWeatherColor, font, bold, 32));
 
             } catch (JSONException e) {
+                Log.d(LOG_TAG, "WidgetUpdateService parseWeatherData JSONException");
             }
 
             JSONObject windJSON = null;
             try {
                 windJSON = weatherJSON.getJSONObject("wind");
             } catch (JSONException e) {
+                Log.d(LOG_TAG, "WidgetUpdateService parseWeatherData JSONException");
             }
             try {
                 double speed = windJSON.getDouble("speed");
             } catch (JSONException e) {
+                Log.d(LOG_TAG, "WidgetUpdateService parseWeatherData JSONException");
             }
             try {
                 double deg = windJSON.getDouble("deg");
             } catch (JSONException e) {
+                Log.d(LOG_TAG, "WidgetUpdateService parseWeatherData JSONException");
             }
 
             try {
                 double humidityValue = weatherJSON.getJSONObject("main").getDouble("humidity");
             } catch (JSONException e) {
+                Log.d(LOG_TAG, "WidgetUpdateService parseWeatherData JSONException");
             }
 
             try {
@@ -4883,7 +4661,7 @@ public class WidgetUpdateService extends Service {
                     WeatherConditions conditions = new WeatherConditions();
 
                     int icons = Preferences.getWeatherIcons(this, appWidgetId);
-                    int resource = R.drawable.tick_weather_04d;
+                    int resource;
                     WeatherIcon[] imageArr;
 
                     updateViews.setImageViewBitmap(R.id.imageViewDesc, getFontBitmap(this, weatherDesc, systemWeatherColor, font, bold, 12));
@@ -4977,24 +4755,21 @@ public class WidgetUpdateService extends Service {
                         Calendar civilSunriseCalendarForDate = calc.getCivilSunriseCalendarForDate(calendarForDate);
                         Calendar civilSunsetCalendarForDate = calc.getCivilSunsetCalendarForDate(calendarForDate);
 
-                        if (calendarForDate.before(civilSunriseCalendarForDate) || calendarForDate.after(civilSunsetCalendarForDate))
-                            bDay = false;
-                        else
-                            bDay = true;
+                        bDay = !(calendarForDate.before(civilSunriseCalendarForDate) || calendarForDate.after(civilSunsetCalendarForDate));
                     }
 
-                    for (int j = 0; j < imageArr.length; j++) {
-                        if (iconName.equals(imageArr[j].iconName) || iconNameAlt.equals(imageArr[j].iconName)) {
+                    for (WeatherIcon anImageArr : imageArr) {
+                        if (iconName.equals(anImageArr.iconName) || iconNameAlt.equals(anImageArr.iconName)) {
 
-                            if (imageArr[j].bDay != bDay)
-                                updateViews.setImageViewResource(R.id.imageViewWeather, imageArr[j].altIconId);
+                            if (anImageArr.bDay != bDay)
+                                updateViews.setImageViewResource(R.id.imageViewWeather, anImageArr.altIconId);
                             else
-                                updateViews.setImageViewResource(R.id.imageViewWeather, imageArr[j].iconId);
+                                updateViews.setImageViewResource(R.id.imageViewWeather, anImageArr.iconId);
                         }
                     }
                 }
             } catch (JSONException e) {
-                //no weather type
+                Log.d(LOG_TAG, "WidgetUpdateService parseWeatherData JSONException");
             }
 
             if (!updateFromCache) {
@@ -5015,17 +4790,17 @@ public class WidgetUpdateService extends Service {
 
                 if (bShow24Hrs) {
                     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                    currentTime = String.format(sdf.format(resultdate));
+                    currentTime = sdf.format(resultdate);
                 } else {
                     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-                    currentTime = String.format(sdf.format(resultdate));
+                    currentTime = sdf.format(resultdate);
                 }
 
-                String currentDate = "";
+                String currentDate;
                 String[] mTestArray = getResources().getStringArray(R.array.dateFormat);
 
                 SimpleDateFormat sdf = new SimpleDateFormat(mTestArray[iDateFormatItem]);
-                currentDate = String.format(sdf.format(resultdate));
+                currentDate = sdf.format(resultdate);
 
                 updateViews.setImageViewBitmap(R.id.imageViewLast,
                         getFontBitmap(this, currentDate + ", " + currentTime, systemWeatherColor, font, bold, 12));
@@ -5064,12 +4839,6 @@ public class WidgetUpdateService extends Service {
 
         canvas.drawRect(0, 0, width, height, maskedPaint);
 
-        BitmapDrawable outDrawable = new BitmapDrawable(res, outBitmap);
-        return outDrawable;
-    }
-
-    public static boolean isMarshmallowSixPointZiro() {
-        //We need to check if phone is 6.0
-        return android.os.Build.VERSION.RELEASE.matches("6.0");
+        return new BitmapDrawable(res, outBitmap);
     }
 }
