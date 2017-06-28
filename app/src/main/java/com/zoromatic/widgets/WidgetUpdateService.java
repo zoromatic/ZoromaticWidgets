@@ -77,6 +77,7 @@ import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.nfc.NfcAdapter;
@@ -2608,12 +2609,16 @@ public class WidgetUpdateService extends Service {
                 WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
                 if (wifiManager != null) {
-                    WifiInfo info = wifiManager.getConnectionInfo();
+                    WifiInfo wifiInfo = wifiManager.getConnectionInfo();
 
-                    if (info != null) {
-                        String ssid = info.getSSID();
-                        ssid = ssid.replace("\"", "");
-                        updateViews.setTextViewText(R.id.textViewWiFi, ssid);
+                    if (wifiInfo != null) {
+                        if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
+                            String ssid = wifiInfo.getSSID();
+                            ssid = ssid.replace("\"", "");
+
+                            if (!ssid.contains("<unknown ssid>"))
+                                updateViews.setTextViewText(R.id.textViewWiFi, ssid);
+                        }
                     }
                 }
             }
