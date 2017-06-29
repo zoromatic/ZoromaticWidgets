@@ -106,6 +106,8 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import static java.lang.Thread.sleep;
+
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @SuppressLint("SimpleDateFormat")
 @SuppressWarnings({"rawtypes", "unchecked", "deprecation"})
@@ -191,6 +193,10 @@ public class WidgetUpdateService extends Service {
     private final static String COMMAND_L_ON = "svc data enable\n ";
     private final static String COMMAND_L_OFF = "svc data disable\n ";
     private final static String COMMAND_SU = "su";
+
+    private int mBatteryLevel = -1;
+    private int mBatteryScale = -1;
+    private int mBatteryStatus = BatteryManager.BATTERY_STATUS_UNKNOWN;
 
     static {
 
@@ -527,8 +533,63 @@ public class WidgetUpdateService extends Service {
 
         boolean scheduledUpdate = intent.getBooleanExtra(WidgetInfoReceiver.SCHEDULED_UPDATE, false);
 
-        if (intentExtra != null && intentExtra.equals(Intent.ACTION_BATTERY_CHANGED))
+        if (intentExtra != null && intentExtra.equals(Intent.ACTION_BATTERY_CHANGED)) {
+            int rawLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+            int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+            int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS,
+                    BatteryManager.BATTERY_STATUS_UNKNOWN);
+
+            int level = -1;
+
+            if (rawLevel >= 0 && scale > 0) {
+                level = (rawLevel * 100) / scale;
+            }
+
+            if (level == -1) {
+                Intent batteryIntent = getApplicationContext().registerReceiver(
+                        null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+                int rawLevel1 = 0;
+
+                if (batteryIntent != null) {
+                    rawLevel1 = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+                }
+
+                int scale1 = 0;
+
+                if (batteryIntent != null) {
+                    scale1 = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+                }
+
+                int status1 = 0;
+
+                if (batteryIntent != null) {
+                    status1 = batteryIntent.getIntExtra(
+                            BatteryManager.EXTRA_STATUS,
+                            BatteryManager.BATTERY_STATUS_UNKNOWN);
+                }
+
+                int level1 = -1;
+
+                if (rawLevel1 >= 0 && scale1 > 0) {
+                    level1 = (rawLevel1 * 100) / scale1;
+                }
+
+                level = level1;
+                scale = scale1;
+                status = status1;
+            }
+
+            if (mBatteryLevel != -1 && mBatteryScale != -1 && mBatteryStatus != BatteryManager.BATTERY_STATUS_UNKNOWN &&
+                    level == mBatteryLevel && scale == mBatteryScale && status == mBatteryStatus) {
+                return START_NOT_STICKY;
+            }
+
+            mBatteryLevel = level;
+            mBatteryScale = scale;
+            mBatteryStatus = status;
+
             updateNotificationBatteryStatus(intent);
+        }
 
         if (intentExtra != null && intentExtra.equals(Intent.ACTION_LOCALE_CHANGED)) {
             String langDef = Locale.getDefault().getLanguage();
@@ -2413,6 +2474,7 @@ public class WidgetUpdateService extends Service {
                         Parameters param = camera.getParameters();
                         param.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
                         camera.setParameters(param);
+                        sleep(300);
                         camera.startPreview();
                         flashOn = true;
                     } catch (Exception e) {
@@ -3321,7 +3383,7 @@ public class WidgetUpdateService extends Service {
 
         if (ringerState == AudioManager.RINGER_MODE_SILENT && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             try {
-                Thread.sleep(500); // Lollipop hack!
+                sleep(500); // Lollipop hack!
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
