@@ -194,9 +194,9 @@ public class WidgetUpdateService extends Service {
     private final static String COMMAND_L_OFF = "svc data disable\n ";
     private final static String COMMAND_SU = "su";
 
-    private int mBatteryLevel = -1;
+    /*private int mBatteryLevel = -1;
     private int mBatteryScale = -1;
-    private int mBatteryStatus = BatteryManager.BATTERY_STATUS_UNKNOWN;
+    private int mBatteryStatus = BatteryManager.BATTERY_STATUS_UNKNOWN;*/
 
     static {
 
@@ -534,7 +534,7 @@ public class WidgetUpdateService extends Service {
         boolean scheduledUpdate = intent.getBooleanExtra(WidgetInfoReceiver.SCHEDULED_UPDATE, false);
 
         if (intentExtra != null && intentExtra.equals(Intent.ACTION_BATTERY_CHANGED)) {
-            int rawLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+            /*int rawLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
             int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
             int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS,
                     BatteryManager.BATTERY_STATUS_UNKNOWN);
@@ -560,7 +560,7 @@ public class WidgetUpdateService extends Service {
                     scale1 = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
                 }
 
-                int status1 = 0;
+                int status1 = BatteryManager.BATTERY_STATUS_UNKNOWN;
 
                 if (batteryIntent != null) {
                     status1 = batteryIntent.getIntExtra(
@@ -580,13 +580,14 @@ public class WidgetUpdateService extends Service {
             }
 
             if (mBatteryLevel != -1 && mBatteryScale != -1 && mBatteryStatus != BatteryManager.BATTERY_STATUS_UNKNOWN &&
+                    level != -1 && scale != -1 && status != BatteryManager.BATTERY_STATUS_UNKNOWN &&
                     level == mBatteryLevel && scale == mBatteryScale && status == mBatteryStatus) {
                 return START_NOT_STICKY;
             }
 
             mBatteryLevel = level;
             mBatteryScale = scale;
-            mBatteryStatus = status;
+            mBatteryStatus = status;*/
 
             updateNotificationBatteryStatus(intent);
         }
@@ -2044,7 +2045,7 @@ public class WidgetUpdateService extends Service {
                         -1);
             }
 
-            int status1 = 0;
+            int status1 = BatteryManager.BATTERY_STATUS_UNKNOWN;
 
             if (batteryIntent != null) {
                 status1 = batteryIntent.getIntExtra(
@@ -2176,7 +2177,7 @@ public class WidgetUpdateService extends Service {
                 scale1 = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
             }
 
-            int status1 = 0;
+            int status1 = BatteryManager.BATTERY_STATUS_UNKNOWN;
 
             if (batteryIntent != null) {
                 status1 = batteryIntent.getIntExtra(
