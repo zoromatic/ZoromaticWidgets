@@ -182,6 +182,22 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
                     for (int appWidgetId : appWidgetIds) {
                         boolean weatherSuccess = Preferences.getWeatherSuccess(context, appWidgetId);
 
+                        // check also if refresh interval passed
+                        long lastRefresh = Preferences.getLastRefresh(context, appWidgetId);
+
+                        if (lastRefresh == 0) {
+                            lastRefresh = System.currentTimeMillis();
+                        }
+
+                        long currentTime = System.currentTimeMillis();
+                        int refreshInterval = Preferences.getRefreshInterval(context, appWidgetId) * 3600 * 1000;
+
+                        if (lastRefresh > 0 && currentTime > 0 && refreshInterval >0) {
+                            if (currentTime - lastRefresh > refreshInterval) {
+                                weatherSuccess = false;
+                            }
+                        }
+
                         if (!weatherSuccess) {
                             Intent refreshIntent = new Intent(context, WidgetUpdateService.class);
                             refreshIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.WEATHER_UPDATE);
