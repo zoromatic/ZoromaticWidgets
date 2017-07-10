@@ -579,6 +579,7 @@ public class WidgetUpdateService extends Service {
                 status = status1;
             }
 
+            // prevent frequent updates
             if (mBatteryLevel != -1 && mBatteryScale != -1 && mBatteryStatus != BatteryManager.BATTERY_STATUS_UNKNOWN &&
                     level != -1 && scale != -1 && status != BatteryManager.BATTERY_STATUS_UNKNOWN &&
                     level == mBatteryLevel && scale == mBatteryScale && status == mBatteryStatus) {
@@ -2457,9 +2458,9 @@ public class WidgetUpdateService extends Service {
 
         Log.v(LOG_TAG, "setTorchState - " + torchState);
 
-        PackageManager pm = getPackageManager();
+        PackageManager packageManager = getPackageManager();
 
-        if (isCameraSupported(pm) && isFlashSupported(pm)) {
+        if (isCameraSupported(packageManager) && isFlashSupported(packageManager)) {
 
             if (camera == null)
                 try {
@@ -2946,7 +2947,6 @@ public class WidgetUpdateService extends Service {
     }
 
     protected Boolean getMobileState() {
-
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         Boolean mobileState = null;
 
@@ -3208,6 +3208,15 @@ public class WidgetUpdateService extends Service {
 
         updateViews.setTextViewText(R.id.textViewMobile, getResources().getText(R.string.mobile));
 
+        if (intentExtra != null && intentExtra.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+            // HACK - mobile data state change is delayed, delay getting info
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         Boolean mobileState = getMobileState();
 
         if (mobileState != null) {
@@ -3230,18 +3239,18 @@ public class WidgetUpdateService extends Service {
     }
 
     private boolean canToggleGPS() {
-        PackageManager pacman = getPackageManager();
-        PackageInfo pacInfo;
+        PackageManager packageManager = getPackageManager();
+        PackageInfo packageInfo;
 
         try {
-            pacInfo = pacman.getPackageInfo("com.android.settings",
+            packageInfo = packageManager.getPackageInfo("com.android.settings",
                     PackageManager.GET_RECEIVERS);
         } catch (NameNotFoundException e) {
             return false; // package not found
         }
 
-        if (pacInfo != null) {
-            for (ActivityInfo actInfo : pacInfo.receivers) {
+        if (packageInfo != null) {
+            for (ActivityInfo actInfo : packageInfo.receivers) {
                 // test if receiver is exported. if so, we can toggle GPS.
                 if (actInfo.name
                         .equals("com.android.settings.widget.SettingsAppWidgetProvider")
