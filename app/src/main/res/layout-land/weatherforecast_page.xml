@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -29,7 +30,8 @@
                     android:id="@+id/imageViewWeatherToday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
                     android:contentDescription="@string/weatherdesc"
                     android:scaleType="fitCenter"
                     android:src="@drawable/tick_weather_unknown" />
@@ -85,11 +87,19 @@
                             android:textSize="24sp" />
 
                         <TextView
-                            android:id="@+id/textViewDescToday"
+                            android:id="@+id/textViewWeatherTodayLow"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/locationempty"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"/>
+
+                        <TextView
+                            android:id="@+id/textViewWeatherTodayHigh"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/locationempty"
+                            android:textSize="16sp"/>
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -99,6 +109,13 @@
                         android:layout_weight="0.5"
                         android:gravity="center|center_vertical"
                         android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textViewDescToday"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/locationempty"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/textViewTempToday"

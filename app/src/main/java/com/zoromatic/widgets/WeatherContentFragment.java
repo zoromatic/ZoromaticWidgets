@@ -18,7 +18,6 @@ package com.zoromatic.widgets;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -40,7 +39,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-//import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.SpannableString;
@@ -82,7 +80,7 @@ public class WeatherContentFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mContext = (Context) getActivity();
+        mContext = getActivity();
     }
 
     @Override
@@ -105,12 +103,7 @@ public class WeatherContentFragment extends Fragment {
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //new Handler().postDelayed(new Runnable() {
-                //    @Override public void run() {
                 ((WeatherForecastActivity) getActivity()).refreshData();
-                //swipeLayout.setRefreshing(false);
-                //    }
-                //}, 5000);
             }
         });
 
@@ -185,7 +178,7 @@ public class WeatherContentFragment extends Fragment {
                 locId = args.getLong(KEY_LOCATION_ID);
             }
 
-            File cacheFile = null;
+            File cacheFile;
 
             if (locId >= 0) {
                 cacheFile = new File(parentDirectory, "weather_cache_loc_" + locId);
@@ -217,8 +210,6 @@ public class WeatherContentFragment extends Fragment {
                 parseWeatherData(context, appWidgetId, result.toString(), true, false);
             }
 
-        } catch (FileNotFoundException e1) {
-            e1.printStackTrace();
         } catch (IOException e2) {
             e2.printStackTrace();
         }
@@ -240,11 +231,11 @@ public class WeatherContentFragment extends Fragment {
             return;
         }
 
-        if (parseString.equals(null) || parseString.equals("") || parseString.contains("<html>")) {
+        if (parseString.isEmpty() || parseString.contains("<html>")) {
             return;
         }
 
-        parseString.trim();
+        parseString = parseString.trim();
 
         if (parseString.endsWith("\n"))
             parseString = parseString.substring(0, parseString.length() - 1);
@@ -262,7 +253,7 @@ public class WeatherContentFragment extends Fragment {
             int tempScale = Preferences.getTempScale(context, appWidgetId);
 
             JSONObject query = (JSONObject) parser.nextValue();
-            JSONObject weatherJSON = null;
+            JSONObject weatherJSON;
 
             if (query.has("list")) {
 
@@ -279,7 +270,6 @@ public class WeatherContentFragment extends Fragment {
 
             int cityId = weatherJSON.getInt("id");
             String location = weatherJSON.getString("name");
-            //String location = Preferences.getLocation(context, appWidgetId);
 
             int lnLoc = location.length();
             SpannableString spStrLoc = new SpannableString(location);
@@ -288,18 +278,18 @@ public class WeatherContentFragment extends Fragment {
             TextView text = (TextView) view.findViewById(R.id.textViewLocToday);
             text.setText(spStrLoc);
 
-            //setTitle(location);
-
             long timestamp = weatherJSON.getLong("dt");
             Date time = new Date(timestamp * 1000);
 
             JSONObject main = null;
+
             try {
                 main = weatherJSON.getJSONObject("main");
-            } catch (JSONException e) {
+            } catch (JSONException ignored) {
             }
+
             try {
-                double currentTemp = main.getDouble("temp") - 273.15;
+                double currentTemp = (main != null ? main.getDouble("temp") - 273.15 : 0);
                 text = (TextView) view.findViewById(R.id.textViewTempToday);
 
                 if (tempScale == 1) {
@@ -308,27 +298,29 @@ public class WeatherContentFragment extends Fragment {
                     text.setText(String.valueOf((int) currentTemp) + "°");
                 }
 
-
-            } catch (JSONException e) {
+            } catch (JSONException ignored) {
             }
 
             JSONObject windJSON = null;
+
             try {
                 windJSON = weatherJSON.getJSONObject("wind");
-            } catch (JSONException e) {
+            } catch (JSONException ignored) {
             }
+
             try {
-                double speed = windJSON.getDouble("speed");
-            } catch (JSONException e) {
+                double speed = windJSON != null ? windJSON.getDouble("speed") : 0;
+            } catch (JSONException ignored) {
             }
+
             try {
-                double deg = windJSON.getDouble("deg");
-            } catch (JSONException e) {
+                double deg = windJSON != null ? windJSON.getDouble("deg") : 0;
+            } catch (JSONException ignored) {
             }
 
             try {
                 double humidityValue = weatherJSON.getJSONObject("main").getDouble("humidity");
-            } catch (JSONException e) {
+            } catch (JSONException ignored) {
             }
 
             try {
@@ -442,19 +434,15 @@ public class WeatherContentFragment extends Fragment {
                         Calendar civilSunriseCalendarForDate = calc.getCivilSunriseCalendarForDate(calendarForDate);
                         Calendar civilSunsetCalendarForDate = calc.getCivilSunsetCalendarForDate(calendarForDate);
 
-                        if (calendarForDate.before(civilSunriseCalendarForDate) || calendarForDate.after(civilSunsetCalendarForDate)) {
-                            bDay = false;
-                        } else {
-                            bDay = true;
-                        }
+                        bDay = !(calendarForDate.before(civilSunriseCalendarForDate) || calendarForDate.after(civilSunsetCalendarForDate));
                     }
 
-                    for (int j = 0; j < imageArr.length; j++) {
-                        if (iconName.equals(imageArr[j].iconName) || iconNameAlt.equals(imageArr[j].iconName)) {
-                            if (imageArr[j].bDay != bDay) {
-                                image.setImageResource(imageArr[j].altIconId);
+                    for (WeatherIcon anImageArr : imageArr) {
+                        if (iconName.equals(anImageArr.iconName) || iconNameAlt.equals(anImageArr.iconName)) {
+                            if (anImageArr.bDay != bDay) {
+                                image.setImageResource(anImageArr.altIconId);
                             } else {
-                                image.setImageResource(imageArr[j].iconId);
+                                image.setImageResource(anImageArr.iconId);
                             }
                         }
                     }
@@ -471,30 +459,30 @@ public class WeatherContentFragment extends Fragment {
                 }
             }
 
-            long lastrefresh = Preferences.getLastRefresh(context, appWidgetId);
+            long lastRefresh = Preferences.getLastRefresh(context, appWidgetId);
 
             text = (TextView) view.findViewById(R.id.textViewLast);
 
-            if (lastrefresh > 0) {
+            if (lastRefresh > 0) {
                 boolean bShow24Hrs = Preferences.getShow24Hrs(context, appWidgetId);
                 int iDateFormatItem = Preferences.getDateFormatItem(context, appWidgetId);
-                Date resultdate = new Date(lastrefresh);
+                Date resultdate = new Date(lastRefresh);
 
                 String currentTime;
 
                 if (bShow24Hrs) {
                     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                    currentTime = String.format(sdf.format(resultdate));
+                    currentTime = sdf.format(resultdate);
                 } else {
                     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-                    currentTime = String.format(sdf.format(resultdate));
+                    currentTime = sdf.format(resultdate);
                 }
 
                 String currentDate = "";
                 String[] mTestArray = getResources().getStringArray(R.array.dateFormat);
 
                 SimpleDateFormat sdf = new SimpleDateFormat(mTestArray[iDateFormatItem]);
-                currentDate = String.format(sdf.format(resultdate));
+                currentDate = sdf.format(resultdate);
 
                 if (text != null) {
                     text.setText(currentDate + ", " + currentTime);
@@ -537,7 +525,7 @@ public class WeatherContentFragment extends Fragment {
                 locId = args.getLong(KEY_LOCATION_ID);
             }
 
-            File cacheFile = null;
+            File cacheFile;
 
             if (locId >= 0) {
                 cacheFile = new File(parentDirectory, "forecast_cache_loc_" + locId);
@@ -569,8 +557,6 @@ public class WeatherContentFragment extends Fragment {
                 parseForecastData(context, appWidgetId, result.toString(), true, false);
             }
 
-        } catch (FileNotFoundException e1) {
-            e1.printStackTrace();
         } catch (IOException e2) {
             e2.printStackTrace();
         }
@@ -593,11 +579,11 @@ public class WeatherContentFragment extends Fragment {
             return;
         }
 
-        if (parseString.equals(null) || parseString.equals("") || parseString.contains("<html>")) {
+        if (parseString.isEmpty() || parseString.contains("<html>")) {
             return;
         }
 
-        parseString.trim();
+        parseString = parseString.trim();
 
         if (parseString.endsWith("\n"))
             parseString = parseString.substring(0, parseString.length() - 1);
@@ -621,7 +607,7 @@ public class WeatherContentFragment extends Fragment {
                 return;
             }
 
-            for (int i = 1; i < list.length(); i++) {
+            for (int i = 0; i < list.length(); i++) {
                 if (i == 6) {
                     break;
                 }
@@ -725,22 +711,43 @@ public class WeatherContentFragment extends Fragment {
                 String sTempLow = "";
                 String weatherMain = "";
                 String weatherDesc = "";
-                String date = "";
-                String day = "";
+                String date;
+                String day;
 
                 SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
-                date = String.format(sdf.format(calendar.getTime()));
+                date = sdf.format(calendar.getTime());
 
                 sdf = new SimpleDateFormat("EEE");
-                day = String.format(sdf.format(calendar.getTime()));
+                day = sdf.format(calendar.getTime());
 
                 JSONObject tempJSON = null;
+
                 try {
                     tempJSON = weatherJSON.getJSONObject("temp");
-                } catch (JSONException e) {
+                } catch (JSONException ignored) {
                 }
+
+                if (i == 0) {// today
+                    double minTemp = (tempJSON != null ? tempJSON.getDouble("min") - 273.15 : 0);
+                    double maxTemp = (tempJSON != null ? tempJSON.getDouble("max") - 273.15 : 0);
+
+                    TextView textLow = (TextView) view.findViewById(R.id.textViewWeatherTodayLow);
+                    TextView textHigh = (TextView) view.findViewById(R.id.textViewWeatherTodayHigh);
+
+                    if (tempScale == 1) {
+                        textLow.setText(getString(R.string.temp_low) + String.valueOf((int) (minTemp * 1.8 + 32)) + "°");
+                        textHigh.setText(getString(R.string.temp_high) + String.valueOf((int) (maxTemp * 1.8 + 32)) + "°");
+                    } else {
+                        textLow.setText(getString(R.string.temp_low) + String.valueOf((int) minTemp) + "°");
+
+                        textHigh.setText(getString(R.string.temp_high) + String.valueOf((int) maxTemp) + "°");
+                    }
+
+                    continue;
+                }
+
                 try {
-                    double temp = tempJSON.getDouble("max") - 273.15;
+                    double temp = (tempJSON != null ? tempJSON.getDouble("max") - 273.15 : 0);
 
                     if (tempScale == 1) {
                         sTempHigh = "H: " + String.valueOf((int) (temp * 1.8 + 32)) + "°";
@@ -748,14 +755,14 @@ public class WeatherContentFragment extends Fragment {
                         sTempHigh = "H: " + String.valueOf((int) temp) + "°";
                     }
 
-                    temp = tempJSON.getDouble("min") - 273.15;
+                    temp = (tempJSON != null ? tempJSON.getDouble("min") - 273.15 : 0);
 
                     if (tempScale == 1) {
                         sTempLow = "L: " + String.valueOf((int) (temp * 1.8 + 32)) + "°";
                     } else {
                         sTempLow = "L: " + String.valueOf((int) temp) + "°";
                     }
-                } catch (JSONException e) {
+                } catch (JSONException ignored) {
                 }
 
                 try {
@@ -769,9 +776,9 @@ public class WeatherContentFragment extends Fragment {
                     String iconName = weather.getString("icon");
                     String iconNameAlt = iconName + "d";
 
-                    for (int k = 0; k < imageArr.length; k++) {
-                        if (iconName.equals(imageArr[k].iconName) || iconNameAlt.equals(imageArr[k].iconName)) {
-                            iconID = imageArr[k].iconId;
+                    for (WeatherIcon anImageArr : imageArr) {
+                        if (iconName.equals(anImageArr.iconName) || iconNameAlt.equals(anImageArr.iconName)) {
+                            iconID = anImageArr.iconId;
                             break;
                         }
                     }
@@ -824,12 +831,24 @@ public class WeatherContentFragment extends Fragment {
                         break;
                 }
 
-                textDay.setText(day);
-                textDate.setText(date);
-                textTempHigh.setText(sTempHigh);
-                textTempLow.setText(sTempLow);
-                textDesc.setText(weatherDesc);
-                image.setImageResource(iconID);
+                if (textDay != null) {
+                    textDay.setText(day);
+                }
+                if (textDate != null) {
+                    textDate.setText(date);
+                }
+                if (textTempHigh != null) {
+                    textTempHigh.setText(sTempHigh);
+                }
+                if (textTempLow != null) {
+                    textTempLow.setText(sTempLow);
+                }
+                if (textDesc != null) {
+                    textDesc.setText(weatherDesc);
+                }
+                if (image != null) {
+                    image.setImageResource(iconID);
+                }
             }
 
             if (!updateFromCache) {
@@ -852,15 +871,20 @@ public class WeatherContentFragment extends Fragment {
         Calendar cursor = (Calendar) startDate.clone();
         cursor.add(Calendar.DAY_OF_YEAR, presumedDays);
         long instant = cursor.getTimeInMillis();
+
         if (instant == endInstant) {
             return presumedDays;
         }
+
         final int step = instant < endInstant ? 1 : -1;
+
         do {
             cursor.add(Calendar.DAY_OF_MONTH, step);
             presumedDays += step;
         }
+
         while (cursor.getTimeInMillis() != endInstant);
+
         return presumedDays;
     }
 }

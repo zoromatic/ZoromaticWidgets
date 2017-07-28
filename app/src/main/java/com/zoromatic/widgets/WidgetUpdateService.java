@@ -3211,7 +3211,7 @@ public class WidgetUpdateService extends Service {
         if (intentExtra != null && intentExtra.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
             // HACK - mobile data state change is delayed, delay getting info
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

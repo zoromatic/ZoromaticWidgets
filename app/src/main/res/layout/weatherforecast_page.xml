@@ -85,11 +85,18 @@
                             android:textSize="24sp" />
 
                         <TextView
-                            android:id="@+id/textViewDescToday"
+                            android:id="@+id/textViewWeatherTodayLow"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/locationempty"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"/>
+
+                        <TextView
+                            android:id="@+id/textViewWeatherTodayHigh"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/locationempty"
+                            android:textSize="16sp"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -99,6 +106,13 @@
                         android:layout_weight="0.5"
                         android:gravity="center|center_vertical"
                         android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textViewDescToday"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/locationempty"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/textViewTempToday"

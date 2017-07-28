@@ -383,4 +383,7 @@
     <string name="main_theme_colors">Main Theme and Colors</string>
     <string name="config_main_theme_colors">Configure main theme and colors</string>
 
+    <string name="temp_low">Низкая:\u0020</string>
+    <string name="temp_high">Высокая:\u0020</string>
+
 </resources>
