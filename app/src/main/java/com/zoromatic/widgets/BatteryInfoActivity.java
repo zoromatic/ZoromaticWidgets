@@ -27,7 +27,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-public class BatteryInfoActivity extends ThemeActionBarActivity {
+public class BatteryInfoActivity extends ThemeAppCompatActivity {
 
     private static final int ACTIVITY_SETTINGS = 0;
     //private static ListView listViewInfo;

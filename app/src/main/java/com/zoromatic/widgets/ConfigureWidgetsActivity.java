@@ -34,7 +34,7 @@ import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
-public class ConfigureWidgetsActivity extends ThemeActionBarActivity {
+public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
 
     private static String LOG_TAG = "ConfigureWidgetsActivity";
     private Toolbar toolbar;

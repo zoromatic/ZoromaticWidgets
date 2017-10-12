@@ -14,7 +14,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -37,8 +36,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -47,7 +44,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 @SuppressLint({"SimpleDateFormat", "RtlHardcoded"})
-public class WeatherForecastActivity extends ThemeActionBarActivity {
+public class WeatherForecastActivity extends ThemeAppCompatActivity {
 
     private static String LOG_TAG = "WeatherForecastActivity";
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;

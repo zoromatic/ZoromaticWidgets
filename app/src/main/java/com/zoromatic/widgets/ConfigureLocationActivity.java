@@ -95,7 +95,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 @SuppressWarnings({"unused", "deprecation"})
-public class ConfigureLocationActivity extends ThemeActionBarActivity {
+public class ConfigureLocationActivity extends ThemeAppCompatActivity {
 
     public static final String LOG_TAG = "ConfigureLocation";
 

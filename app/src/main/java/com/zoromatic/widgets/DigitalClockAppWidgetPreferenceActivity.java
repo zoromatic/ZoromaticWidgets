@@ -14,7 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 @SuppressLint({"SimpleDateFormat", "NewApi"})
-public class DigitalClockAppWidgetPreferenceActivity extends ThemeActionBarActivity {
+public class DigitalClockAppWidgetPreferenceActivity extends ThemeAppCompatActivity {
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     static final String APPWIDGETID = "AppWidgetId";
     private Toolbar toolbar;

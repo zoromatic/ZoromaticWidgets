@@ -24,7 +24,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 //import android.widget.Toast;
 
 @SuppressLint("NewApi")
-public class ZoromaticWidgetsPreferenceActivity extends ThemeActionBarActivity {
+public class ZoromaticWidgetsPreferenceActivity extends ThemeAppCompatActivity {
     public boolean mAboutOpen = false;
     public static final String ABOUT = "about";
     private Toolbar toolbar;
