@@ -414,6 +414,14 @@ public class WeatherContentFragment extends Fragment {
                             resource = R.drawable.cartoon_weather_04d;
                             imageArr = conditions.m_ImageArrCartoon;
                             break;
+                        case 17:
+                            resource = R.drawable.flaticon_weather_04d;
+                            imageArr = conditions.m_ImageArrFlaticon;
+                            break;
+                        case 18:
+                            resource = R.drawable.icon8_weather_04d;
+                            imageArr = conditions.m_ImageArrIcon8;
+                            break;
                         default:
                             resource = R.drawable.tick_weather_04d;
                             imageArr = conditions.m_ImageArrTick;
@@ -700,6 +708,14 @@ public class WeatherContentFragment extends Fragment {
                     case 16:
                         iconID = R.drawable.cartoon_weather_04d;
                         imageArr = conditions.m_ImageArrCartoon;
+                        break;
+                    case 17:
+                        iconID = R.drawable.flaticon_weather_04d;
+                        imageArr = conditions.m_ImageArrFlaticon;
+                        break;
+                    case 18:
+                        iconID = R.drawable.icon8_weather_04d;
+                        imageArr = conditions.m_ImageArrIcon8;
                         break;
                     default:
                         iconID = R.drawable.tick_weather_04d;

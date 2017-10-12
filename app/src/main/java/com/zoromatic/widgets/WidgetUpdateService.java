@@ -4812,6 +4812,14 @@ public class WidgetUpdateService extends Service {
                             resource = R.drawable.cartoon_weather_04d;
                             imageArr = conditions.m_ImageArrCartoon;
                             break;
+                        case 17:
+                            resource = R.drawable.flaticon_weather_04d;
+                            imageArr = conditions.m_ImageArrFlaticon;
+                            break;
+                        case 18:
+                            resource = R.drawable.icon8_weather_04d;
+                            imageArr = conditions.m_ImageArrIcon8;
+                            break;
                         default:
                             resource = R.drawable.tick_weather_04d;
                             imageArr = conditions.m_ImageArrTick;

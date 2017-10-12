@@ -71,6 +71,9 @@
         <item>Coggers [12:35]</item>
         <item>Devonshire [12:35]</item>
         <item>Android 7 [12:35]</item>
+        <item>Something Wild [12:35]</item>
+        <item>Banthers [12:35]</item>
+        <item>Cornerstone [12:35]</item>
     </string-array>
     <string-array name="fontValues">
         <item>0</item>
@@ -103,6 +106,9 @@
         <item>27</item>
         <item>28</item>
         <item>29</item>
+        <item>30</item>
+        <item>31</item>
+        <item>32</item>
     </string-array>
     <array name="fontPathValues">
         <item>fonts/Roboto.ttf</item>
@@ -135,6 +141,9 @@
         <item>fonts/CoggersTariqa.ttf</item>
         <item>fonts/Devonshire.ttf</item>
         <item>fonts/Android7.ttf</item>
+        <item>fonts/SomethingWild.ttf</item>
+        <item>fonts/Banthers.ttf</item>
+        <item>fonts/Cornerstone.ttf</item>
     </array>
     <string-array name="dateFormat">
         <item>dd.MM.yyyy</item>
@@ -282,6 +291,8 @@
         <item>Garmahis</item>
         <item>IconBest</item>
         <item>Cartoon</item>
+        <item>Flaticon</item>
+        <item>Icon8</item>
     </string-array>
     <string-array name="weatherIconsValues">
         <item>0</item>
@@ -301,6 +312,8 @@
         <item>14</item>
         <item>15</item>
         <item>16</item>
+        <item>17</item>
+        <item>18</item>
     </string-array>
     <array name="weatherIconsImageValues">
         <item>drawable/tick_weather_03d</item>
@@ -320,6 +333,8 @@
         <item>drawable/garmahis_weather_03d</item>
         <item>drawable/iconbest_weather_03d</item>
         <item>drawable/cartoon_weather_03d</item>
+        <item>drawable/flaticon_weather_03d</item>
+        <item>drawable/icon8_weather_03d</item>
     </array>
     <string-array name="batteryIconsArray">
         <item>@string/label_icon</item>

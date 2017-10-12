@@ -597,6 +597,66 @@ public class WeatherConditions {
                     new WeatherIcon("w50", R.drawable.cartoon_weather_w50, false, R.drawable.cartoon_weather_w50)
             };
 
+    public WeatherIcon[] m_ImageArrFlaticon =
+            {
+                    new WeatherIcon("01d", R.drawable.flaticon_weather_01d, true, R.drawable.flaticon_weather_01n),
+                    new WeatherIcon("01n", R.drawable.flaticon_weather_01n, false, R.drawable.flaticon_weather_01d),
+                    new WeatherIcon("02d", R.drawable.flaticon_weather_02d, true, R.drawable.flaticon_weather_02n),
+                    new WeatherIcon("02n", R.drawable.flaticon_weather_02n, false, R.drawable.flaticon_weather_02d),
+                    new WeatherIcon("03d", R.drawable.flaticon_weather_03d, true, R.drawable.flaticon_weather_03n),
+                    new WeatherIcon("03n", R.drawable.flaticon_weather_03n, false, R.drawable.flaticon_weather_03d),
+                    new WeatherIcon("04d", R.drawable.flaticon_weather_04d, true, R.drawable.flaticon_weather_04n),
+                    new WeatherIcon("04n", R.drawable.flaticon_weather_04n, false, R.drawable.flaticon_weather_04d),
+                    new WeatherIcon("09d", R.drawable.flaticon_weather_09d, true, R.drawable.flaticon_weather_09n),
+                    new WeatherIcon("09n", R.drawable.flaticon_weather_09n, false, R.drawable.flaticon_weather_09d),
+                    new WeatherIcon("10d", R.drawable.flaticon_weather_10d, true, R.drawable.flaticon_weather_10n),
+                    new WeatherIcon("10n", R.drawable.flaticon_weather_10n, false, R.drawable.flaticon_weather_10d),
+                    new WeatherIcon("11d", R.drawable.flaticon_weather_11d, true, R.drawable.flaticon_weather_11n),
+                    new WeatherIcon("11n", R.drawable.flaticon_weather_11n, false, R.drawable.flaticon_weather_11d),
+                    new WeatherIcon("13d", R.drawable.flaticon_weather_13d, true, R.drawable.flaticon_weather_13n),
+                    new WeatherIcon("13n", R.drawable.flaticon_weather_13n, false, R.drawable.flaticon_weather_13d),
+                    new WeatherIcon("50d", R.drawable.flaticon_weather_50d, true, R.drawable.flaticon_weather_50n),
+                    new WeatherIcon("50n", R.drawable.flaticon_weather_50n, false, R.drawable.flaticon_weather_50d),
+                    new WeatherIcon("r", R.drawable.flaticon_weather_r, true, R.drawable.flaticon_weather_r),
+                    new WeatherIcon("r", R.drawable.flaticon_weather_r, false, R.drawable.flaticon_weather_r),
+                    new WeatherIcon("sn50", R.drawable.flaticon_weather_sn50, true, R.drawable.flaticon_weather_sn50),
+                    new WeatherIcon("sn50", R.drawable.flaticon_weather_sn50, false, R.drawable.flaticon_weather_sn50),
+                    new WeatherIcon("t50", R.drawable.flaticon_weather_t50, true, R.drawable.flaticon_weather_t50),
+                    new WeatherIcon("t50", R.drawable.flaticon_weather_t50, false, R.drawable.flaticon_weather_t50),
+                    new WeatherIcon("w50", R.drawable.flaticon_weather_w50, true, R.drawable.flaticon_weather_w50),
+                    new WeatherIcon("w50", R.drawable.flaticon_weather_w50, false, R.drawable.flaticon_weather_w50)
+            };
+
+    public WeatherIcon[] m_ImageArrIcon8 =
+            {
+                    new WeatherIcon("01d", R.drawable.icon8_weather_01d, true, R.drawable.icon8_weather_01n),
+                    new WeatherIcon("01n", R.drawable.icon8_weather_01n, false, R.drawable.icon8_weather_01d),
+                    new WeatherIcon("02d", R.drawable.icon8_weather_02d, true, R.drawable.icon8_weather_02n),
+                    new WeatherIcon("02n", R.drawable.icon8_weather_02n, false, R.drawable.icon8_weather_02d),
+                    new WeatherIcon("03d", R.drawable.icon8_weather_03d, true, R.drawable.icon8_weather_03n),
+                    new WeatherIcon("03n", R.drawable.icon8_weather_03n, false, R.drawable.icon8_weather_03d),
+                    new WeatherIcon("04d", R.drawable.icon8_weather_04d, true, R.drawable.icon8_weather_04n),
+                    new WeatherIcon("04n", R.drawable.icon8_weather_04n, false, R.drawable.icon8_weather_04d),
+                    new WeatherIcon("09d", R.drawable.icon8_weather_09d, true, R.drawable.icon8_weather_09n),
+                    new WeatherIcon("09n", R.drawable.icon8_weather_09n, false, R.drawable.icon8_weather_09d),
+                    new WeatherIcon("10d", R.drawable.icon8_weather_10d, true, R.drawable.icon8_weather_10n),
+                    new WeatherIcon("10n", R.drawable.icon8_weather_10n, false, R.drawable.icon8_weather_10d),
+                    new WeatherIcon("11d", R.drawable.icon8_weather_11d, true, R.drawable.icon8_weather_11n),
+                    new WeatherIcon("11n", R.drawable.icon8_weather_11n, false, R.drawable.icon8_weather_11d),
+                    new WeatherIcon("13d", R.drawable.icon8_weather_13d, true, R.drawable.icon8_weather_13n),
+                    new WeatherIcon("13n", R.drawable.icon8_weather_13n, false, R.drawable.icon8_weather_13d),
+                    new WeatherIcon("50d", R.drawable.icon8_weather_50d, true, R.drawable.icon8_weather_50n),
+                    new WeatherIcon("50n", R.drawable.icon8_weather_50n, false, R.drawable.icon8_weather_50d),
+                    new WeatherIcon("r", R.drawable.icon8_weather_r, true, R.drawable.icon8_weather_r),
+                    new WeatherIcon("r", R.drawable.icon8_weather_r, false, R.drawable.icon8_weather_r),
+                    new WeatherIcon("sn50", R.drawable.icon8_weather_sn50, true, R.drawable.icon8_weather_sn50),
+                    new WeatherIcon("sn50", R.drawable.icon8_weather_sn50, false, R.drawable.icon8_weather_sn50),
+                    new WeatherIcon("t50", R.drawable.icon8_weather_t50, true, R.drawable.icon8_weather_t50),
+                    new WeatherIcon("t50", R.drawable.icon8_weather_t50, false, R.drawable.icon8_weather_t50),
+                    new WeatherIcon("w50", R.drawable.icon8_weather_w50, true, R.drawable.icon8_weather_w50),
+                    new WeatherIcon("w50", R.drawable.icon8_weather_w50, false, R.drawable.icon8_weather_w50)
+            };
+
 }
 
 
