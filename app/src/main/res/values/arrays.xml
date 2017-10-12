@@ -71,7 +71,6 @@
         <item>Coggers [12:35]</item>
         <item>Devonshire [12:35]</item>
         <item>Android 7 [12:35]</item>
-        <item>Something Wild [12:35]</item>
         <item>Banthers [12:35]</item>
         <item>Cornerstone [12:35]</item>
     </string-array>
@@ -108,7 +107,6 @@
         <item>29</item>
         <item>30</item>
         <item>31</item>
-        <item>32</item>
     </string-array>
     <array name="fontPathValues">
         <item>fonts/Roboto.ttf</item>
@@ -141,7 +139,6 @@
         <item>fonts/CoggersTariqa.ttf</item>
         <item>fonts/Devonshire.ttf</item>
         <item>fonts/Android7.ttf</item>
-        <item>fonts/SomethingWild.ttf</item>
         <item>fonts/Banthers.ttf</item>
         <item>fonts/Cornerstone.ttf</item>
     </array>
