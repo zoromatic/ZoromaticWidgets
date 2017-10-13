@@ -82,9 +82,29 @@ public class ZoromaticWidgetsPreferenceActivity extends ThemeAppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, prefs)
                     .commit();
-        }
+        } else {
+            String action = getIntent().getAction();
 
-        //getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, prefs).commit();
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
+                actionBar.setTitle(R.string.app_prefs);
+            }
+
+            if (action != null) {
+                if (actionBar != null) {
+                    if (action.equals(getString(R.string.category_general))) {
+                        actionBar.setTitle(R.string.app_prefs);
+                    } else if (action.equals(getString(R.string.category_theme))) {
+                        actionBar.setTitle(R.string.theme_colors);
+                    } else if (action.equals(getString(R.string.category_notification))) {
+                        actionBar.setTitle(R.string.batterynotification);
+                    } else {
+                        actionBar.setTitle(R.string.app_prefs);
+                    }
+                }
+            }
+        }
     }
 
     @Override
