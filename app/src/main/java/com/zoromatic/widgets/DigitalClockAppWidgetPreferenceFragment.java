@@ -1,8 +1,13 @@
 package com.zoromatic.widgets;
 
+import java.text.Collator;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.margaritov.preference.colorpicker.ColorPickerPreference;
 
@@ -17,12 +22,9 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
-//import android.preference.DialogPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
-
-import com.zoromatic.widgets.PreferenceFragment;
 
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
@@ -30,18 +32,13 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-//import android.widget.ListAdapter;
-//import android.widget.TextView;
 import android.widget.Toast;
 
 @SuppressLint({"NewApi", "SimpleDateFormat"})
 public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
-    public static final int RESULT_CANCELED = 0;
     public static final int RESULT_OK = -1;
-    public static final int RESULT_FIRST_USER = 1;
     public static final int REQUEST_LOCATION = 0;
     public static final int REQUEST_THEME = 1;
-    public static final int ACTIVITY_SETTINGS = 2;
 
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     Context context = null;
@@ -50,7 +47,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
     public void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
 
-        context = (Context) getActivity();
+        context = getActivity();
 
         if (context != null) {
             String lang = Preferences.getLanguageOptions(context);
@@ -74,7 +71,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
             conf.locale = new Locale(lang.toLowerCase());
             res.updateConfiguration(conf, dm);
 
-            setPreferences(paramBundle);
+            setPreferences();
         }
     }
 
@@ -83,13 +80,49 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
         super.onActivityCreated(savedInstanceState);
     }
 
+    private void sortListPreferenceByEntries(ListPreference listPreference) {
+        if (listPreference == null)
+            return;
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+        /*CharSequence[] entries = listPreference.getEntries();
+        Arrays.sort(entries);
+        listPreference.setEntries(entries);
+
+        CharSequence[] entryValues = listPreference.getEntryValues();
+        Arrays.sort(entryValues);
+        listPreference.setEntryValues(entryValues);*/
+
+        Iterator<CharSequence> labels = Arrays.asList(listPreference.getEntries()).iterator();
+        Iterator<CharSequence> keys = Arrays.asList(listPreference.getEntryValues()).iterator();
+
+        Collator sortRules = Collator.getInstance(getResources().getConfiguration().locale);
+        sortRules.setStrength(Collator.PRIMARY);
+        TreeMap<CharSequence, CharSequence> sorter = new TreeMap<>(sortRules);
+        int size = 0;
+
+        while (labels.hasNext() && keys.hasNext()) {
+            sorter.put(labels.next(), keys.next());
+            size++;
+        }
+
+        CharSequence[] sortedLabels = listPreference.getEntries();
+        CharSequence[] sortedValues = listPreference.getEntryValues();
+        Iterator<Map.Entry<CharSequence, CharSequence>> entryIterator = sorter.entrySet().iterator();
+
+        if (entryIterator.hasNext()) {
+            Map.Entry<CharSequence, CharSequence> entry = entryIterator.next();
+
+            for (int i = 0; entryIterator.hasNext() && i < size; entry = entryIterator.next(), i++) {
+                sortedLabels[i] = entry.getKey();
+                sortedValues[i] = entry.getValue();
+            }
+        }
+
+        listPreference.setEntries(sortedLabels);
+        listPreference.setEntryValues(sortedValues);
     }
 
-    void setPreferences(Bundle savedInstanceState) {
+    void setPreferences() {
         PreferenceManager localPrefs = getPreferenceManager();
         localPrefs.setSharedPreferencesName(Preferences.PREF_NAME);
 
@@ -145,7 +178,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
 
         if (clockColorPicker != null) {
             int clockColorItemOld = Preferences.getClockColorItem(context, mAppWidgetId);
-            int clockColorOld = Color.WHITE;
+            int clockColorOld;
 
             if (clockColorItemOld >= 0) {
                 switch (clockColorItemOld) {
@@ -197,7 +230,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
 
         if (dateColorPicker != null) {
             int dateColorItemOld = Preferences.getDateColorItem(context, mAppWidgetId);
-            int dateColorOld = Color.WHITE;
+            int dateColorOld;
 
             if (dateColorItemOld >= 0) {
                 switch (dateColorItemOld) {
@@ -249,7 +282,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
 
         if (weatherColorPicker != null) {
             int weatherColorItemOld = Preferences.getWeatherColorItem(context, mAppWidgetId);
-            int weatherColorOld = Color.WHITE;
+            int weatherColorOld;
 
             if (weatherColorItemOld >= 0) {
                 switch (weatherColorItemOld) {
@@ -301,7 +334,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
 
         if (widgetColorPicker != null) {
             int widgetColorItemOld = Preferences.getWidgetColorItem(context, mAppWidgetId);
-            int widgetColorOld = Color.BLACK;
+            int widgetColorOld;
 
             if (widgetColorItemOld >= 0) {
                 switch (widgetColorItemOld) {
@@ -371,7 +404,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
             boolean bBoldText = Preferences.getBoldText(context, mAppWidgetId);
             boldText.setChecked(bBoldText);
 
-            String bold = "";
+            String bold;
 
             if (bBoldText) {
                 bold = getResources().getString(R.string.boldtext);
@@ -396,7 +429,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
         if (showDate != null) {
             showDate.setChecked(bShowDate);
 
-            String summary = "";
+            String summary;
 
             if (bShowDate) {
                 summary = getResources().getString(R.string.showdatewidget);
@@ -436,7 +469,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
             boolean bBoldText = Preferences.getDateBoldText(context, mAppWidgetId);
             dateBoldText.setChecked(bBoldText);
 
-            String bold = "";
+            String bold;
 
             if (bBoldText) {
                 bold = getResources().getString(R.string.dateboldtext);
@@ -478,6 +511,8 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
         ListPreference weatherFont = (ListPreference) findPreference(Preferences.PREF_WEATHER_FONT_KEY);
 
         if (weatherFont != null) {
+            sortListPreferenceByEntries(weatherFont);
+
             weatherFont.setValueIndex(Preferences.getWeatherFontItem(context, mAppWidgetId));
 
             String summaryFull = (String) weatherFont.getEntries()[Preferences.getWeatherFontItem(context, mAppWidgetId)];
@@ -491,7 +526,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
             boolean bBoldText = Preferences.getWeatherBoldText(context, mAppWidgetId);
             weatherBoldText.setChecked(bBoldText);
 
-            String bold = "";
+            String bold;
 
             if (bBoldText) {
                 bold = getResources().getString(R.string.weatherboldtext);
@@ -506,6 +541,8 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
         ListPreference weatherIcons = (ListPreference) findPreference(Preferences.PREF_WEATHER_ICONS_KEY);
 
         if (weatherIcons != null) {
+            sortListPreferenceByEntries(weatherIcons);
+
             weatherIcons.setValueIndex(Preferences.getWeatherIcons(context, mAppWidgetId));
             weatherIcons.setSummary(weatherIcons.getEntries()[Preferences.getWeatherIcons(context, mAppWidgetId)]);
         }
@@ -549,28 +586,28 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
                 }
             });
 
-            long lastrefresh = Preferences.getLastRefresh(context, mAppWidgetId);
+            long lastRefresh = Preferences.getLastRefresh(context, mAppWidgetId);
 
-            if (lastrefresh > 0) {
+            if (lastRefresh > 0) {
                 boolean bShow24Hrs = Preferences.getShow24Hrs(context, mAppWidgetId);
                 int iDateFormatItem = Preferences.getDateFormatItem(context, mAppWidgetId);
-                Date resultdate = new Date(lastrefresh);
+                Date resultDate = new Date(lastRefresh);
 
                 String currentTime;
 
                 if (bShow24Hrs) {
                     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                    currentTime = String.format(sdf.format(resultdate));
+                    currentTime = sdf.format(resultDate);
                 } else {
                     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-                    currentTime = String.format(sdf.format(resultdate));
+                    currentTime = sdf.format(resultDate);
                 }
 
-                String currentDate = "";
+                String currentDate;
                 String[] mTestArray = getResources().getStringArray(R.array.dateFormat);
 
                 SimpleDateFormat sdf = new SimpleDateFormat(mTestArray[iDateFormatItem]);
-                currentDate = String.format(sdf.format(resultdate));
+                currentDate = sdf.format(resultDate);
 
                 refreshNow.setSummary(getResources().getString(R.string.lastrefresh) + " " + currentDate + ", " + currentTime);
             } else {
@@ -596,32 +633,13 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
             locationScreen.setSummary(getResources().getString(R.string.defaultsummary) + ": " + Preferences.getLocation(context, mAppWidgetId));
         }
 
-        /*Preference openWeather = findPreference(Preferences.PREF_OPENWEATHER_KEY);
-        
-        if (openWeather != null)
-        {
-        	openWeather.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-
-                @Override
-				public boolean onPreferenceClick(Preference p) {
-                	String url = getResources().getString(R.string.openweathermaplink);
-                	if (!url.startsWith("http://") && !url.startsWith("https://"))
-                		   url = "http://" + url;
-                	
-                	Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                	startActivity(browserIntent);
-                    return true;
-                }
-            });        	        	
-        }*/
-
         CheckBoxPreference refreshWiFiOnly = (CheckBoxPreference) findPreference(Preferences.PREF_REFRESH_WIFI_ONLY);
 
         if (refreshWiFiOnly != null) {
             boolean bWiFiOnly = Preferences.getRefreshWiFiOnly(context, mAppWidgetId);
             refreshWiFiOnly.setChecked(bWiFiOnly);
 
-            String connection = "";
+            String connection;
 
             if (bWiFiOnly) {
                 connection = getResources().getString(R.string.refreshwifionlyconnection);
@@ -654,7 +672,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
         if (showWeather != null) {
             showWeather.setChecked(bShowWeather);
 
-            String summary = "";
+            String summary;
 
             if (bShowWeather) {
                 summary = getResources().getString(R.string.showweatherwidget);
@@ -686,7 +704,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
                     PreferenceScreen locationScreen = (PreferenceScreen) findPreference(Preferences.PREF_LOCATION_SETTINGS_KEY);
 
                     if (locationScreen != null) {
-                        context = (Context) getActivity();
+                        context = getActivity();
                         locationScreen.setSummary(getResources().getString(R.string.defaultsummary) + ": " + Preferences.getLocation(context, mAppWidgetId));
                     }
                 }
@@ -701,12 +719,10 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
 
                     Intent settingsIntent = new Intent(getActivity().getApplicationContext(), DigitalClockAppWidgetPreferenceActivity.class);
 
-                    if (settingsIntent != null) {
-                        settingsIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                        settingsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+                    settingsIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                    settingsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
 
-                        startActivityForResult(settingsIntent, WeatherForecastActivity.ACTIVITY_SETTINGS);
-                    }
+                    startActivityForResult(settingsIntent, WeatherForecastActivity.ACTIVITY_SETTINGS);
 
                 } else {
                     Intent intent = getActivity().getIntent();
@@ -821,14 +837,6 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
             if (clockColorPicker != null) {
                 Preferences.setClockColor(context, mAppWidgetId, clockColorPicker.getValue());
                 clockColorPicker.onColorChanged(Preferences.getClockColor(context, mAppWidgetId));
-
-	        	/*CheckBoxPreference show24hrs = (CheckBoxPreference)findPreference(Preferences.PREF_24HRS_KEY);
-
-	            if (show24hrs != null) {
-	            	boolean show = Preferences.getShow24Hrs(context, mAppWidgetId);
-	            	show24hrs.setChecked(!show);
-	            	show24hrs.setChecked(show);
-	            }*/
             }
         }
 
@@ -857,7 +865,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
 
                 Preferences.setBoldText(context, mAppWidgetId, bBoldText);
 
-                String bold = "";
+                String bold;
 
                 if (bBoldText) {
                     bold = getResources().getString(R.string.boldtext);
@@ -885,7 +893,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
                 boolean bShowDate = showDate.isChecked();
                 Preferences.setShowDate(context, mAppWidgetId, bShowDate);
 
-                String summary = "";
+                String summary;
 
                 if (bShowDate) {
                     summary = getResources().getString(R.string.showdatewidget);
@@ -918,14 +926,6 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
             if (dateColorPicker != null) {
                 Preferences.setDateColor(context, mAppWidgetId, dateColorPicker.getValue());
                 dateColorPicker.onColorChanged(Preferences.getDateColor(context, mAppWidgetId));
-
-	        	/*CheckBoxPreference show24hrs = (CheckBoxPreference)findPreference(Preferences.PREF_24HRS_KEY);
-
-	            if (show24hrs != null) {
-	            	boolean show = Preferences.getShow24Hrs(context, mAppWidgetId);
-	            	show24hrs.setChecked(!show);
-	            	show24hrs.setChecked(show);
-	            }*/
             }
         }
 
@@ -954,7 +954,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
 
                 Preferences.setDateBoldText(context, mAppWidgetId, bBoldText);
 
-                String bold = "";
+                String bold;
 
                 if (bBoldText) {
                     bold = getResources().getString(R.string.dateboldtext);
@@ -1010,14 +1010,6 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
             if (weatherColorPicker != null) {
                 Preferences.setWeatherColor(context, mAppWidgetId, weatherColorPicker.getValue());
                 weatherColorPicker.onColorChanged(Preferences.getWeatherColor(context, mAppWidgetId));
-	        	
-	        	/*CheckBoxPreference show24hrs = (CheckBoxPreference)findPreference(Preferences.PREF_24HRS_KEY);
-	            
-	            if (show24hrs != null) {
-	            	boolean show = Preferences.getShow24Hrs(context, mAppWidgetId);
-	            	show24hrs.setChecked(!show);
-	            	show24hrs.setChecked(show);
-	            }*/
             }
         }
 
@@ -1046,7 +1038,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
 
                 Preferences.setWeatherBoldText(context, mAppWidgetId, bBoldText);
 
-                String bold = "";
+                String bold;
 
                 if (bBoldText) {
                     bold = getResources().getString(R.string.weatherboldtext);
@@ -1085,14 +1077,6 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
                 }
 
                 forecastTheme.setSummary(forecastTheme.getEntries()[forecastTheme.findIndexOfValue(theme)]);
-	        	
-	        	/*Intent startIntent = new Intent(this, WidgetUpdateService.class);
-	        	startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.UPDATE_WIDGETS);
-	    
-	        	this.startService(startIntent);
-	        	
-	        	finish();
-	        	startActivity(getIntent());*/
             }
         }
 
@@ -1102,14 +1086,6 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
             if (widgetColorPicker != null) {
                 Preferences.setWidgetColor(context, mAppWidgetId, widgetColorPicker.getValue());
                 widgetColorPicker.onColorChanged(Preferences.getWidgetColor(context, mAppWidgetId));
-	        	
-	        	/*CheckBoxPreference show24hrs = (CheckBoxPreference)findPreference(Preferences.PREF_24HRS_KEY);
-	            
-	            if (show24hrs != null) {
-	            	boolean show = Preferences.getShow24Hrs(context, mAppWidgetId);
-	            	show24hrs.setChecked(!show);
-	            	show24hrs.setChecked(show);
-	            }*/
             }
         }
 
@@ -1128,7 +1104,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
                 boolean bWiFiOnly = refreshWiFiOnly.isChecked();
                 Preferences.setRefreshWiFiOnly(context, mAppWidgetId, bWiFiOnly);
 
-                String connection = "";
+                String connection;
 
                 if (bWiFiOnly) {
                     connection = getResources().getString(R.string.refreshwifionlyconnection);
@@ -1147,7 +1123,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
                 boolean bShowWeather = showWeather.isChecked();
                 Preferences.setShowWeather(context, mAppWidgetId, bShowWeather);
 
-                String summary = "";
+                String summary;
 
                 if (bShowWeather) {
                     summary = getResources().getString(R.string.showweatherwidget);
