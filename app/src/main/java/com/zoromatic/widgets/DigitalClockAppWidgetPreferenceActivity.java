@@ -55,20 +55,10 @@ public class DigitalClockAppWidgetPreferenceActivity extends ThemeAppCompatActiv
             actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
         }
 
-        /*TypedValue outValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimary,
-                outValue,
-                true);
-        int primaryColor = outValue.resourceId;
-
-        setStatusBarColor(findViewById(R.id.statusBarBackground),
-                getResources().getColor(primaryColor));*/
-
         PreferenceFragment existingFragment = (PreferenceFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 
         if (existingFragment == null || !existingFragment.getClass().equals(DigitalClockAppWidgetPreferenceFragment.class)) {
             DigitalClockAppWidgetPreferenceFragment prefs = new DigitalClockAppWidgetPreferenceFragment();
-
             String action = getIntent().getAction();
 
             if (action != null) {
@@ -94,9 +84,23 @@ public class DigitalClockAppWidgetPreferenceActivity extends ThemeAppCompatActiv
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, prefs)
                     .commit();
-        }
+        } else {
+            String action = getIntent().getAction();
 
-        //getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, prefs).commit();
+            if (action != null) {
+                if (actionBar != null) {
+                    if (action.equals(getString(R.string.category_general))) {
+                        actionBar.setTitle(R.string.generalsettings);
+                    } else if (action.equals(getString(R.string.category_weather))) {
+                        actionBar.setTitle(R.string.weathersettings);
+                    } else if (action.equals(getString(R.string.category_look))) {
+                        actionBar.setTitle(R.string.lookandfeel);
+                    } else {
+                        actionBar.setTitle(R.string.clockwidgetprefs);
+                    }
+                }
+            }
+        }
     }
 
     @Override
