@@ -45,3 +45,5 @@ captures/
 /.idea             
 *.iml
 *.iml
+local.properties
+gradlew
