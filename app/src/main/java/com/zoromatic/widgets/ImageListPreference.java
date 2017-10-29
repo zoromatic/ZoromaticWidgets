@@ -32,7 +32,6 @@ public class ImageListPreference extends ListPreference {
     private int[] batteryIds = null;
     private int[] colorSchemeIds = null;
 
-    private AlertDialogPro.Builder mBuilder;
     private Dialog mDialog;
     private int mWhichButtonClicked;
 
@@ -66,10 +65,6 @@ public class ImageListPreference extends ListPreference {
                     imageIds = new int[imageNames.length];
 
                     for (int i = 0; i < imageNames.length; i++) {
-//						String imageName = imageNames[i].substring(
-//							imageNames[i].indexOf('/') + 1,
-//							imageNames[i].lastIndexOf('.'));
-
                         String imageName = imageNames[i];
 
                         imageIds[i] = context.getResources().getIdentifier(imageName,
@@ -135,10 +130,6 @@ public class ImageListPreference extends ListPreference {
                     colorIds = new int[colorNames.length];
 
                     for (int i = 0; i < colorNames.length; i++) {
-//						String colorName = colorNames[i].substring(
-//							colorNames[i].indexOf('/') + 1,
-//							colorNames[i].lastIndexOf('.'));
-
                         String colorName = colorNames[i];
 
                         colorIds[i] = context.getResources().getIdentifier(colorName,
@@ -178,12 +169,12 @@ public class ImageListPreference extends ListPreference {
 
         String theme = Preferences.getMainTheme(getContext());
 
-        mBuilder = new AlertDialogPro.Builder(context,
+        AlertDialogPro.Builder builder = new AlertDialogPro.Builder(context,
                 theme.compareToIgnoreCase("light") == 0 ? R.style.Theme_AlertDialogPro_Material_Light : R.style.Theme_AlertDialogPro_Material);
-        mBuilder.setTitle(getTitle());
-        mBuilder.setIcon(getDialogIcon());
-        mBuilder.setNegativeButton(getNegativeButtonText(), this);
-        mBuilder.setAdapter(listAdapter, new OnClickListener() {
+        builder.setTitle(getTitle());
+        builder.setIcon(getDialogIcon());
+        builder.setNegativeButton(getNegativeButtonText(), this);
+        builder.setAdapter(listAdapter, new OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -202,14 +193,12 @@ public class ImageListPreference extends ListPreference {
 
         if (contentView != null) {
             onBindDialogView(contentView);
-            mBuilder.setView(contentView);
+            builder.setView(contentView);
         } else {
-            mBuilder.setMessage(getDialogMessage());
+            builder.setMessage(getDialogMessage());
         }
 
-        //mBuilder.show();
-
-        final Dialog dialog = mDialog = mBuilder.create();
+        final Dialog dialog = mDialog = builder.create();
 
         if (state != null) {
             dialog.onRestoreInstanceState(state);
@@ -288,6 +277,22 @@ public class ImageListPreference extends ListPreference {
         }
     }
 
+    public int[] getImageIds() {
+        return imageIds;
+    }
+
+    public void setImageIds(int[] imageIds) {
+        this.imageIds = imageIds;
+    }
+
+    public String[] getFontPaths() {
+        return fontPaths;
+    }
+
+    public void setFontPaths(String[] fontPaths) {
+        this.fontPaths = fontPaths;
+    }
+
     private static class SavedState extends BaseSavedState {
         boolean isDialogShowing;
         Bundle dialogBundle;
@@ -321,19 +326,4 @@ public class ImageListPreference extends ListPreference {
                     }
                 };
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    /*protected void onPrepareDialogBuilder(Builder builder) {
-        int index = findIndexOfValue(getSharedPreferences().getString(
-			getKey(), "1"));
-
-		ListAdapter listAdapter = new ImageArrayAdapter(getContext(),
-			R.layout.listitem, getEntries(), imageIds, colorIds, fontPaths, batteryIds, index);
-
-		// Order matters.
-		builder.setAdapter(listAdapter, this);
-		super.onPrepareDialogBuilder(builder);
-	}*/
 }

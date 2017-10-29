@@ -1,13 +1,9 @@
 package com.zoromatic.widgets;
 
-import java.text.Collator;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
 
 import com.margaritov.preference.colorpicker.ColorPickerPreference;
 
@@ -37,11 +33,21 @@ import android.widget.Toast;
 @SuppressLint({"NewApi", "SimpleDateFormat"})
 public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
     public static final int RESULT_OK = -1;
-    public static final int REQUEST_LOCATION = 0;
-    public static final int REQUEST_THEME = 1;
+    private static final int REQUEST_LOCATION = 0;
+    private static final int REQUEST_THEME = 1;
 
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     Context context = null;
+
+    // font and icons entries and values before sorting
+    private CharSequence[] mClockFontEntries = null;
+    private CharSequence[] mClockFontEntryValues = null;
+    private CharSequence[] mDateFontEntries = null;
+    private CharSequence[] mDateFontEntryValues = null;
+    private CharSequence[] mWeatherFontEntries = null;
+    private CharSequence[] mWeatherFontEntryValues = null;
+    private CharSequence[] mWeatherIconEntries = null;
+    private CharSequence[] mWeatherIconEntryValues = null;
 
     @Override
     public void onCreate(Bundle paramBundle) {
@@ -80,49 +86,67 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
         super.onActivityCreated(savedInstanceState);
     }
 
-    private void sortListPreferenceByEntries(ListPreference listPreference) {
+    /*
+        Sorting is done only for presentation. Original IDs are saved and read
+        from SharedPreferences.
+     */
+    private void sortListPreferenceByEntries(ImageListPreference listPreference) {
         if (listPreference == null)
             return;
 
-        /*CharSequence[] entries = listPreference.getEntries();
-        Arrays.sort(entries);
-        listPreference.setEntries(entries);
-
+        CharSequence[] entries = listPreference.getEntries();
         CharSequence[] entryValues = listPreference.getEntryValues();
-        Arrays.sort(entryValues);
-        listPreference.setEntryValues(entryValues);*/
+        String[] fontPaths = listPreference.getFontPaths();
+        int[] imageIds = listPreference.getImageIds();
 
-        Iterator<CharSequence> labels = Arrays.asList(listPreference.getEntries()).iterator();
-        Iterator<CharSequence> keys = Arrays.asList(listPreference.getEntryValues()).iterator();
+        CharSequence[] sortedEntries = new CharSequence[entries.length];
+        CharSequence[] sortedEntryValues = new CharSequence[entries.length];
+        String[] sortedFontPaths = new String[entries.length];
+        int[] sortedImageIds = new int[entries.length];
 
-        Collator sortRules = Collator.getInstance(getResources().getConfiguration().locale);
-        sortRules.setStrength(Collator.PRIMARY);
-        TreeMap<CharSequence, CharSequence> sorter = new TreeMap<>(sortRules);
-        int size = 0;
+        for (int i=0; i<entries.length; i++) {
+            sortedEntries[i] = entries[i];
+            sortedEntryValues[i] = entryValues[i];
 
-        while (labels.hasNext() && keys.hasNext()) {
-            sorter.put(labels.next(), keys.next());
-            size++;
+            if (fontPaths != null)
+                sortedFontPaths[i] = fontPaths[i];
+
+            if (imageIds != null)
+                sortedImageIds[i] = imageIds[i];
         }
 
-        CharSequence[] sortedLabels = listPreference.getEntries();
-        CharSequence[] sortedValues = listPreference.getEntryValues();
-        Iterator<Map.Entry<CharSequence, CharSequence>> entryIterator = sorter.entrySet().iterator();
+        Arrays.sort(sortedEntries);
+        listPreference.setEntries(sortedEntries);
 
-        if (entryIterator.hasNext()) {
-            Map.Entry<CharSequence, CharSequence> entry = entryIterator.next();
+        for (int i=0; i<entries.length; i++) {
+            for (int j=0; j<sortedEntries.length; j++) {
+                if (entries[i].equals(sortedEntries[j])) {
+                    sortedEntryValues[j] = entryValues[i];
 
-            for (int i = 0; entryIterator.hasNext() && i < size; entry = entryIterator.next(), i++) {
-                sortedLabels[i] = entry.getKey();
-                sortedValues[i] = entry.getValue();
+                    if (fontPaths != null) {
+                        sortedFontPaths[j] = fontPaths[i];
+                    }
+
+                    if (imageIds != null) {
+                        sortedImageIds[j] = imageIds[i];
+                    }
+
+                    break;
+                }
             }
         }
 
-        listPreference.setEntries(sortedLabels);
-        listPreference.setEntryValues(sortedValues);
+        listPreference.setEntries(sortedEntries);
+        listPreference.setEntryValues(sortedEntryValues);
+
+        if (imageIds != null)
+            listPreference.setImageIds(sortedImageIds);
+
+        if (fontPaths != null)
+            listPreference.setFontPaths(sortedFontPaths);
     }
 
-    void setPreferences() {
+    private void setPreferences() {
         PreferenceManager localPrefs = getPreferenceManager();
         localPrefs.setSharedPreferencesName(Preferences.PREF_NAME);
 
@@ -388,12 +412,29 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
             show24hrs.setChecked(Preferences.getShow24Hrs(context, mAppWidgetId));
         }
 
-        ListPreference clockFont = (ListPreference) findPreference(Preferences.PREF_FONT_KEY);
+        ImageListPreference clockFont = (ImageListPreference) findPreference(Preferences.PREF_FONT_KEY);
 
         if (clockFont != null) {
-            clockFont.setValueIndex(Preferences.getFontItem(context, mAppWidgetId));
+            mClockFontEntries = clockFont.getEntries();
+            mClockFontEntryValues = clockFont.getEntryValues();
 
-            String summaryFull = (String) clockFont.getEntries()[Preferences.getFontItem(context, mAppWidgetId)];
+            sortListPreferenceByEntries(clockFont);
+
+            CharSequence[] sortedEntryValues = clockFont.getEntryValues();
+            int valueIndex = -1;
+            int fontItem = Preferences.getFontItem(context, mAppWidgetId);
+
+            for (int j=0; j<sortedEntryValues.length; j++) {
+                int entryValue = Integer.parseInt(sortedEntryValues[j].toString());
+
+                if (fontItem == entryValue) {
+                    valueIndex = j;
+                    break;
+                }
+            }
+
+            clockFont.setValueIndex(valueIndex);
+            String summaryFull = (String) mClockFontEntries[Preferences.getFontItem(context, mAppWidgetId)];
             String summary = summaryFull.substring(0, summaryFull.indexOf('[') - 1);
             clockFont.setSummary(summary);
         }
@@ -453,12 +494,29 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
             dateFormat.setSummary(dateFormat.getEntries()[Preferences.getDateFormatItem(context, mAppWidgetId)]);
         }
 
-        ListPreference dateFont = (ListPreference) findPreference(Preferences.PREF_DATE_FONT_KEY);
+        ImageListPreference dateFont = (ImageListPreference) findPreference(Preferences.PREF_DATE_FONT_KEY);
 
         if (dateFont != null) {
-            dateFont.setValueIndex(Preferences.getDateFontItem(context, mAppWidgetId));
+            mDateFontEntries = dateFont.getEntries();
+            mDateFontEntryValues = dateFont.getEntryValues();
 
-            String summaryFull = (String) dateFont.getEntries()[Preferences.getDateFontItem(context, mAppWidgetId)];
+            sortListPreferenceByEntries(dateFont);
+
+            CharSequence[] sortedEntryValues = dateFont.getEntryValues();
+            int valueIndex = -1;
+            int fontItem = Preferences.getDateFontItem(context, mAppWidgetId);
+
+            for (int j=0; j<sortedEntryValues.length; j++) {
+                int entryValue = Integer.parseInt(sortedEntryValues[j].toString());
+
+                if (fontItem == entryValue) {
+                    valueIndex = j;
+                    break;
+                }
+            }
+
+            dateFont.setValueIndex(valueIndex);
+            String summaryFull = (String) mDateFontEntries[Preferences.getDateFontItem(context, mAppWidgetId)];
             String summary = summaryFull.substring(0, summaryFull.indexOf('[') - 1);
             dateFont.setSummary(summary);
         }
@@ -508,14 +566,29 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
             tempScale.setSummary(tempScale.getEntries()[Preferences.getTempScale(context, mAppWidgetId)]);
         }
 
-        ListPreference weatherFont = (ListPreference) findPreference(Preferences.PREF_WEATHER_FONT_KEY);
+        ImageListPreference weatherFont = (ImageListPreference) findPreference(Preferences.PREF_WEATHER_FONT_KEY);
 
         if (weatherFont != null) {
+            mWeatherFontEntries = weatherFont.getEntries();
+            mWeatherFontEntryValues = weatherFont.getEntryValues();
+
             sortListPreferenceByEntries(weatherFont);
 
-            weatherFont.setValueIndex(Preferences.getWeatherFontItem(context, mAppWidgetId));
+            CharSequence[] sortedEntryValues = weatherFont.getEntryValues();
+            int valueIndex = -1;
+            int fontItem = Preferences.getWeatherFontItem(context, mAppWidgetId);
 
-            String summaryFull = (String) weatherFont.getEntries()[Preferences.getWeatherFontItem(context, mAppWidgetId)];
+            for (int j=0; j<sortedEntryValues.length; j++) {
+                int entryValue = Integer.parseInt(sortedEntryValues[j].toString());
+
+                if (fontItem == entryValue) {
+                    valueIndex = j;
+                    break;
+                }
+            }
+
+            weatherFont.setValueIndex(valueIndex);
+            String summaryFull = (String) mWeatherFontEntries[Preferences.getWeatherFontItem(context, mAppWidgetId)];
             String summary = summaryFull.substring(0, summaryFull.indexOf('[') - 1);
             weatherFont.setSummary(summary);
         }
@@ -538,13 +611,29 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
         }
         ////
 
-        ListPreference weatherIcons = (ListPreference) findPreference(Preferences.PREF_WEATHER_ICONS_KEY);
+        ImageListPreference weatherIcons = (ImageListPreference) findPreference(Preferences.PREF_WEATHER_ICONS_KEY);
 
         if (weatherIcons != null) {
+            mWeatherIconEntries = weatherIcons.getEntries();
+            mWeatherIconEntryValues = weatherIcons.getEntryValues();
+
             sortListPreferenceByEntries(weatherIcons);
 
-            weatherIcons.setValueIndex(Preferences.getWeatherIcons(context, mAppWidgetId));
-            weatherIcons.setSummary(weatherIcons.getEntries()[Preferences.getWeatherIcons(context, mAppWidgetId)]);
+            CharSequence[] sortedEntryValues = weatherIcons.getEntryValues();
+            int valueIndex = -1;
+            int iconItem = Preferences.getWeatherIcons(context, mAppWidgetId);
+
+            for (int j=0; j<sortedEntryValues.length; j++) {
+                int entryValue = Integer.parseInt(sortedEntryValues[j].toString());
+
+                if (iconItem == entryValue) {
+                    valueIndex = j;
+                    break;
+                }
+            }
+
+            weatherIcons.setValueIndex(valueIndex);
+            weatherIcons.setSummary(mWeatherIconEntries[Preferences.getWeatherIcons(context, mAppWidgetId)]);
         }
 
         ListPreference forecastTheme = (ListPreference) findPreference(Preferences.PREF_FORECAST_THEME);
@@ -841,12 +930,21 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
         }
 
         if (key.equals(Preferences.PREF_FONT_KEY)) {
-            ListPreference clockFont = (ListPreference) findPreference(Preferences.PREF_FONT_KEY);
+            ImageListPreference clockFont = (ImageListPreference) findPreference(Preferences.PREF_FONT_KEY);
 
             if (clockFont != null) {
-                Preferences.setFontItem(context, mAppWidgetId, clockFont.findIndexOfValue(clockFont.getValue()));
+                int valueIndex = -1;
 
-                String summaryFull = (String) clockFont.getEntries()[Preferences.getFontItem(context, mAppWidgetId)];
+                for (int j=0; j<mClockFontEntryValues.length; j++) {
+                    if (clockFont.getValue() == mClockFontEntryValues[j]) {
+                        valueIndex = j;
+                        break;
+                    }
+                }
+
+                Preferences.setFontItem(context, mAppWidgetId, valueIndex);
+
+                String summaryFull = (String) mClockFontEntries[Preferences.getFontItem(context, mAppWidgetId)];
                 String summary = summaryFull;
 
                 if (summaryFull.contains("[")) {
@@ -930,12 +1028,21 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
         }
 
         if (key.equals(Preferences.PREF_DATE_FONT_KEY)) {
-            ListPreference dateFont = (ListPreference) findPreference(Preferences.PREF_DATE_FONT_KEY);
+            ImageListPreference dateFont = (ImageListPreference) findPreference(Preferences.PREF_DATE_FONT_KEY);
 
             if (dateFont != null) {
-                Preferences.setDateFontItem(context, mAppWidgetId, dateFont.findIndexOfValue(dateFont.getValue()));
+                int valueIndex = -1;
 
-                String summaryFull = (String) dateFont.getEntries()[Preferences.getDateFontItem(context, mAppWidgetId)];
+                for (int j=0; j<mDateFontEntryValues.length; j++) {
+                    if (dateFont.getValue() == mDateFontEntryValues[j]) {
+                        valueIndex = j;
+                        break;
+                    }
+                }
+
+                Preferences.setDateFontItem(context, mAppWidgetId, valueIndex);
+
+                String summaryFull = (String) mDateFontEntries[Preferences.getDateFontItem(context, mAppWidgetId)];
                 String summary = summaryFull;
 
                 if (summaryFull.contains("[")) {
@@ -1014,12 +1121,21 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
         }
 
         if (key.equals(Preferences.PREF_WEATHER_FONT_KEY)) {
-            ListPreference weatherFont = (ListPreference) findPreference(Preferences.PREF_WEATHER_FONT_KEY);
+            ImageListPreference weatherFont = (ImageListPreference) findPreference(Preferences.PREF_WEATHER_FONT_KEY);
 
             if (weatherFont != null) {
-                Preferences.setWeatherFontItem(context, mAppWidgetId, weatherFont.findIndexOfValue(weatherFont.getValue()));
+                int valueIndex = -1;
 
-                String summaryFull = (String) weatherFont.getEntries()[Preferences.getWeatherFontItem(context, mAppWidgetId)];
+                for (int j=0; j<mWeatherFontEntryValues.length; j++) {
+                    if (weatherFont.getValue() == mWeatherFontEntryValues[j]) {
+                        valueIndex = j;
+                        break;
+                    }
+                }
+
+                Preferences.setWeatherFontItem(context, mAppWidgetId, valueIndex);
+
+                String summaryFull = (String) mWeatherFontEntries[Preferences.getWeatherFontItem(context, mAppWidgetId)];
                 String summary = summaryFull;
 
                 if (summaryFull.contains("[")) {
@@ -1052,11 +1168,20 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
         ////
 
         if (key.equals(Preferences.PREF_WEATHER_ICONS_KEY)) {
-            ListPreference weatherIcons = (ListPreference) findPreference(Preferences.PREF_WEATHER_ICONS_KEY);
+            ImageListPreference weatherIcons = (ImageListPreference) findPreference(Preferences.PREF_WEATHER_ICONS_KEY);
 
             if (weatherIcons != null) {
-                Preferences.setWeatherIcons(context, mAppWidgetId, weatherIcons.findIndexOfValue(weatherIcons.getValue()));
-                weatherIcons.setSummary(weatherIcons.getEntries()[Preferences.getWeatherIcons(context, mAppWidgetId)]);
+                int valueIndex = -1;
+
+                for (int j=0; j<mWeatherIconEntryValues.length; j++) {
+                    if (weatherIcons.getValue() == mWeatherIconEntryValues[j]) {
+                        valueIndex = j;
+                        break;
+                    }
+                }
+
+                Preferences.setWeatherIcons(context, mAppWidgetId, valueIndex);
+                weatherIcons.setSummary(mWeatherIconEntries[Preferences.getWeatherIcons(context, mAppWidgetId)]);
             }
         }
 
