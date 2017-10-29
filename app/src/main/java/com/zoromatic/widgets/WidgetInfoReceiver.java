@@ -192,7 +192,7 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
                         long currentTime = System.currentTimeMillis();
                         int refreshInterval = Preferences.getRefreshInterval(context, appWidgetId) * 3600 * 1000;
 
-                        if (lastRefresh > 0 && currentTime > 0 && refreshInterval >0) {
+                        if (lastRefresh > 0 && currentTime > 0 && refreshInterval > 0) {
                             if (currentTime - lastRefresh > refreshInterval) {
                                 weatherSuccess = false;
                             }

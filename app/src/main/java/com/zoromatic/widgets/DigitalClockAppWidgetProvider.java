@@ -26,28 +26,26 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
 
         String action = intent.getAction();
 
-        if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) ||
+        if (action != null && (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) ||
                 action.equals(AppWidgetManager.ACTION_APPWIDGET_ENABLED) ||
                 action.equals("com.motorola.blur.home.ACTION_SET_WIDGET_SIZE") ||
-                action.equals("mobi.intuitit.android.hpp.ACTION_READY")) {
+                action.equals("mobi.intuitit.android.hpp.ACTION_READY"))) {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             ComponentName thisWidget = new ComponentName(context,
                     DigitalClockAppWidgetProvider.class);
 
-            if (thisWidget != null) {
-                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
-                if (appWidgetIds.length <= 0) {
-                    return;
-                }
-
-                Intent startIntent = new Intent(context, WidgetUpdateService.class);
-                startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_TIME_CHANGED);
-                startIntent.putExtra(WidgetInfoReceiver.UPDATE_WEATHER, true);
-                startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-
-                context.startService(startIntent);
+            if (appWidgetIds.length <= 0) {
+                return;
             }
+
+            Intent startIntent = new Intent(context, WidgetUpdateService.class);
+            startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_TIME_CHANGED);
+            startIntent.putExtra(WidgetInfoReceiver.UPDATE_WEATHER, true);
+            startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+
+            context.startService(startIntent);
         }
     }
 
@@ -72,7 +70,9 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
             AlarmManager alarmManager = (AlarmManager) context
                     .getSystemService(Context.ALARM_SERVICE);
             PendingIntent pending = createClockTickIntent(context, appWidgetId);
-            alarmManager.cancel(pending);
+            if (alarmManager != null) {
+                alarmManager.cancel(pending);
+            }
             pending.cancel();
         }
 
@@ -93,7 +93,7 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
         }
 
         int refreshIntervalCode = Preferences.getRefreshInterval(context, appWidgetId);
-        int refreshInterval = 3 * 3600 * 1000; // default is 3 hours
+        int refreshInterval;
 
         switch (refreshIntervalCode) {
             case 0:
@@ -106,16 +106,18 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
                 refreshInterval = refreshIntervalCode * 3600 * 1000;
                 break;
             default:
-                refreshInterval = 3 * 3600 * 1000;
+                refreshInterval = 3 * 3600 * 1000; // 3 hours
                 break;
         }
 
-        //refreshInterval = 5*60*1000; // test on 5 minutes
+        refreshInterval = 5*60*1000; // test on 5 minutes
         calendar.setTimeInMillis(lastRefresh);
         //long startAlarm = calendar.getTimeInMillis() + refreshInterval;
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
-                refreshInterval, createClockTickIntent(context, appWidgetId));
+        if (alarmManager != null) {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
+                    refreshInterval, createClockTickIntent(context, appWidgetId));
+        }
     }
 
     private static PendingIntent createClockTickIntent(Context context, int appWidgetId) {
@@ -123,10 +125,9 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
         Intent intent = new Intent(WidgetUpdateService.WEATHER_UPDATE);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         intent.putExtra(WidgetInfoReceiver.SCHEDULED_UPDATE, true);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, appWidgetId,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        return pendingIntent;
+        return PendingIntent.getBroadcast(context, appWidgetId,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     @Override
