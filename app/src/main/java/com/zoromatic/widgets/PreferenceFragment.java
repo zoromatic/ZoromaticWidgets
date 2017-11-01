@@ -27,9 +27,6 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.support.v4.app.Fragment;
-
-import com.zoromatic.widgets.R;
-
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -236,13 +233,7 @@ public abstract class PreferenceFragment extends Fragment implements
      */
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
                                          Preference preference) {
-        //if (preference.getFragment() != null &&
-        if (
-                getActivity() instanceof OnPreferenceStartFragmentCallback) {
-            return ((OnPreferenceStartFragmentCallback) getActivity()).onPreferenceStartFragment(
-                    this, preference);
-        }
-        return false;
+        return getActivity() instanceof OnPreferenceStartFragmentCallback && ((OnPreferenceStartFragmentCallback) getActivity()).onPreferenceStartFragment(this, preference);
     }
 
     /**
@@ -301,20 +292,25 @@ public abstract class PreferenceFragment extends Fragment implements
                         position -= ((ListView) parent).getHeaderViewsCount();
                     }
 
-                    Object item = preferenceScreen.getRootAdapter().getItem(position);
+                    Object item = null;
+
+                    if (preferenceScreen != null) {
+                        item = preferenceScreen.getRootAdapter().getItem(position);
+                    }
+
                     if (!(item instanceof Preference)) {
                         return;
                     }
 
                     final Preference preference = (Preference) item;
                     try {
-                        Method performClick = Preference.class.getDeclaredMethod(
+                        @SuppressLint("PrivateApi") Method performClick = Preference.class.getDeclaredMethod(
                                 "performClick", PreferenceScreen.class);
                         performClick.setAccessible(true);
                         performClick.invoke(preference, preferenceScreen);
-                    } catch (InvocationTargetException e) {
-                    } catch (IllegalAccessException e) {
-                    } catch (NoSuchMethodException e) {
+                    } catch (InvocationTargetException ignored) {
+                    } catch (IllegalAccessException ignored) {
+                    } catch (NoSuchMethodException ignored) {
                     }
                 }
             });
@@ -353,11 +349,6 @@ public abstract class PreferenceFragment extends Fragment implements
                             + "that is not a ListView class");
         }
         mList = (ListView) rawListView;
-        if (mList == null) {
-            throw new RuntimeException(
-                    "Your content must have a ListView whose id attribute is " +
-                            "'android.R.id.list'");
-        }
         mList.setOnKeyListener(mListOnKeyListener);
 
         mHandler.post(mRequestFocus);
@@ -385,13 +376,12 @@ public abstract class PreferenceFragment extends Fragment implements
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             Object selectedItem = mList.getSelectedItem();
+
             if (selectedItem instanceof Preference) {
                 @SuppressWarnings("unused")
                 View selectedView = mList.getSelectedView();
-                //return ((Preference)selectedItem).onKey(
-                //        selectedView, keyCode, event);
-                return false;
             }
+
             return false;
         }
 

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -13,21 +12,13 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-//import android.widget.Toast;
 
 @SuppressLint("NewApi")
 public class ZoromaticWidgetsPreferenceActivity extends ThemeAppCompatActivity {
-    public boolean mAboutOpen = false;
-    public static final String ABOUT = "about";
-    private Toolbar toolbar;
     ZoromaticWidgetsPreferenceFragment prefs = null;
 
     @Override
@@ -36,17 +27,8 @@ public class ZoromaticWidgetsPreferenceActivity extends ThemeAppCompatActivity {
 
         setContentView(R.layout.activity_prefs);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        /*TypedValue outValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimary,
-                outValue,
-                true);
-        int primaryColor = outValue.resourceId;
-
-        setStatusBarColor(findViewById(R.id.statusBarBackground),
-                getResources().getColor(primaryColor));*/
 
         PreferenceFragment existingFragment = (PreferenceFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 
@@ -126,8 +108,6 @@ public class ZoromaticWidgetsPreferenceActivity extends ThemeAppCompatActivity {
                 MenuItem switchItem = menu.findItem(R.id.on_off_switch);
                 SwitchCompat switchCompat = (SwitchCompat) MenuItemCompat.getActionView(switchItem);
 
-                //SwitchCompat switchCompat = (SwitchCompat) menu.findItem(R.id.onoffswitch).getActionView().findViewById(R.id.switchForActionBar);
-
                 if (switchCompat != null) {
                     switchCompat.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -166,20 +146,8 @@ public class ZoromaticWidgetsPreferenceActivity extends ThemeAppCompatActivity {
                             new int[]{android.R.attr.state_checked},
                     };
 
-                    /*TypedArray a = getApplicationContext().obtainStyledAttributes(null,
-                            R.styleable.colorSwitch,
-                            R.attr.switch_colorControlActivated, 0);
-                    int color1 = a.getColor(
-                            R.styleable.colorSwitch_switch_colorControlActivated, Color.DKGRAY);
-                    a.recycle();*/
-
-                    /*int[] colorSwitchAttrs = new int[]{R.attr.switch_colorControlActivated,
-                            R.attr.switch_colorSwitchThumbNormal,
-                            R.attr.switch_colorForeground};*/
-
-                    String theme = Preferences.getMainTheme(this);
                     int colorScheme = Preferences.getMainColorScheme(this);
-                    TypedArray a = null;
+                    TypedArray a;
 
                     if (colorScheme == 1 || colorScheme == 14) { // white & yellow
                         a = getApplicationContext().obtainStyledAttributes(R.style.ColorSwitchBlack, R.styleable.ColorSwitch);
@@ -192,16 +160,6 @@ public class ZoromaticWidgetsPreferenceActivity extends ThemeAppCompatActivity {
                     int colorTrack = a.getColor(R.styleable.ColorSwitch_switch_colorForeground, Color.GRAY);
 
                     a.recycle();
-
-                    /*int[] thumbColors = new int[] {
-                            Color.DKGRAY,
-                            Color.RED,
-                    };
-
-                    int[] trackColors = new int[] {
-                            Color.GRAY,
-                            Color.RED,
-                    };*/
 
                     int[] thumbColors = new int[]{
                             colorOff,
@@ -244,39 +202,5 @@ public class ZoromaticWidgetsPreferenceActivity extends ThemeAppCompatActivity {
         }
 
         super.onBackPressed();
-    }
-
-    @SuppressLint("InlinedApi")
-    public void setStatusBarColor(View statusBar, int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window w = getWindow();
-            w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //status bar height
-            //int actionBarHeight = getActionBarHeight();
-            int statusBarHeight = getStatusBarHeight();
-            //action bar height
-            statusBar.getLayoutParams().height = /*actionBarHeight + */statusBarHeight;
-            statusBar.setBackgroundColor(color);
-        } else {
-            statusBar.setVisibility(View.GONE);
-        }
-    }
-
-    public int getActionBarHeight() {
-        int actionBarHeight = 0;
-        TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-        return actionBarHeight;
-    }
-
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
     }
 }

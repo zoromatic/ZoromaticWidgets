@@ -38,6 +38,7 @@ import com.zoromatic.widgets.LocationProvider.LocationResult;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -91,6 +92,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
@@ -434,6 +436,24 @@ public class WidgetUpdateService extends Service {
     }
 
     @Override
+    public void onTaskRemoved(Intent rootIntent){
+        Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
+        restartServiceIntent.setPackage(getPackageName());
+
+        PendingIntent restartServicePendingIntent = PendingIntent.getService(getApplicationContext(), 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+
+        if (alarmService != null) {
+            alarmService.set(
+                    AlarmManager.ELAPSED_REALTIME,
+                    SystemClock.elapsedRealtime() + 1000,
+                    restartServicePendingIntent);
+        }
+
+        super.onTaskRemoved(rootIntent);
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(LOG_TAG, "WidgetUpdateService onStartCommand");
 
@@ -451,12 +471,10 @@ public class WidgetUpdateService extends Service {
             ComponentName thisWidget = new ComponentName(this,
                     DigitalClockAppWidgetProvider.class);
 
-            if (thisWidget != null) {
-                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
-                if (appWidgetIds.length > 0)
-                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-            }
+            if (appWidgetIds.length > 0)
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
         }
 
         if (mWidgetInfo == null) {
@@ -515,12 +533,10 @@ public class WidgetUpdateService extends Service {
             ComponentName thisWidget = new ComponentName(this,
                     DigitalClockAppWidgetProvider.class);
 
-            if (thisWidget != null) {
-                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
-                if (appWidgetIds.length > 0)
-                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-            }
+            if (appWidgetIds.length > 0)
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
         }
 
         String intentExtra = null;
@@ -645,25 +661,23 @@ public class WidgetUpdateService extends Service {
             thisWidget = new ComponentName(this,
                     DigitalClockAppWidgetProvider.class);
 
-            if (thisWidget != null) {
-                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
-                if (appWidgetIds.length > 0) {
-                    for (int appWidgetId : appWidgetIds) {
+            if (appWidgetIds.length > 0) {
+                for (int appWidgetId : appWidgetIds) {
 
-                        boolean showWeather = Preferences.getShowWeather(this, appWidgetId);
+                    boolean showWeather = Preferences.getShowWeather(this, appWidgetId);
 
-                        if (showWeather) {
-                            remoteViews = buildClockUpdate(appWidgetId);
-                            updateClockStatus(remoteViews, appWidgetId, true);
+                    if (showWeather) {
+                        remoteViews = buildClockUpdate(appWidgetId);
+                        updateClockStatus(remoteViews, appWidgetId, true);
 
-                            // translate weather info if locale is changed
-                            if (intentExtra.equals(UPDATE_WIDGETS) || intentExtra.equals(Intent.ACTION_LOCALE_CHANGED)) {
-                                updateWeatherStatus(remoteViews, appWidgetId, true);
-                            }
-
-                            appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
+                        // translate weather info if locale is changed
+                        if (intentExtra.equals(UPDATE_WIDGETS) || intentExtra.equals(Intent.ACTION_LOCALE_CHANGED)) {
+                            updateWeatherStatus(remoteViews, appWidgetId, true);
                         }
+
+                        appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
                     }
                 }
             }
@@ -676,14 +690,10 @@ public class WidgetUpdateService extends Service {
                 powerWidget = new ComponentName(this, PowerAppWidgetProvider.class);
                 newIntent = new Intent(this, WidgetUpdateService.class);
                 newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, POWER_WIDGET_UPDATE_ALL);
-                int[] appWidgetIds = null;
+                int[] appPowerWidgetIds = appWidgetManager.getAppWidgetIds(powerWidget);
 
-                if (powerWidget != null) {
-                    appWidgetIds = appWidgetManager.getAppWidgetIds(powerWidget);
-                }
-
-                if (appWidgetIds != null && appWidgetIds.length > 0) {
-                    for (int appWidgetId : appWidgetIds) {
+                if (appPowerWidgetIds != null && appPowerWidgetIds.length > 0) {
+                    for (int appWidgetId : appPowerWidgetIds) {
                         remoteViews = buildPowerUpdate(newIntent, appWidgetId);
 
                         if (remoteViews != null) {
@@ -940,11 +950,8 @@ public class WidgetUpdateService extends Service {
 
                             if (updateViews != null) {
 
-                                if (appWidgetManager != null && updateViews != null) {
-
-                                    appWidgetManager.updateAppWidget(thisWidget,
-                                            updateViews);
-                                }
+                                appWidgetManager.updateAppWidget(thisWidget,
+                                        updateViews);
                             }
                         }
 
@@ -989,7 +996,7 @@ public class WidgetUpdateService extends Service {
 
                         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(powerWidget);
 
-                        if (powerWidget != null && appWidgetIds != null) {
+                        if (appWidgetIds != null) {
                             for (int appWidgetId : appWidgetIds) {
 
                                 RemoteViews updatePowerViews = buildPowerUpdate(intent, appWidgetId);
@@ -1331,7 +1338,11 @@ public class WidgetUpdateService extends Service {
                 if (VERSION.SDK_INT >= VERSION_CODES.GINGERBREAD_MR1 &&
                         getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC)) {
                     NfcManager manager = (NfcManager) getSystemService(Context.NFC_SERVICE);
-                    NfcAdapter adapter = manager.getDefaultAdapter();
+                    NfcAdapter adapter = null;
+
+                    if (manager != null) {
+                        adapter = manager.getDefaultAdapter();
+                    }
 
                     if (adapter != null) {
                         Intent wirelessIntent;
@@ -1727,7 +1738,11 @@ public class WidgetUpdateService extends Service {
                 if (VERSION.SDK_INT >= VERSION_CODES.GINGERBREAD_MR1 &&
                         getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC)) {
                     NfcManager manager = (NfcManager) getSystemService(Context.NFC_SERVICE);
-                    NfcAdapter adapter = manager.getDefaultAdapter();
+                    NfcAdapter adapter = null;
+
+                    if (manager != null) {
+                        adapter = manager.getDefaultAdapter();
+                    }
 
                     if (adapter != null) {
                         Intent wirelessIntent;
@@ -1951,6 +1966,7 @@ public class WidgetUpdateService extends Service {
         return (updateViews);
     }
 
+    @SuppressLint("StaticFieldLeak")
     public void toggleWidgets(Intent intent) {
         Bundle extras = intent.getExtras();
 
@@ -2146,7 +2162,9 @@ public class WidgetUpdateService extends Service {
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         if (!Preferences.getShowBatteryNotif(this)) {
-            notificationManager.cancel(R.string.batterynotification);
+            if (notificationManager != null) {
+                notificationManager.cancel(R.string.batterynotification);
+            }
             return;
         }
 
@@ -2249,7 +2267,10 @@ public class WidgetUpdateService extends Service {
         notification.setContentTitle(getResources().getText(R.string.batterylevelfull) + " " + level + "%");
         notification.setContentText(batteryStatus);
         notification.setContentIntent(pendingIntent);
-        notificationManager.notify(R.string.batterynotification, notification.build());
+
+        if (notificationManager != null) {
+            notificationManager.notify(R.string.batterynotification, notification.build());
+        }
     }
 
     public boolean canToggleAirplane() {
@@ -3208,14 +3229,14 @@ public class WidgetUpdateService extends Service {
 
         updateViews.setTextViewText(R.id.textViewMobile, getResources().getText(R.string.mobile));
 
-        if (intentExtra != null && intentExtra.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+        /*if (intentExtra != null && intentExtra.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
             // HACK - mobile data state change is delayed, delay getting info
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
         Boolean mobileState = getMobileState();
 
@@ -4034,7 +4055,11 @@ public class WidgetUpdateService extends Service {
 
             boolean bWiFiOnly = Preferences.getRefreshWiFiOnly(this, appWidgetId);
             ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo mWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            NetworkInfo mWifi = null;
+
+            if (connectivityManager != null) {
+                mWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            }
 
             if (scheduledUpdate && bWiFiOnly && !mWifi.isConnected()) {
                 Preferences.setWeatherSuccess(this, appWidgetId, false);
@@ -4058,7 +4083,11 @@ public class WidgetUpdateService extends Service {
             if (locationType == ConfigureLocationActivity.LOCATION_TYPE_CURRENT) {
                 // obtain location first
                 LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                List<String> providers = locationManager.getProviders(new Criteria(), true);
+                List<String> providers = null;
+
+                if (locationManager != null) {
+                    providers = locationManager.getProviders(new Criteria(), true);
+                }
 
                 if (!providers.isEmpty()) {
 

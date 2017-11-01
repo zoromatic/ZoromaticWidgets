@@ -3,21 +3,15 @@ package com.zoromatic.widgets;
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
 @SuppressLint({"SimpleDateFormat", "NewApi"})
 public class PowerAppWidgetPreferenceActivity extends ThemeAppCompatActivity {
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     static final String APPWIDGETID = "AppWidgetId";
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +39,7 @@ public class PowerAppWidgetPreferenceActivity extends ThemeAppCompatActivity {
 
         setContentView(R.layout.activity_prefs);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
         }
@@ -135,39 +129,5 @@ public class PowerAppWidgetPreferenceActivity extends ThemeAppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @SuppressLint("InlinedApi")
-    public void setStatusBarColor(View statusBar, int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window w = getWindow();
-            w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //status bar height
-            //int actionBarHeight = getActionBarHeight();
-            int statusBarHeight = getStatusBarHeight();
-            //action bar height
-            statusBar.getLayoutParams().height = /*actionBarHeight + */statusBarHeight;
-            statusBar.setBackgroundColor(color);
-        } else {
-            statusBar.setVisibility(View.GONE);
-        }
-    }
-
-    public int getActionBarHeight() {
-        int actionBarHeight = 0;
-        TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-        return actionBarHeight;
-    }
-
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
     }
 }

@@ -10,6 +10,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
@@ -110,13 +111,19 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
                 break;
         }
 
-        refreshInterval = 5*60*1000; // test on 5 minutes
+        //refreshInterval = 5*60*1000; // test on 5 minutes
         calendar.setTimeInMillis(lastRefresh);
         //long startAlarm = calendar.getTimeInMillis() + refreshInterval;
 
         if (alarmManager != null) {
+            PendingIntent clockTickIntent = createClockTickIntent(context, appWidgetId);
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
-                    refreshInterval, createClockTickIntent(context, appWidgetId));
+                    refreshInterval, clockTickIntent);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, refreshInterval,
+                        clockTickIntent);
+            }
         }
     }
 
