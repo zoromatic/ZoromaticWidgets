@@ -3405,6 +3405,17 @@ public class WidgetUpdateService extends Service {
 
         Log.v(LOG_TAG, "setRingerState - " + ringerState);
 
+        NotificationManager notificationManager =
+                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (notificationManager != null && VERSION.SDK_INT >= VERSION_CODES.N
+                && !notificationManager.isNotificationPolicyAccessGranted()) {
+            Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+            startActivity(intent);
+
+            return;
+        }
+
         AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 
         if (audioManager == null)
