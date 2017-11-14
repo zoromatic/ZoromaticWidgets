@@ -403,6 +403,57 @@ public class WidgetUpdateService extends Service {
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+
+        if (mWidgetInfo == null) {
+            mWidgetInfo = new WidgetInfoReceiver();
+            registerReceiver(mWidgetInfo, mIntentFilter);
+
+            sendBroadcast(new Intent(FLASHLIGHT_CHANGED));
+            sendBroadcast(new Intent(BRIGHTNESS_CHANGED));
+        }
+
+        LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (mGpsListener == null && mLocListener == null) {
+            if (locManager != null) {
+                boolean gps_enabled = false;
+
+                try {
+                    gps_enabled = locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                } catch (Exception e) {
+                    Log.e(LOG_TAG, "", e);
+                }
+
+                if (gps_enabled) {
+                    mGpsListener = new WidgetGPSListener();
+                    mLocListener = new WidgetLocationListener();
+
+                    try {
+                        locManager.addGpsStatusListener(mGpsListener);
+                        locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                                GPS_UPDATE_TIME_INTERVAL, GPS_UPDATE_DISTANCE_INTERVAL,
+                                mLocListener);
+                    } catch (SecurityException e) {
+                        Log.e(LOG_TAG, "", e);
+                    }
+                }
+            }
+        }
+
+        if (sSettingsObserver == null) {
+            sSettingsObserver = new BrightnessObserver(new Handler(), this);
+            sSettingsObserver.startObserving();
+        }
+
+        if (sRotationObserver == null) {
+            sRotationObserver = new RotationObserver(new Handler(), this);
+            sRotationObserver.startObserving();
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
 
@@ -477,15 +528,15 @@ public class WidgetUpdateService extends Service {
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
         }
 
-        if (mWidgetInfo == null) {
+        /*if (mWidgetInfo == null) {
             mWidgetInfo = new WidgetInfoReceiver();
             registerReceiver(mWidgetInfo, mIntentFilter);
 
             sendBroadcast(new Intent(FLASHLIGHT_CHANGED));
             sendBroadcast(new Intent(BRIGHTNESS_CHANGED));
-        }
+        }*/
 
-        LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        /*LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if (mGpsListener == null && mLocListener == null) {
             if (locManager != null) {
@@ -521,7 +572,7 @@ public class WidgetUpdateService extends Service {
         if (sRotationObserver == null) {
             sRotationObserver = new RotationObserver(new Handler(), this);
             sRotationObserver.startObserving();
-        }
+        }*/
 
         Bundle extras = intent.getExtras();
 

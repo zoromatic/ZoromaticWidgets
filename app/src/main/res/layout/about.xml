@@ -9,6 +9,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:src="@drawable/icon"
+            android:contentDescription="@string/about" />
+
         <TextView
             android:id="@+id/info_text"
             android:layout_width="fill_parent"
