@@ -172,8 +172,8 @@ public class WidgetUpdateService extends Service {
     protected static float GPS_UPDATE_DISTANCE_INTERVAL = 0; // meters
     private WidgetGPSListener mGpsListener = null;
     private WidgetLocationListener mLocListener = null;
-    private BrightnessObserver sSettingsObserver;
-    private RotationObserver sRotationObserver;
+    private BrightnessObserver mSettingsObserver;
+    private RotationObserver mRotationObserver;
     private static Camera camera;
     private static boolean flashOn = false;
 
@@ -442,14 +442,14 @@ public class WidgetUpdateService extends Service {
             }
         }
 
-        if (sSettingsObserver == null) {
-            sSettingsObserver = new BrightnessObserver(new Handler(), this);
-            sSettingsObserver.startObserving();
+        if (mSettingsObserver == null) {
+            mSettingsObserver = new BrightnessObserver(new Handler(), this);
+            mSettingsObserver.startObserving();
         }
 
-        if (sRotationObserver == null) {
-            sRotationObserver = new RotationObserver(new Handler(), this);
-            sRotationObserver.startObserving();
+        if (mRotationObserver == null) {
+            mRotationObserver = new RotationObserver(new Handler(), this);
+            mRotationObserver.startObserving();
         }
     }
 
@@ -464,14 +464,14 @@ public class WidgetUpdateService extends Service {
         }
 
         try {
-            if (sSettingsObserver != null) {
-                sSettingsObserver.stopObserving();
-                sSettingsObserver = null;
+            if (mSettingsObserver != null) {
+                mSettingsObserver.stopObserving();
+                mSettingsObserver = null;
             }
 
-            if (sRotationObserver != null) {
-                sRotationObserver.stopObserving();
-                sRotationObserver = null;
+            if (mRotationObserver != null) {
+                mRotationObserver.stopObserving();
+                mRotationObserver = null;
             }
 
             mGpsListener = null;
@@ -564,14 +564,14 @@ public class WidgetUpdateService extends Service {
             }
         }
 
-        if (sSettingsObserver == null) {
-            sSettingsObserver = new BrightnessObserver(new Handler(), this);
-            sSettingsObserver.startObserving();
+        if (mSettingsObserver == null) {
+            mSettingsObserver = new BrightnessObserver(new Handler(), this);
+            mSettingsObserver.startObserving();
         }
 
-        if (sRotationObserver == null) {
-            sRotationObserver = new RotationObserver(new Handler(), this);
-            sRotationObserver.startObserving();
+        if (mRotationObserver == null) {
+            mRotationObserver = new RotationObserver(new Handler(), this);
+            mRotationObserver.startObserving();
         }*/
 
         Bundle extras = intent.getExtras();
