@@ -97,7 +97,22 @@
 
         <receiver
             android:name=".WidgetInfoReceiver"
-            android:label="WidgetInfoReceiver" />
+            android:label="WidgetInfoReceiver">
+            <intent-filter>
+                <action android:name="com.zoromatic.widgets.POWER_WIDGET_UPDATE_ALL" />
+                <action android:name="com.zoromatic.widgets.POWER_BLUETOOTH_WIDGET_UPDATE" />
+                <action android:name="com.zoromatic.widgets.POWER_WIFI_WIDGET_UPDATE" />
+                <action android:name="com.zoromatic.widgets.POWER_MOBILE_DATA_WIDGET_UPDATE" />
+                <action android:name="com.zoromatic.widgets.POWER_GPS_WIDGET_UPDATE" />
+                <action android:name="com.zoromatic.widgets.POWER_RINGER_WIDGET_UPDATE" />
+                <action android:name="com.zoromatic.widgets.POWER_AIRPLANE_WIDGET_UPDATE" />
+                <action android:name="com.zoromatic.widgets.POWER_BRIGHTNESS_WIDGET_UPDATE" />
+                <action android:name="com.zoromatic.widgets.POWER_NFC_WIDGET_UPDATE" />
+                <action android:name="com.zoromatic.widgets.POWER_SYNC_WIDGET_UPDATE" />
+                <action android:name="com.zoromatic.widgets.POWER_ORIENTATION_WIDGET_UPDATE" />
+                <action android:name="com.zoromatic.widgets.POWER_TORCH_WIDGET_UPDATE" />
+            </intent-filter>
+        </receiver>
         <receiver
             android:name=".DigitalClockAppWidgetProvider"
             android:icon="@drawable/weather_clock"

@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 //import android.bluetooth.BluetoothAdapter;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 //import android.media.AudioManager;
 //import android.net.ConnectivityManager;
 //import android.net.wifi.WifiManager;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 public class PowerAppWidgetProvider extends AppWidgetProvider {
     private static final String LOG_TAG = "PowerWidget";
@@ -49,9 +51,24 @@ public class PowerAppWidgetProvider extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
 
-        Intent startIntent = new Intent(context, WidgetUpdateService.class);
+        /*Intent startIntent = new Intent(context, WidgetUpdateService.class);
         startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.POWER_WIDGET_UPDATE_ALL);
 
-        context.startService(startIntent);
+        context.startService(startIntent);*/
+
+        final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        WidgetManager widgetManager = new WidgetManager(context);
+        Intent updateIntent = new Intent(context, WidgetUpdateService.class);
+        updateIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.POWER_WIDGET_UPDATE_ALL);
+
+        for (int appWidgetId : appWidgetManager.getAppWidgetIds(new ComponentName(context, PowerAppWidgetProvider.class))) {
+            /*RemoteViews remoteViews = widgetManager.buildPowerUpdate(updateIntent, appWidgetId);
+
+            if (remoteViews != null) {
+                widgetManager.updatePowerWidgetStatus(remoteViews, updateIntent, appWidgetId);
+            }*/
+
+            appWidgetManager.updateAppWidget(appWidgetId, widgetManager.buildPowerUpdate(updateIntent, appWidgetId));
+        }
     }
 };

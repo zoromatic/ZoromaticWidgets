@@ -3439,7 +3439,7 @@ public class WidgetUpdateService extends Service {
 
     protected int getRingerState() {
 
-        AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         int ringerState = AudioManager.RINGER_MODE_NORMAL;
 
         if (audioManager != null) {
@@ -3467,7 +3467,7 @@ public class WidgetUpdateService extends Service {
             return;
         }
 
-        AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
         if (audioManager == null)
             return;
