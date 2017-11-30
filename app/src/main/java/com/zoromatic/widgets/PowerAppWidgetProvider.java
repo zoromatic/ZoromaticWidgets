@@ -23,52 +23,33 @@ public class PowerAppWidgetProvider extends AppWidgetProvider {
 
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
-        /*int currentapiVersion = android.os.Build.VERSION.SDK_INT;        
-        String[] intentExtras = new String[] {WifiManager.WIFI_STATE_CHANGED_ACTION, AudioManager.RINGER_MODE_CHANGED_ACTION,
-        		ConnectivityManager.CONNECTIVITY_ACTION, BluetoothAdapter.ACTION_STATE_CHANGED,
-        		WidgetUpdateService.NFC_ADAPTER_STATE_CHANGED,
-        		currentapiVersion < 9?WidgetUpdateService.LOCATION_GPS_ENABLED_CHANGED:WidgetUpdateService.LOCATION_PROVIDERS_CHANGED, 
-        		Intent.ACTION_AIRPLANE_MODE_CHANGED, WidgetUpdateService.AUTO_ROTATE_CHANGED, 
-        		WidgetUpdateService.SYNC_CONN_STATUS_CHANGED, WidgetUpdateService.FLASHLIGHT_CHANGED,
-        		WidgetUpdateService.BRIGHTNESS_CHANGED};
-        
-    	
-    	for (String intentExtra : intentExtras) {
-    		Intent startIntent = new Intent(context, WidgetUpdateService.class);
-    		startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-    		startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, intentExtra);
+        WidgetManager widgetManager = new WidgetManager(context);
 
-    		context.startService(startIntent);
-    	}*/
+        for (int appWidgetId : appWidgetIds) {
+            RemoteViews remoteViews = widgetManager.buildPowerUpdate(WidgetManager.POWER_WIDGET_UPDATE_ALL, appWidgetId);
 
-        Intent startIntent = new Intent(context, WidgetUpdateService.class);
-        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.POWER_WIDGET_UPDATE_ALL);
-
-        context.startService(startIntent);
+            if (remoteViews != null) {
+                widgetManager.updatePowerWidgetStatus(remoteViews, WidgetManager.POWER_WIDGET_UPDATE_ALL, appWidgetId);
+            }
+        }
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d(LOG_TAG, "PowerAppWidgetProvider onReceive");
+
         super.onReceive(context, intent);
-
-        /*Intent startIntent = new Intent(context, WidgetUpdateService.class);
-        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.POWER_WIDGET_UPDATE_ALL);
-
-        context.startService(startIntent);*/
 
         final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         WidgetManager widgetManager = new WidgetManager(context);
-        Intent updateIntent = new Intent(context, WidgetUpdateService.class);
-        updateIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.POWER_WIDGET_UPDATE_ALL);
+        widgetManager.toggleWidgets(intent.getAction());
 
         for (int appWidgetId : appWidgetManager.getAppWidgetIds(new ComponentName(context, PowerAppWidgetProvider.class))) {
-            /*RemoteViews remoteViews = widgetManager.buildPowerUpdate(updateIntent, appWidgetId);
+            RemoteViews remoteViews = widgetManager.buildPowerUpdate(intent.getAction(), appWidgetId);
 
             if (remoteViews != null) {
-                widgetManager.updatePowerWidgetStatus(remoteViews, updateIntent, appWidgetId);
-            }*/
-
-            appWidgetManager.updateAppWidget(appWidgetId, widgetManager.buildPowerUpdate(updateIntent, appWidgetId));
+                widgetManager.updatePowerWidgetStatus(remoteViews, intent.getAction(), appWidgetId);
+            }
         }
     }
 };

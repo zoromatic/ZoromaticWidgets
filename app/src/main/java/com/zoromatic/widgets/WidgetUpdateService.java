@@ -744,11 +744,12 @@ public class WidgetUpdateService extends Service {
                 int[] appPowerWidgetIds = appWidgetManager.getAppWidgetIds(powerWidget);
 
                 if (appPowerWidgetIds != null && appPowerWidgetIds.length > 0) {
+                    WidgetManager widgetManager = new WidgetManager(this);
                     for (int appWidgetId : appPowerWidgetIds) {
-                        remoteViews = buildPowerUpdate(newIntent, appWidgetId);
+                        remoteViews = widgetManager.buildPowerUpdate(POWER_WIDGET_UPDATE_ALL, appWidgetId);
 
                         if (remoteViews != null) {
-                            updatePowerWidgetStatus(remoteViews, newIntent, appWidgetId);
+                            widgetManager.updatePowerWidgetStatus(remoteViews, POWER_WIDGET_UPDATE_ALL, appWidgetId);
                         }
                     }
                 }
@@ -1048,12 +1049,14 @@ public class WidgetUpdateService extends Service {
                         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(powerWidget);
 
                         if (appWidgetIds != null) {
+                            WidgetManager widgetManager = new WidgetManager(this);
+
                             for (int appWidgetId : appWidgetIds) {
 
-                                RemoteViews updatePowerViews = buildPowerUpdate(intent, appWidgetId);
+                                RemoteViews updatePowerViews = widgetManager.buildPowerUpdate(intentExtra, appWidgetId);
 
                                 if (updatePowerViews != null) {
-                                    updatePowerWidgetStatus(updatePowerViews, intent, appWidgetId);
+                                    widgetManager.updatePowerWidgetStatus(updatePowerViews, intentExtra, appWidgetId);
                                 }
                             }
                         }

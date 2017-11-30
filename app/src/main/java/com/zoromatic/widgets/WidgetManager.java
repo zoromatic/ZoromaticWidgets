@@ -1,6 +1,7 @@
 package com.zoromatic.widgets;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -34,6 +35,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
+import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -67,6 +69,7 @@ import static java.lang.Thread.sleep;
 
 public class WidgetManager {
     private static String WIDGET_MANAGER_LOG_TAG = "WidgetManager";
+
     public static String BLUETOOTH_WIDGET_UPDATE = "com.zoromatic.widgets.BLUETOOTH_WIDGET_UPDATE";
     public static String WIFI_WIDGET_UPDATE = "com.zoromatic.widgets.WIFI_WIDGET_UPDATE";
     public static String MOBILE_DATA_WIDGET_UPDATE = "com.zoromatic.widgets.MOBILE_DATA_WIDGET_UPDATE";
@@ -144,16 +147,8 @@ public class WidgetManager {
         mContext = context;
     }
 
-    public RemoteViews buildPowerUpdate(Intent intent, int appWidgetId) {
+    public RemoteViews buildPowerUpdate(String intentExtra, int appWidgetId) {
         Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager buildPowerUpdate");
-
-        // Build an update that holds the updated widget contents
-        Bundle extras = intent.getExtras();
-
-        if (extras == null)
-            return null;
-
-        String intentExtra = extras.getString(WidgetInfoReceiver.INTENT_EXTRA);
 
         if (intentExtra == null)
             return null;
@@ -500,12 +495,9 @@ public class WidgetManager {
         return updateViews;
     }
 
-    public void updatePowerWidgetStatus(RemoteViews updateViews, Intent intent, int appWidgetId) {
+    public void updatePowerWidgetStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
 
         if (updateViews == null)
-            return;
-
-        if (intent == null)
             return;
 
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID)
@@ -527,29 +519,29 @@ public class WidgetManager {
             //boolean bShowSettings = Preferences.getShowSettings(this, appWidgetId);
 
             if (bShowBatteryStatus)
-                updateBatteryStatus(updateViews, intent, appWidgetId);
+                updateBatteryStatus(updateViews, intentExtra, appWidgetId);
             if (bShowBluetooth)
-                updateBluetoothStatus(updateViews, intent, appWidgetId);
+                updateBluetoothStatus(updateViews, intentExtra, appWidgetId);
             if (bShowWifi)
-                updateWifiStatus(updateViews, intent, appWidgetId);
+                updateWifiStatus(updateViews, intentExtra, appWidgetId);
             if (bShowMobile)
-                updateDataStatus(updateViews, intent, appWidgetId);
+                updateDataStatus(updateViews, intentExtra, appWidgetId);
             if (bShowGps)
-                updateGpsStatus(updateViews, intent, appWidgetId);
+                updateGpsStatus(updateViews, intentExtra, appWidgetId);
             if (bShowRinger)
-                updateRingerStatus(updateViews, intent, appWidgetId);
+                updateRingerStatus(updateViews, intentExtra, appWidgetId);
             if (bShowAirplane)
-                updateAirplaneMode(updateViews, intent, appWidgetId);
+                updateAirplaneMode(updateViews, intentExtra, appWidgetId);
             if (bShowBrightness)
-                updateBrightness(updateViews, intent, appWidgetId);
+                updateBrightness(updateViews, intentExtra, appWidgetId);
             if (bShowNfc)
-                updateNfcStatus(updateViews, intent, appWidgetId);
+                updateNfcStatus(updateViews, intentExtra, appWidgetId);
             if (bShowSync)
-                updateSyncStatus(updateViews, intent, appWidgetId);
+                updateSyncStatus(updateViews, intentExtra, appWidgetId);
             if (bShowOrientation)
-                updateOrientation(updateViews, intent, appWidgetId);
+                updateOrientation(updateViews, intentExtra, appWidgetId);
             if (bShowTorch)
-                updateTorchStatus(updateViews, intent, appWidgetId);
+                updateTorchStatus(updateViews, intentExtra, appWidgetId);
 
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
             appWidgetManager.updateAppWidget(appWidgetId, updateViews);
@@ -610,13 +602,24 @@ public class WidgetManager {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
     }
 
-    public void updateBatteryStatus(RemoteViews updateViews, Intent intent, int appWidgetId) {
+    public void updateBatteryStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
         Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateBatteryStatus");
 
-        int rawLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-        int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS,
+        if (intentExtra == null)
+            return;
+
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && !intentExtra.equals(Intent.ACTION_BATTERY_CHANGED)
+                && !intentExtra.equals(UPDATE_SINGLE_BATTERY_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)) {
+            return;
+        }
+
+        Intent intentBattery = new Intent(Intent.ACTION_BATTERY_CHANGED);
+
+        int rawLevel = intentBattery.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        int scale = intentBattery.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+        int status = intentBattery.getIntExtra(BatteryManager.EXTRA_STATUS,
                 BatteryManager.BATTERY_STATUS_UNKNOWN);
+
         int level = -1;
         int icon = R.drawable.battery_widget_75;
 
@@ -734,6 +737,64 @@ public class WidgetManager {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
+    public void toggleWidgets(final String intentExtra) {
+        if (intentExtra == null)
+            return;
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... args) {
+                int nOptions = Preferences.getBrightnessOptions(mContext); // 0 - toggle, 1 - dialog
+
+                if (intentExtra.equals(BLUETOOTH_WIDGET_UPDATE) || intentExtra.equals(POWER_BLUETOOTH_WIDGET_UPDATE)) {
+                    toggleBluetoothState();
+                }
+
+                if (intentExtra.equals(WIFI_WIDGET_UPDATE) || intentExtra.equals(POWER_WIFI_WIDGET_UPDATE)) {
+                    toggleWiFi();
+                }
+
+                if (intentExtra.equals(MOBILE_DATA_WIDGET_UPDATE) || intentExtra.equals(POWER_MOBILE_DATA_WIDGET_UPDATE)) {
+                    toggleData();
+                }
+
+                if (intentExtra.equals(GPS_WIDGET_UPDATE) || intentExtra.equals(POWER_GPS_WIDGET_UPDATE)) {
+                    toggleGps();
+                }
+
+                if (intentExtra.equals(RINGER_WIDGET_UPDATE) || intentExtra.equals(POWER_RINGER_WIDGET_UPDATE)) {
+                    toggleRinger();
+                }
+
+                if (intentExtra.equals(AIRPLANE_WIDGET_UPDATE) || intentExtra.equals(POWER_AIRPLANE_WIDGET_UPDATE)) {
+                    toggleAirplaneMode();
+                }
+
+                if (nOptions == 0 && (intentExtra.equals(BRIGHTNESS_WIDGET_UPDATE) || intentExtra.equals(POWER_BRIGHTNESS_WIDGET_UPDATE))) {
+                    toggleBrightness();
+                }
+
+                if (intentExtra.equals(NFC_WIDGET_UPDATE) || intentExtra.equals(POWER_NFC_WIDGET_UPDATE)) {
+                    toggleNfc();
+                }
+
+                if (intentExtra.equals(SYNC_WIDGET_UPDATE) || intentExtra.equals(POWER_SYNC_WIDGET_UPDATE)) {
+                    toggleSync();
+                }
+
+                if (intentExtra.equals(ORIENTATION_WIDGET_UPDATE) || intentExtra.equals(POWER_ORIENTATION_WIDGET_UPDATE)) {
+                    toggleOrientation();
+                }
+
+                if (intentExtra.equals(TORCH_WIDGET_UPDATE) || intentExtra.equals(POWER_TORCH_WIDGET_UPDATE)) {
+                    toggleTorch();
+                }
+                return null;
+            }
+        }.execute();
+    }
+
     public boolean canToggleAirplane() {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1;
     }
@@ -775,17 +836,14 @@ public class WidgetManager {
     }
 
     @SuppressWarnings("unused")
-    public void updateAirplaneMode(RemoteViews updateViews, Intent intent, int appWidgetId) {
+    public void updateAirplaneMode(RemoteViews updateViews, String intentExtra, int appWidgetId) {
         Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateAirplaneMode");
 
-        Bundle extras = intent.getExtras();
-
-        if (extras == null)
+        if (intentExtra == null)
             return;
 
-        String intentExtra = extras.getString(WidgetInfoReceiver.INTENT_EXTRA);
-
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && intentExtra != null && !intentExtra.equals(Intent.ACTION_AIRPLANE_MODE_CHANGED) && !intentExtra.equals(UPDATE_SINGLE_AIRPLANE_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && !intentExtra.equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)
+                && !intentExtra.equals(UPDATE_SINGLE_AIRPLANE_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
                 && !intentExtra.equals(AIRPLANE_WIDGET_UPDATE) && !intentExtra.equals(POWER_AIRPLANE_WIDGET_UPDATE)) {
             return;
         }
@@ -870,17 +928,14 @@ public class WidgetManager {
         }
     }
 
-    public void updateBluetoothStatus(RemoteViews updateViews, Intent intent, int appWidgetId) {
+    public void updateBluetoothStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
         Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateBluetoothStatus");
 
-        Bundle extras = intent.getExtras();
-
-        if (extras == null)
+        if (intentExtra == null)
             return;
 
-        String intentExtra = extras.getString(WidgetInfoReceiver.INTENT_EXTRA);
-
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && intentExtra != null && !intentExtra.equals(BluetoothAdapter.ACTION_STATE_CHANGED) && !intentExtra.equals(UPDATE_SINGLE_BLUETOOTH_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && !intentExtra.equals(BluetoothAdapter.ACTION_STATE_CHANGED)
+                && !intentExtra.equals(UPDATE_SINGLE_BLUETOOTH_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
                 && !intentExtra.equals(BLUETOOTH_WIDGET_UPDATE) && !intentExtra.equals(POWER_BLUETOOTH_WIDGET_UPDATE)) {
             return;
         }
@@ -1006,17 +1061,14 @@ public class WidgetManager {
         }
     }
 
-    public void updateTorchStatus(RemoteViews updateViews, Intent intent, int appWidgetId) {
+    public void updateTorchStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
         Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateTorchStatus");
 
-        Bundle extras = intent.getExtras();
-
-        if (extras == null)
+        if (intentExtra == null)
             return;
 
-        String intentExtra = extras.getString(WidgetInfoReceiver.INTENT_EXTRA);
-
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && intentExtra != null && !intentExtra.equals(FLASHLIGHT_CHANGED) && !intentExtra.equals(UPDATE_SINGLE_TORCH_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && !intentExtra.equals(FLASHLIGHT_CHANGED)
+                && !intentExtra.equals(UPDATE_SINGLE_TORCH_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
                 && !intentExtra.equals(TORCH_WIDGET_UPDATE) && !intentExtra.equals(POWER_TORCH_WIDGET_UPDATE)) {
             return;
         }
@@ -1109,17 +1161,14 @@ public class WidgetManager {
         }
     }
 
-    public void updateWifiStatus(RemoteViews updateViews, Intent intent, int appWidgetId) {
+    public void updateWifiStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
         Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateWifiStatus");
 
-        Bundle extras = intent.getExtras();
-
-        if (extras == null)
+        if (intentExtra == null)
             return;
 
-        String intentExtra = extras.getString(WidgetInfoReceiver.INTENT_EXTRA);
-
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && intentExtra != null && !intentExtra.equals(WifiManager.WIFI_STATE_CHANGED_ACTION) && !intentExtra.equals(UPDATE_SINGLE_WIFI_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && !intentExtra.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)
+                && !intentExtra.equals(UPDATE_SINGLE_WIFI_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
                 && !intentExtra.equals(WIFI_WIDGET_UPDATE) && !intentExtra.equals(POWER_WIFI_WIDGET_UPDATE)) {
             return;
         }
@@ -1203,17 +1252,14 @@ public class WidgetManager {
         }
     }
 
-    public void updateSyncStatus(RemoteViews updateViews, Intent intent, int appWidgetId) {
+    public void updateSyncStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
         Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateSyncStatus");
 
-        Bundle extras = intent.getExtras();
-
-        if (extras == null)
+        if (intentExtra == null)
             return;
 
-        String intentExtra = extras.getString(WidgetInfoReceiver.INTENT_EXTRA);
-
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && intentExtra != null && !intentExtra.equals(SYNC_CONN_STATUS_CHANGED) && !intentExtra.equals(UPDATE_SINGLE_SYNC_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && !intentExtra.equals(SYNC_CONN_STATUS_CHANGED)
+                && !intentExtra.equals(UPDATE_SINGLE_SYNC_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
                 && !intentExtra.equals(SYNC_WIDGET_UPDATE) && !intentExtra.equals(POWER_SYNC_WIDGET_UPDATE)) {
             return;
         }
@@ -1281,17 +1327,14 @@ public class WidgetManager {
         }
     }
 
-    public void updateOrientation(RemoteViews updateViews, Intent intent, int appWidgetId) {
+    public void updateOrientation(RemoteViews updateViews, String intentExtra, int appWidgetId) {
         Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateOrientation");
 
-        Bundle extras = intent.getExtras();
-
-        if (extras == null)
+        if (intentExtra == null)
             return;
 
-        String intentExtra = extras.getString(WidgetInfoReceiver.INTENT_EXTRA);
-
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && intentExtra != null && !intentExtra.equals(AUTO_ROTATE_CHANGED) && !intentExtra.equals(UPDATE_SINGLE_ORIENTATION_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && !intentExtra.equals(AUTO_ROTATE_CHANGED)
+                && !intentExtra.equals(UPDATE_SINGLE_ORIENTATION_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
                 && !intentExtra.equals(ORIENTATION_WIDGET_UPDATE) && !intentExtra.equals(POWER_ORIENTATION_WIDGET_UPDATE)) {
             return;
         }
@@ -1370,7 +1413,7 @@ public class WidgetManager {
         }
     }
 
-    public void updateNfcStatus(RemoteViews updateViews, Intent intent, int appWidgetId) {
+    public void updateNfcStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
         Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateNfcStatus");
 
         int currentApiVersion = android.os.Build.VERSION.SDK_INT;
@@ -1379,14 +1422,11 @@ public class WidgetManager {
             return;
         }
 
-        Bundle extras = intent.getExtras();
-
-        if (extras == null)
+        if (intentExtra == null)
             return;
 
-        String intentExtra = extras.getString(WidgetInfoReceiver.INTENT_EXTRA);
-
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && intentExtra != null && !intentExtra.equals(NFC_ADAPTER_STATE_CHANGED) && !intentExtra.equals(UPDATE_SINGLE_NFC_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && !intentExtra.equals(NFC_ADAPTER_STATE_CHANGED)
+                && !intentExtra.equals(UPDATE_SINGLE_NFC_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
                 && !intentExtra.equals(NFC_WIDGET_UPDATE) && !intentExtra.equals(POWER_NFC_WIDGET_UPDATE)) {
             return;
         }
@@ -1659,17 +1699,14 @@ public class WidgetManager {
         }
     }
 
-    public void updateDataStatus(RemoteViews updateViews, Intent intent, int appWidgetId) {
+    public void updateDataStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
         Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateMobileStatus");
 
-        Bundle extras = intent.getExtras();
-
-        if (extras == null)
+        if (intentExtra == null)
             return;
 
-        String intentExtra = extras.getString(WidgetInfoReceiver.INTENT_EXTRA);
-
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && intentExtra != null && !intentExtra.equals(ConnectivityManager.CONNECTIVITY_ACTION) && !intentExtra.equals(UPDATE_SINGLE_MOBILE_DATA_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && !intentExtra.equals(ConnectivityManager.CONNECTIVITY_ACTION)
+                && !intentExtra.equals(UPDATE_SINGLE_MOBILE_DATA_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
                 && !intentExtra.equals(MOBILE_DATA_WIDGET_UPDATE) && !intentExtra.equals(POWER_MOBILE_DATA_WIDGET_UPDATE)) {
             return;
         }
@@ -1794,19 +1831,15 @@ public class WidgetManager {
         }
     }
 
-    public void updateGpsStatus(RemoteViews updateViews, Intent intent, int appWidgetId) {
+    public void updateGpsStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
         Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateGpsStatus");
 
-        Bundle extras = intent.getExtras();
-
-        if (extras == null)
+        if (intentExtra == null)
             return;
 
-        String intentExtra = extras.getString(WidgetInfoReceiver.INTENT_EXTRA);
-
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && intentExtra != null && !intentExtra.equals(LOCATION_PROVIDERS_CHANGED) && !intentExtra.equals(LOCATION_GPS_ENABLED_CHANGED)
-                && !intentExtra.equals(UPDATE_SINGLE_GPS_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
-                && !intentExtra.equals(GPS_WIDGET_UPDATE) && !intentExtra.equals(POWER_GPS_WIDGET_UPDATE)) {
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && !intentExtra.equals(LOCATION_PROVIDERS_CHANGED)
+                && !intentExtra.equals(LOCATION_GPS_ENABLED_CHANGED) && !intentExtra.equals(UPDATE_SINGLE_GPS_WIDGET)
+                && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL) && !intentExtra.equals(GPS_WIDGET_UPDATE) && !intentExtra.equals(POWER_GPS_WIDGET_UPDATE)) {
             return;
         }
 
@@ -1940,17 +1973,14 @@ public class WidgetManager {
         }
     }
 
-    public void updateRingerStatus(RemoteViews updateViews, Intent intent, int appWidgetId) {
+    public void updateRingerStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
         Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateRingerStatus");
 
-        Bundle extras = intent.getExtras();
-
-        if (extras == null)
+        if (intentExtra == null)
             return;
 
-        String intentExtra = extras.getString(WidgetInfoReceiver.INTENT_EXTRA);
-
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && intentExtra != null && !intentExtra.equals(AudioManager.RINGER_MODE_CHANGED_ACTION) && !intentExtra.equals(UPDATE_SINGLE_RINGER_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && !intentExtra.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)
+                && !intentExtra.equals(UPDATE_SINGLE_RINGER_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
                 && !intentExtra.equals(RINGER_WIDGET_UPDATE) && !intentExtra.equals(POWER_RINGER_WIDGET_UPDATE)) {
             return;
         }
@@ -2088,17 +2118,14 @@ public class WidgetManager {
         Log.v(WIDGET_MANAGER_LOG_TAG, "setBrightness - " + brightness);
     }
 
-    public void updateBrightness(RemoteViews updateViews, Intent intent, int appWidgetId) {
+    public void updateBrightness(RemoteViews updateViews, String intentExtra, int appWidgetId) {
         Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateBrightness");
 
-        Bundle extras = intent.getExtras();
-
-        if (extras == null)
+        if (intentExtra == null)
             return;
 
-        String intentExtra = extras.getString(WidgetInfoReceiver.INTENT_EXTRA);
-
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && intentExtra != null && !intentExtra.equals(BRIGHTNESS_CHANGED) && !intentExtra.equals(UPDATE_SINGLE_BRIGHTNESS_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && !intentExtra.equals(BRIGHTNESS_CHANGED)
+                && !intentExtra.equals(UPDATE_SINGLE_BRIGHTNESS_WIDGET) && !intentExtra.equals(POWER_WIDGET_UPDATE_ALL)
                 && !intentExtra.equals(BRIGHTNESS_WIDGET_UPDATE) && !intentExtra.equals(POWER_BRIGHTNESS_WIDGET_UPDATE)) {
             return;
         }
