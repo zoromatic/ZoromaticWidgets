@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 
 public class WidgetInfoReceiver extends BroadcastReceiver {
@@ -166,7 +167,17 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
                     }
                 }
 
-                context.startService(startIntent);
+                //context.startService(startIntent);
+                WidgetManager widgetManager = new WidgetManager(context);
+                widgetManager.toggleWidgets(intent.getAction());
+
+                for (int appWidgetId : appWidgetManager.getAppWidgetIds(new ComponentName(context, PowerAppWidgetProvider.class))) {
+                    RemoteViews remoteViews = widgetManager.buildPowerUpdate(intent.getAction(), appWidgetId);
+
+                    if (remoteViews != null) {
+                        widgetManager.updatePowerWidgetStatus(remoteViews, intent.getAction(), appWidgetId);
+                    }
+                }
 
                 // refresh weather data if scheduled refresh failed
                 if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
