@@ -93,9 +93,10 @@
 
         <service
             android:name=".WidgetUpdateService"
-            android:enabled="true" />
+            android:enabled="true"
+            android:exported="true" />
 
-        <receiver
+        <!--<receiver
             android:name=".WidgetInfoReceiver"
             android:label="WidgetInfoReceiver">
             <intent-filter>
@@ -133,7 +134,7 @@
                 <action android:name="android.intent.action.CAMERA_BUTTON" />
                 <action android:name="android.intent.action.LOCALE_CHANGED" />
 
-                <!--<action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" />
+                &lt;!&ndash;<action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" />
                 <action android:name="android.net.conn.TETHER_STATE_CHANGED" />
                 <action android:name="com.android.sync.SYNC_CONN_STATUS_CHANGED" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
@@ -144,15 +145,18 @@
                 <action android:name="android.net.wimax.WIMAX_STATE_CHANGE" />
                 <action android:name="android.media.RINGER_MODE_CHANGED" />
                 <action android:name="android.nfc.action.ADAPTER_STATE_CHANGED" />
-                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
+                <action android:name="android.intent.action.BOOT_COMPLETED" />&ndash;&gt;
             </intent-filter>
-        </receiver>
+        </receiver>-->
+
         <receiver
             android:name=".DigitalClockAppWidgetProvider"
             android:icon="@drawable/weather_clock"
             android:label="@string/clockweatherwidgetname4x2">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.zoromatic.widgets.CLOCK_AM_PM_UPDATE" />
+                <action android:name="android.intent.action.ALARM_CHANGED" />
             </intent-filter>
 
             <meta-data

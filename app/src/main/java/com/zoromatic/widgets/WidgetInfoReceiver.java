@@ -13,7 +13,6 @@ import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-
 public class WidgetInfoReceiver extends BroadcastReceiver {
 
     private static final String LOG_TAG = "WidgetInfoReceiver";
@@ -24,7 +23,33 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         try {
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            String action = intent.getAction();
+
+            if (action == null)
+                return;
+            if ((action.equals(Intent.ACTION_TIME_CHANGED) || action.equals(Intent.ACTION_TIME_TICK)
+                    || action.equals(Intent.ACTION_TIMEZONE_CHANGED) || action.equals(Intent.ACTION_LOCALE_CHANGED)
+                    || action.equals(Intent.ACTION_CONFIGURATION_CHANGED) || action.equals(Intent.ACTION_BOOT_COMPLETED)
+                    || action.equals(WidgetUpdateService.CLOCK_WIDGET_UPDATE) || action.equals(WidgetUpdateService.WEATHER_UPDATE))) {
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, DigitalClockAppWidgetProvider.class));
+
+                if (appWidgetIds.length > 0) {
+                    if (action.equals(WidgetUpdateService.WEATHER_UPDATE))
+                        new DigitalClockAppWidgetProvider().updateWidgets(context, appWidgetIds, true, true);
+                    else
+                        new DigitalClockAppWidgetProvider().updateWidgets(context, appWidgetIds, true, false);
+                }
+            } else {
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, PowerAppWidgetProvider.class));
+
+                if (appWidgetIds.length > 0) {
+                    new PowerAppWidgetProvider().updateWidgets(context, appWidgetIds, action);
+                }
+            }
+
+            /*AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 
             String action = intent.getAction();
 
@@ -167,17 +192,7 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
                     }
                 }
 
-                //context.startService(startIntent);
-                WidgetManager widgetManager = new WidgetManager(context);
-                widgetManager.toggleWidgets(intent.getAction());
-
-                for (int appWidgetId : appWidgetManager.getAppWidgetIds(new ComponentName(context, PowerAppWidgetProvider.class))) {
-                    RemoteViews remoteViews = widgetManager.buildPowerUpdate(intent.getAction(), appWidgetId);
-
-                    if (remoteViews != null) {
-                        widgetManager.updatePowerWidgetStatus(remoteViews, intent.getAction(), appWidgetId);
-                    }
-                }
+                context.startService(startIntent);
 
                 // refresh weather data if scheduled refresh failed
                 if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
@@ -229,7 +244,7 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
                         }
                     }
                 }
-            }
+            }*/
 
         } catch (Exception e) {
             Log.e(LOG_TAG, "", e);

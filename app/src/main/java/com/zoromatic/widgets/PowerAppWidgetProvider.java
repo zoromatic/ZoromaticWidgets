@@ -19,36 +19,35 @@ public class PowerAppWidgetProvider extends AppWidgetProvider {
 
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
+        context.startService(new Intent(context, WidgetUpdateService.class));
+        RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.powerwidget);
+        appWidgetManager.updateAppWidget(appWidgetIds, updateViews);
+    }
+
+    public void updateWidgets(Context context, int[] appWidgetIds, String intentAction) {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+
         WidgetManager widgetManager = new WidgetManager(context);
 
-        for (int appWidgetId : appWidgetIds) {
-            RemoteViews remoteViews = widgetManager.buildPowerUpdate(WidgetManager.POWER_WIDGET_UPDATE_ALL, appWidgetId);
+        widgetManager.updatePowerWidgets(context, intentAction);
 
-            if (remoteViews != null) {
-                widgetManager.updatePowerWidgetStatus(remoteViews, WidgetManager.POWER_WIDGET_UPDATE_ALL, appWidgetId);
-            }
-        }
+        RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.powerwidget);
+        appWidgetManager.updateAppWidget(appWidgetIds, updateViews);
+    }
+
+    public void updateWidget(Context context, int appWidgetId, String intentAction) {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+
+        WidgetManager widgetManager = new WidgetManager(context);
+
+        widgetManager.updatePowerWidgets(context, intentAction);
+
+        RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.powerwidget);
+        appWidgetManager.updateAppWidget(appWidgetId, updateViews);
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
-        Log.d(LOG_TAG, "PowerAppWidgetProvider onReceive");
-        super.onReceive(context, intent);
-
-        updateWidgets(context, intent.getAction());
-    }
-
-    public static void updateWidgets(Context context, String intentAction) {
-        final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        WidgetManager widgetManager = new WidgetManager(context);
-        widgetManager.toggleWidgets(intentAction);
-
-        for (int appWidgetId : appWidgetManager.getAppWidgetIds(new ComponentName(context, PowerAppWidgetProvider.class))) {
-            RemoteViews remoteViews = widgetManager.buildPowerUpdate(intentAction, appWidgetId);
-
-            if (remoteViews != null) {
-                widgetManager.updatePowerWidgetStatus(remoteViews, intentAction, appWidgetId);
-            }
-        }
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        super.onDeleted(context, appWidgetIds);
     }
 }

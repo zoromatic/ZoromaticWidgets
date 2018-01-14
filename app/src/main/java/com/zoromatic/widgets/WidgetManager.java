@@ -2,6 +2,7 @@ package com.zoromatic.widgets;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -16,6 +17,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.database.ContentObserver;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -26,9 +29,14 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
+import android.location.Criteria;
+import android.location.GpsStatus;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
@@ -53,11 +61,39 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
+import com.luckycatlabs.sunrisesunset.dto.SunriseSunsetLocation;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import static java.lang.Thread.sleep;
 
@@ -68,7 +104,7 @@ import static java.lang.Thread.sleep;
  */
 
 public class WidgetManager {
-    private static String WIDGET_MANAGER_LOG_TAG = "WidgetManager";
+    private static String LOG_TAG = "WidgetManager";
 
     public static String BLUETOOTH_WIDGET_UPDATE = "com.zoromatic.widgets.BLUETOOTH_WIDGET_UPDATE";
     public static String WIFI_WIDGET_UPDATE = "com.zoromatic.widgets.WIFI_WIDGET_UPDATE";
@@ -123,6 +159,11 @@ public class WidgetManager {
     public static String APPWIDGET_RESIZE = "com.sec.android.widgetapp.APPWIDGET_RESIZE";
     public static String APPWIDGET_UPDATE_OPTIONS = "android.appwidget.action.APPWIDGET_UPDATE_OPTIONS";
 
+    public static String WEATHER_SERVICE_COORD_URL = "http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
+    public static String WEATHER_SERVICE_ID_URL = "http://api.openweathermap.org/data/2.5/weather?id=%d&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
+    public static String WEATHER_FORECAST_COORD_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=%f&lon=%f&cnt=7&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
+    public static String WEATHER_FORECAST_ID_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?id=%d&cnt=7&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
+
     static int WIDGET_COLOR_ON = Color.rgb(0x35, 0xB6, 0xE5);
     static int WIDGET_COLOR_OFF = Color.rgb(0xC0, 0xC0, 0xC0);
     static int WIDGET_COLOR_TRANSITION = Color.rgb(0xFF, 0x8C, 0x00);
@@ -138,6 +179,223 @@ public class WidgetManager {
     private static boolean flashOn = false;
     private Context mContext;
 
+    protected static long GPS_UPDATE_TIME_INTERVAL = 3000; // milliseconds
+    protected static float GPS_UPDATE_DISTANCE_INTERVAL = 0; // meters
+    private WidgetGPSListener widgetGpsListener = null;
+    private WidgetLocationListener widgetLocationListener = null;
+    private BrightnessObserver brightnessObserver = null;
+    private RotationObserver rotationObserver = null;
+
+    private PendingIntent triggerUpdateIntent;
+
+    /*private static IntentFilter mIntentFilter;
+    private WidgetInfoReceiver mWidgetInfo = null;
+
+    static {
+
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+        mIntentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        mIntentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        mIntentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        mIntentFilter.addAction(WidgetManager.LOCATION_PROVIDERS_CHANGED);
+        mIntentFilter.addAction(WidgetManager.LOCATION_GPS_ENABLED_CHANGED);
+        mIntentFilter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
+        mIntentFilter.addAction(Intent.ACTION_TIME_CHANGED);
+        mIntentFilter.addAction(Intent.ACTION_TIME_TICK);
+        mIntentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+        mIntentFilter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
+        mIntentFilter.addAction(Intent.ACTION_BOOT_COMPLETED);
+        mIntentFilter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+        mIntentFilter.addAction(WidgetManager.NFC_ADAPTER_STATE_CHANGED);
+        mIntentFilter.addAction(WidgetManager.SYNC_CONN_STATUS_CHANGED);
+        mIntentFilter.addAction(WidgetManager.AUTO_ROTATE_CHANGED);
+        mIntentFilter.addAction(WidgetManager.FLASHLIGHT_CHANGED);
+        mIntentFilter.addAction(WidgetManager.BRIGHTNESS_CHANGED);
+        mIntentFilter.addAction(Intent.ACTION_CAMERA_BUTTON);
+        mIntentFilter.addAction(Intent.ACTION_LOCALE_CHANGED);
+
+        mIntentFilter.addAction(WidgetManager.UPDATE_SINGLE_BATTERY_WIDGET);
+        mIntentFilter.addAction(WidgetManager.UPDATE_SINGLE_BLUETOOTH_WIDGET);
+        mIntentFilter.addAction(WidgetManager.UPDATE_SINGLE_WIFI_WIDGET);
+        mIntentFilter.addAction(WidgetManager.UPDATE_SINGLE_MOBILE_DATA_WIDGET);
+        mIntentFilter.addAction(WidgetManager.UPDATE_SINGLE_GPS_WIDGET);
+        mIntentFilter.addAction(WidgetManager.UPDATE_SINGLE_RINGER_WIDGET);
+        mIntentFilter.addAction(WidgetManager.UPDATE_SINGLE_CLOCK_WIDGET);
+        mIntentFilter.addAction(WidgetManager.UPDATE_SINGLE_AIRPLANE_WIDGET);
+        mIntentFilter.addAction(WidgetManager.UPDATE_SINGLE_BRIGHTNESS_WIDGET);
+        mIntentFilter.addAction(WidgetManager.UPDATE_SINGLE_TORCH_WIDGET);
+        mIntentFilter.addAction(WidgetManager.UPDATE_SINGLE_NFC_WIDGET);
+        mIntentFilter.addAction(WidgetManager.UPDATE_SINGLE_SYNC_WIDGET);
+        mIntentFilter.addAction(WidgetManager.UPDATE_SINGLE_ORIENTATION_WIDGET);
+
+        mIntentFilter.addAction(WidgetManager.UPDATE_WIDGETS);
+
+        mIntentFilter.addAction(WidgetManager.BLUETOOTH_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.WIFI_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.MOBILE_DATA_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.GPS_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.RINGER_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.CLOCK_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.WEATHER_UPDATE);
+        mIntentFilter.addAction(WidgetManager.AIRPLANE_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.BRIGHTNESS_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.NFC_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.SYNC_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.ORIENTATION_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.TORCH_WIDGET_UPDATE);
+
+        mIntentFilter.addAction(WidgetManager.POWER_BLUETOOTH_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.POWER_WIFI_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.POWER_MOBILE_DATA_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.POWER_GPS_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.POWER_RINGER_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.POWER_AIRPLANE_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.POWER_BRIGHTNESS_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.POWER_NFC_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.POWER_SYNC_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.POWER_ORIENTATION_WIDGET_UPDATE);
+        mIntentFilter.addAction(WidgetManager.POWER_TORCH_WIDGET_UPDATE);
+
+        mIntentFilter.addAction(WidgetManager.POWER_WIDGET_UPDATE_ALL);
+
+        mIntentFilter.addAction(WidgetManager.APPWIDGET_RESIZE);
+        mIntentFilter.addAction(WidgetManager.APPWIDGET_UPDATE_OPTIONS);
+    }*/
+
+    /**
+     * Observer to watch for changes to the Auto Rotation setting
+     */
+    private class RotationObserver extends ContentObserver {
+
+        private Context mContext;
+
+        RotationObserver(Handler handler, Context context) {
+            super(handler);
+            mContext = context;
+        }
+
+        void startObserving() {
+            ContentResolver resolver = mContext.getContentResolver();
+            // Listen to accelerometer
+            resolver.registerContentObserver(Settings.System.getUriFor
+                            (Settings.System.ACCELEROMETER_ROTATION),
+                    true, this);
+        }
+
+        void stopObserving() {
+            mContext.getContentResolver().unregisterContentObserver(this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updatePowerWidgets(mContext, WidgetManager.AUTO_ROTATE_CHANGED);
+        }
+    }
+
+    /**
+     * Observer to watch for changes to the BRIGHTNESS setting
+     */
+    private class BrightnessObserver extends ContentObserver {
+
+        private Context mContext;
+
+        BrightnessObserver(Handler handler, Context context) {
+            super(handler);
+            mContext = context;
+        }
+
+        void startObserving() {
+            ContentResolver resolver = mContext.getContentResolver();
+            // Listen to brightness and brightness mode
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.SCREEN_BRIGHTNESS), false, this);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.SCREEN_BRIGHTNESS_MODE), false, this);
+        }
+
+        void stopObserving() {
+            mContext.getContentResolver().unregisterContentObserver(this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updatePowerWidgets(mContext, WidgetManager.BRIGHTNESS_CHANGED);
+        }
+    }
+
+    /**
+     * Watch for changes to LOCATION setting
+     */
+    private class WidgetGPSListener implements GpsStatus.Listener {
+        @Override
+        public void onGpsStatusChanged(int event) {
+            switch (event) {
+                case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+
+                    break;
+                case GpsStatus.GPS_EVENT_FIRST_FIX:
+
+                    break;
+                case GpsStatus.GPS_EVENT_STARTED:
+
+                    break;
+                case GpsStatus.GPS_EVENT_STOPPED:
+
+                    break;
+            }
+        }
+    }
+
+    private class WidgetLocationListener implements LocationListener {
+        private Context mContext;
+
+        WidgetLocationListener(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            try {
+                providerChanged();
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "", e);
+            }
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            try {
+                providerChanged();
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "", e);
+            }
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        private void providerChanged() {
+            int currentApiVersion = android.os.Build.VERSION.SDK_INT;
+            String intentAction;
+
+            if (currentApiVersion < 9) {
+                intentAction = WidgetManager.LOCATION_GPS_ENABLED_CHANGED;
+            } else {
+                intentAction = WidgetManager.LOCATION_PROVIDERS_CHANGED;
+            }
+
+            updatePowerWidgets(mContext, intentAction);
+        }
+    }
+
     /**
      * Creates a new instance of <code>WidgetManager</code> with the given parameters.
      *
@@ -147,8 +405,80 @@ public class WidgetManager {
         mContext = context;
     }
 
+    public void registerReceivers() {
+        LocationManager locManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+
+        if (widgetGpsListener == null && widgetLocationListener == null) {
+            if (locManager != null) {
+                boolean gps_enabled = false;
+
+                try {
+                    gps_enabled = locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                } catch (Exception e) {
+                    Log.e(LOG_TAG, "", e);
+                }
+
+                if (gps_enabled) {
+                    widgetGpsListener = new WidgetGPSListener();
+                    widgetLocationListener = new WidgetLocationListener(mContext);
+
+                    try {
+                        locManager.addGpsStatusListener(widgetGpsListener);
+                        locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                                GPS_UPDATE_TIME_INTERVAL, GPS_UPDATE_DISTANCE_INTERVAL,
+                                widgetLocationListener);
+                    } catch (SecurityException e) {
+                        Log.e(LOG_TAG, "", e);
+                    }
+                }
+            }
+        }
+
+        if (brightnessObserver == null) {
+            brightnessObserver = new BrightnessObserver(new Handler(), mContext);
+            brightnessObserver.startObserving();
+        }
+
+        if (rotationObserver == null) {
+            rotationObserver = new RotationObserver(new Handler(), mContext);
+            rotationObserver.startObserving();
+        }
+
+        /*if (mWidgetInfo == null) {
+            mWidgetInfo = new WidgetInfoReceiver();
+            mContext.registerReceiver(mWidgetInfo, mIntentFilter);
+
+            mContext.sendBroadcast(new Intent(WidgetManager.FLASHLIGHT_CHANGED));
+            mContext.sendBroadcast(new Intent(WidgetManager.BRIGHTNESS_CHANGED));
+        }*/
+    }
+
+    public void unregisterReceivers() {
+        try {
+            if (brightnessObserver != null) {
+                brightnessObserver.stopObserving();
+                brightnessObserver = null;
+            }
+
+            if (rotationObserver != null) {
+                rotationObserver.stopObserving();
+                rotationObserver = null;
+            }
+
+            widgetGpsListener = null;
+            widgetLocationListener = null;
+
+            /*if (mWidgetInfo != null) {
+                mContext.unregisterReceiver(mWidgetInfo);
+                mWidgetInfo = null;
+            }*/
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "", e);
+        }
+    }
+
     public RemoteViews buildPowerUpdate(String intentExtra, int appWidgetId) {
-        Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager buildPowerUpdate");
+        Log.d(LOG_TAG, "WidgetManager buildPowerUpdate");
 
         if (intentExtra == null)
             return null;
@@ -489,7 +819,7 @@ public class WidgetManager {
             updateViews.setOnClickPendingIntent(R.id.torchWidget,
                     pendingIntent);
         } catch (Exception e) {
-            Log.e(WIDGET_MANAGER_LOG_TAG, "", e);
+            Log.e(LOG_TAG, "", e);
         }
 
         return updateViews;
@@ -546,7 +876,1360 @@ public class WidgetManager {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
             appWidgetManager.updateAppWidget(appWidgetId, updateViews);
         } catch (Exception e) {
-            Log.e(WIDGET_MANAGER_LOG_TAG, "", e);
+            Log.e(LOG_TAG, "", e);
+        }
+    }
+
+    public RemoteViews buildClockUpdate(int appWidgetId) {
+        Log.d(LOG_TAG, "WidgetUpdateService buildClockUpdate");
+
+        RemoteViews updateViews = new RemoteViews(mContext.getPackageName(),
+                R.layout.digitalclockwidget);
+
+        updateViews.setViewVisibility(R.id.loadingWidget,
+                View.GONE);
+
+        updateViews.setViewVisibility(R.id.clockWidget,
+                View.VISIBLE);
+
+        boolean bShowDate = Preferences.getShowDate(mContext, appWidgetId);
+        boolean bShowBattery = Preferences.getShowBattery(mContext, appWidgetId);
+        boolean showWeather = Preferences.getShowWeather(mContext, appWidgetId);
+
+        if (bShowBattery || bShowDate) {
+            updateViews.setViewVisibility(R.id.imageViewDate,
+                    View.VISIBLE);
+        } else {
+            updateViews.setViewVisibility(R.id.imageViewDate,
+                    View.GONE);
+        }
+
+        if (!showWeather) {
+            updateViews.setViewVisibility(R.id.weatherLayout, View.GONE);
+            updateViews.setViewVisibility(R.id.imageViewWeather, View.GONE);
+            updateViews.setViewVisibility(R.id.refresh_container, View.GONE);
+            updateViews.setViewVisibility(R.id.viewButtonRefresh, View.GONE);
+            updateViews.setViewVisibility(R.id.progressRefresh, View.GONE);
+            updateViews.setFloat(R.id.clockWidget, "setWeightSum", 0.65f);
+        } else {
+            updateViews.setViewVisibility(R.id.weatherLayout, View.VISIBLE);
+            updateViews.setViewVisibility(R.id.imageViewWeather, View.VISIBLE);
+            updateViews.setViewVisibility(R.id.refresh_container, View.VISIBLE);
+            updateViews.setViewVisibility(R.id.viewButtonRefresh, View.VISIBLE);
+            updateViews.setViewVisibility(R.id.progressRefresh, View.GONE);
+            updateViews.setFloat(R.id.clockWidget, "setWeightSum", 1.0f);
+        }
+
+        // start preferences when clicked on clock's minutes
+        {
+            Intent intent = new Intent(mContext, DigitalClockAppWidgetPreferenceActivity.class);
+
+            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(mContext,
+                    appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            updateViews.setOnClickPendingIntent(R.id.clockWidget, pendingIntent);
+        }
+
+        // start clock&alarms application when clicked on clock's hours
+        {
+            Intent alarmClockIntent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
+
+            // Verify clock implementation
+            String clockImpls[][] = {
+                    {"Standard Alarm Clock", "com.android.alarmclock", "com.android.alarmclock.AlarmClock"},
+                    {"Standard Desk Clock", "com.android.deskclock", "com.android.deskclock.DeskClock"},
+                    {"HTC Alarm Clock", "com.htc.android.worldclock", "com.htc.android.worldclock.WorldClockTabControl"},
+                    {"Froyo Nexus Alarm Clock", "com.google.android.deskclock", "com.android.deskclock.DeskClock"},
+                    {"Moto Blur Alarm Clock", "com.motorola.blur.alarmclock", "com.motorola.blur.alarmclock.AlarmClock"},
+                    {"Samsung Galaxy Clock", "com.sec.android.app.clockpackage", "com.sec.android.app.clockpackage.ClockPackage"},
+                    {"Sony Alarm", "com.sonyericsson.alarm", "com.sonyericsson.alarm.Alarm"},
+                    {"Sony Ericsson Xperia Z", "com.sonyericsson.organizer", "com.sonyericsson.organizer.Organizer_WorldClock"},
+                    {"ASUS Alarm Clock", "com.asus.alarmclock", "com.asus.alarmclock.AlarmClock"},
+                    {"ASUS Desk Clock", "com.asus.deskclock", "com.asus.deskclock.DeskClock"},
+            };
+
+            boolean foundClockImpl = false;
+
+            for (String[] clockImpl : clockImpls) {
+                String packageName = clockImpl[1];
+                String className = clockImpl[2];
+
+                try {
+                    ComponentName cn = new ComponentName(packageName, className);
+                    mContext.getPackageManager().getActivityInfo(cn, PackageManager.GET_META_DATA);
+                    alarmClockIntent.setComponent(cn);
+                    foundClockImpl = true;
+                    break;
+                } catch (PackageManager.NameNotFoundException nf) {
+                    Log.d(LOG_TAG, "WidgetUpdateService buildClockUpdate nameNotFound");
+                }
+            }
+
+            if (foundClockImpl) {
+                PendingIntent pendingIntentClock = PendingIntent.getActivity(
+                        mContext, appWidgetId, alarmClockIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+                updateViews.setOnClickPendingIntent(R.id.imageViewClockHour,
+                        pendingIntentClock);
+            }
+        }
+
+        // start weather forecast activity when clicked on weather icon
+        Intent weatherForecastIntent = new Intent(mContext, WeatherForecastActivity.class);
+        weatherForecastIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+
+        PendingIntent pendingForecastIntent = PendingIntent.getActivity(mContext,
+                appWidgetId, weatherForecastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        updateViews.setOnClickPendingIntent(R.id.imageViewWeather, pendingForecastIntent);
+
+        // refresh weather data
+        Intent refreshIntent = new Intent(WidgetUpdateService.WEATHER_UPDATE);
+        //refreshIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.WEATHER_UPDATE);
+        //refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+
+        PendingIntent pendingRefreshIntent = PendingIntent.getBroadcast(mContext, appWidgetId, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        updateViews.setOnClickPendingIntent(R.id.viewButtonRefresh, pendingRefreshIntent);
+
+        return (updateViews);
+    }
+
+    public void updateClockStatus(RemoteViews updateViews, int appWidgetId) {
+        Log.d(LOG_TAG, "WidgetUpdateService updateClockStatus");
+
+        if (updateViews == null) {
+            updateViews = new RemoteViews(mContext.getPackageName(),
+                    R.layout.digitalclockwidget);
+        }
+
+        boolean bShowDate = Preferences.getShowDate(mContext, appWidgetId);
+        boolean bShow24Hrs = Preferences.getShow24Hrs(mContext, appWidgetId);
+        boolean bShowBattery = Preferences.getShowBattery(mContext, appWidgetId);
+        int iClockSkinItem = Preferences.getClockSkin(mContext, appWidgetId);
+        int iDateFormatItem = Preferences.getDateFormatItem(mContext, appWidgetId);
+        int iOpacity = Preferences.getOpacity(mContext, appWidgetId);
+        int iFontItem = Preferences.getFontItem(mContext, appWidgetId);
+        boolean bold = Preferences.getBoldText(mContext, appWidgetId);
+        int iDateFontItem = Preferences.getDateFontItem(mContext, appWidgetId);
+        boolean dateBold = Preferences.getDateBoldText(mContext, appWidgetId);
+        boolean showWeather = Preferences.getShowWeather(mContext, appWidgetId);
+
+        String currentHour, currentMinute;
+
+        SimpleDateFormat sdfMinute = new SimpleDateFormat("mm");
+        currentMinute = sdfMinute.format(new Date());
+
+        if (bShow24Hrs) {
+            SimpleDateFormat sdfHour = new SimpleDateFormat("HH");
+            currentHour = sdfHour.format(new Date());
+        } else {
+            SimpleDateFormat sdfHour = new SimpleDateFormat("hh");
+            currentHour = sdfHour.format(new Date());
+        }
+
+        if (bShowBattery || bShowDate) {
+            updateViews.setViewVisibility(R.id.imageViewDate,
+                    View.VISIBLE);
+        } else {
+            updateViews.setViewVisibility(R.id.imageViewDate,
+                    View.GONE);
+        }
+
+        int systemClockColor;
+        int iClockColorItem = Preferences.getClockColorItem(mContext, appWidgetId);
+
+        if (iClockColorItem >= 0) {
+            switch (iClockColorItem) {
+                case 0:
+                    systemClockColor = Color.BLACK;
+                    break;
+                case 1:
+                    systemClockColor = Color.DKGRAY;
+                    break;
+                case 2:
+                    systemClockColor = Color.GRAY;
+                    break;
+                case 3:
+                    systemClockColor = Color.LTGRAY;
+                    break;
+                case 4:
+                    systemClockColor = Color.WHITE;
+                    break;
+                case 5:
+                    systemClockColor = Color.RED;
+                    break;
+                case 6:
+                    systemClockColor = Color.GREEN;
+                    break;
+                case 7:
+                    systemClockColor = Color.BLUE;
+                    break;
+                case 8:
+                    systemClockColor = Color.YELLOW;
+                    break;
+                case 9:
+                    systemClockColor = Color.CYAN;
+                    break;
+                case 10:
+                    systemClockColor = Color.MAGENTA;
+                    break;
+                default:
+                    systemClockColor = Color.WHITE;
+                    break;
+            }
+
+            Preferences.setClockColorItem(mContext, appWidgetId, -1);
+            Preferences.setClockColor(mContext, appWidgetId, systemClockColor);
+        } else {
+            systemClockColor = Preferences.getClockColor(mContext, appWidgetId);
+        }
+
+        int systemDateColor;
+        int iDateColorItem = Preferences.getDateColorItem(mContext, appWidgetId);
+
+        if (iDateColorItem >= 0) {
+            switch (iDateColorItem) {
+                case 0:
+                    systemDateColor = Color.BLACK;
+                    break;
+                case 1:
+                    systemDateColor = Color.DKGRAY;
+                    break;
+                case 2:
+                    systemDateColor = Color.GRAY;
+                    break;
+                case 3:
+                    systemDateColor = Color.LTGRAY;
+                    break;
+                case 4:
+                    systemDateColor = Color.WHITE;
+                    break;
+                case 5:
+                    systemDateColor = Color.RED;
+                    break;
+                case 6:
+                    systemDateColor = Color.GREEN;
+                    break;
+                case 7:
+                    systemDateColor = Color.BLUE;
+                    break;
+                case 8:
+                    systemDateColor = Color.YELLOW;
+                    break;
+                case 9:
+                    systemDateColor = Color.CYAN;
+                    break;
+                case 10:
+                    systemDateColor = Color.MAGENTA;
+                    break;
+                default:
+                    systemDateColor = Color.WHITE;
+                    break;
+            }
+
+            Preferences.setDateColorItem(mContext, appWidgetId, -1);
+            Preferences.setDateColor(mContext, appWidgetId, systemDateColor);
+        } else {
+            systemDateColor = Preferences.getDateColor(mContext, appWidgetId);
+        }
+
+        int systemWidgetColor;
+        int iWidgetColorItem = Preferences.getWidgetColorItem(mContext, appWidgetId);
+
+        if (iWidgetColorItem >= 0) {
+            switch (iWidgetColorItem) {
+                case 0:
+                    systemWidgetColor = Color.BLACK;
+                    break;
+                case 1:
+                    systemWidgetColor = Color.DKGRAY;
+                    break;
+                case 2:
+                    systemWidgetColor = Color.GRAY;
+                    break;
+                case 3:
+                    systemWidgetColor = Color.LTGRAY;
+                    break;
+                case 4:
+                    systemWidgetColor = Color.WHITE;
+                    break;
+                case 5:
+                    systemWidgetColor = Color.RED;
+                    break;
+                case 6:
+                    systemWidgetColor = Color.GREEN;
+                    break;
+                case 7:
+                    systemWidgetColor = Color.BLUE;
+                    break;
+                case 8:
+                    systemWidgetColor = Color.YELLOW;
+                    break;
+                case 9:
+                    systemWidgetColor = Color.CYAN;
+                    break;
+                case 10:
+                    systemWidgetColor = Color.MAGENTA;
+                    break;
+                default:
+                    systemWidgetColor = Color.BLACK;
+                    break;
+            }
+
+            Preferences.setWidgetColorItem(mContext, appWidgetId, -1);
+            Preferences.setWidgetColor(mContext, appWidgetId, systemWidgetColor);
+        } else {
+            systemWidgetColor = Preferences.getWidgetColor(mContext, appWidgetId);
+        }
+
+        String[] mFontArray = mContext.getResources().getStringArray(R.array.fontPathValues);
+
+        String font = "fonts/Roboto.ttf";
+
+        if (mFontArray.length > iFontItem)
+            font = mFontArray[iFontItem];
+
+        String dateFont = "fonts/Roboto.ttf";
+
+        if (mFontArray.length > iDateFontItem)
+            dateFont = mFontArray[iDateFontItem];
+
+        updateViews.setImageViewBitmap(R.id.imageViewClockHour, getFontBitmap(mContext, currentHour, systemClockColor, font, bold, 96));
+        updateViews.setImageViewBitmap(R.id.imageViewClockMinute, getFontBitmap(mContext, currentMinute, systemClockColor, font, bold, 96));
+        updateViews.setImageViewBitmap(R.id.imageViewClockSpace, getFontBitmap(mContext, ":", systemClockColor, font, bold, 96));
+
+        String currentDate = "";
+        String[] mTestArray = mContext.getResources().getStringArray(R.array.dateFormat);
+
+        if (bShowDate) {
+            SimpleDateFormat sdf = new SimpleDateFormat(mTestArray[iDateFormatItem]);
+            currentDate = sdf.format(new Date());
+        }
+
+        if (bShowBattery) {
+
+            Intent intentBattery = new Intent(Intent.ACTION_BATTERY_CHANGED);
+
+            int rawLevel = intentBattery.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+            int scale = intentBattery.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+            int level = -1;
+
+            if (rawLevel >= 0 && scale > 0) {
+                level = (rawLevel * 100) / scale;
+            }
+
+            if (level == -1) {
+                Intent batteryIntent = mContext
+                        .registerReceiver(null,
+                                new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+                int rawLevel1 = batteryIntent.getIntExtra(
+                        BatteryManager.EXTRA_LEVEL, -1);
+                int scale1 = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE,
+                        -1);
+                if (rawLevel1 >= 0 && scale1 > 0) {
+                    level = (rawLevel1 * 100) / scale1;
+                }
+            }
+
+            currentDate = currentDate + (bShowDate ? "\t [" : "") + level + "%" + (bShowDate ? "]" : "");
+        }
+
+        updateViews.setImageViewBitmap(R.id.imageViewDate, getFontBitmap(mContext, currentDate, systemDateColor, dateFont, dateBold, 14));
+
+        updateViews.setInt(R.id.backgroundImage, "setAlpha", iOpacity * 255 / 100);
+        updateViews.setInt(R.id.backgroundImage, "setColorFilter", systemWidgetColor);
+
+        updateViews.setViewVisibility(R.id.imageViewClockSpace, View.INVISIBLE);
+
+        switch (iClockSkinItem) {
+            case 0:
+                updateViews.setInt(R.id.imageViewClockHour, "setBackgroundResource", R.drawable.bck_left);
+                updateViews.setInt(R.id.imageViewClockMinute, "setBackgroundResource", R.drawable.bck_right);
+                break;
+            case 1:
+                updateViews.setInt(R.id.imageViewClockHour, "setBackgroundResource", R.drawable.bck_left_light);
+                updateViews.setInt(R.id.imageViewClockMinute, "setBackgroundResource", R.drawable.bck_right_light);
+                break;
+            case 2:
+                updateViews.setInt(R.id.imageViewClockHour, "setBackgroundResource", 0);
+                updateViews.setInt(R.id.imageViewClockMinute, "setBackgroundResource", 0);
+                updateViews.setViewVisibility(R.id.imageViewClockSpace, View.VISIBLE);
+                break;
+            default:
+                updateViews.setInt(R.id.imageViewClockHour, "setBackgroundResource", R.drawable.bck_left);
+                updateViews.setInt(R.id.imageViewClockMinute, "setBackgroundResource", R.drawable.bck_right);
+                break;
+        }
+
+        if (!showWeather) {
+            updateViews.setViewVisibility(R.id.weatherLayout, View.GONE);
+            updateViews.setViewVisibility(R.id.imageViewWeather, View.GONE);
+            updateViews.setViewVisibility(R.id.refresh_container, View.GONE);
+            updateViews.setViewVisibility(R.id.viewButtonRefresh, View.GONE);
+            updateViews.setViewVisibility(R.id.progressRefresh, View.GONE);
+            updateViews.setFloat(R.id.clockWidget, "setWeightSum", 0.65f);
+        } else {
+            updateViews.setViewVisibility(R.id.weatherLayout, View.VISIBLE);
+            updateViews.setViewVisibility(R.id.imageViewWeather, View.VISIBLE);
+            updateViews.setViewVisibility(R.id.refresh_container, View.VISIBLE);
+            updateViews.setViewVisibility(R.id.viewButtonRefresh, View.VISIBLE);
+            updateViews.setViewVisibility(R.id.progressRefresh, View.GONE);
+            updateViews.setFloat(R.id.clockWidget, "setWeightSum", 1.0f);
+
+            int systemWeatherColor;
+            int iWeatherColorItem = Preferences.getWeatherColorItem(mContext, appWidgetId);
+
+            if (iWeatherColorItem >= 0) {
+                switch (iWeatherColorItem) {
+                    case 0:
+                        systemWeatherColor = Color.BLACK;
+                        break;
+                    case 1:
+                        systemWeatherColor = Color.DKGRAY;
+                        break;
+                    case 2:
+                        systemWeatherColor = Color.GRAY;
+                        break;
+                    case 3:
+                        systemWeatherColor = Color.LTGRAY;
+                        break;
+                    case 4:
+                        systemWeatherColor = Color.WHITE;
+                        break;
+                    case 5:
+                        systemWeatherColor = Color.RED;
+                        break;
+                    case 6:
+                        systemWeatherColor = Color.GREEN;
+                        break;
+                    case 7:
+                        systemWeatherColor = Color.BLUE;
+                        break;
+                    case 8:
+                        systemWeatherColor = Color.YELLOW;
+                        break;
+                    case 9:
+                        systemWeatherColor = Color.CYAN;
+                        break;
+                    case 10:
+                        systemWeatherColor = Color.MAGENTA;
+                        break;
+                    default:
+                        systemWeatherColor = Color.WHITE;
+                        break;
+                }
+
+                Preferences.setWeatherColorItem(mContext, appWidgetId, -1);
+                Preferences.setWeatherColor(mContext, appWidgetId, systemWeatherColor);
+            } else {
+                systemWeatherColor = Preferences.getWeatherColor(mContext, appWidgetId);
+            }
+
+            updateViews.setInt(R.id.viewButtonRefresh, "setColorFilter", systemWeatherColor);
+        }
+
+        if (showWeather) {
+            readCachedWeatherData(updateViews, appWidgetId);
+        }
+    }
+
+    public void updateWeatherStatus(final RemoteViews updateViews, final int appWidgetId, final boolean scheduledUpdate) {
+        Log.d(LOG_TAG, "WidgetUpdateService updateWeatherStatus appWidgetId: " + appWidgetId + " scheduled: " + scheduledUpdate);
+
+        boolean showWeather = Preferences.getShowWeather(mContext, appWidgetId);
+
+        if (!showWeather)
+            return;
+
+        updateViews.setViewVisibility(R.id.viewButtonRefresh, View.GONE);
+        updateViews.setViewVisibility(R.id.progressRefresh, View.VISIBLE);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+        appWidgetManager.updateAppWidget(appWidgetId, updateViews);
+
+        try {
+            if (!scheduledUpdate)
+                Toast.makeText(mContext, mContext.getResources().getText(R.string.updatingweather), Toast.LENGTH_LONG).show();
+
+            boolean bWiFiOnly = Preferences.getRefreshWiFiOnly(mContext, appWidgetId);
+            ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mWifi = null;
+
+            if (connectivityManager != null) {
+                mWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            }
+
+            if (scheduledUpdate && bWiFiOnly && mWifi != null && !mWifi.isConnected()) {
+                Preferences.setWeatherSuccess(mContext, appWidgetId, false);
+                readCachedWeatherData(updateViews, appWidgetId);
+
+                return;
+            }
+
+            NetworkInfo activeNetworkInfo = null;
+
+            if (connectivityManager != null) {
+                activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            }
+
+            if (activeNetworkInfo == null) {
+                if (scheduledUpdate)
+                    Preferences.setWeatherSuccess(mContext, appWidgetId, false);
+
+                readCachedWeatherData(updateViews, appWidgetId);
+                return;
+            }
+
+            int locationType = Preferences.getLocationType(mContext, appWidgetId);
+
+            if (locationType == ConfigureLocationActivity.LOCATION_TYPE_CURRENT) {
+                // obtain location first
+                LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+                List<String> providers = null;
+
+                if (locationManager != null) {
+                    providers = locationManager.getProviders(new Criteria(), true);
+                }
+
+                if (!providers.isEmpty()) {
+
+                    LocationProvider.LocationResult locationResult = new LocationProvider.LocationResult() {
+                        @Override
+                        public void gotLocation(Location location) {
+
+                            if (location != null) {
+                                Preferences.setLocationLat(mContext, appWidgetId, (float) location.getLatitude());
+                                Preferences.setLocationLon(mContext, appWidgetId, (float) location.getLongitude());
+                                Preferences.setLocationId(mContext, appWidgetId, -1);
+
+                                startWeatherUpdate(updateViews, appWidgetId, scheduledUpdate);
+                            } else {
+                                Preferences.setWeatherSuccess(mContext, appWidgetId, false);
+                                readCachedWeatherData(updateViews, appWidgetId);
+                            }
+                        }
+                    };
+
+                    LocationProvider loc = new LocationProvider();
+                    loc.getLocation(mContext, locationResult);
+                } else {
+                    Preferences.setWeatherSuccess(mContext, appWidgetId, false);
+                    readCachedWeatherData(updateViews, appWidgetId);
+                }
+            } else {
+                startWeatherUpdate(updateViews, appWidgetId, scheduledUpdate);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            Preferences.setWeatherSuccess(mContext, appWidgetId, false);
+            readCachedWeatherData(updateViews, appWidgetId);
+        }
+    }
+
+    public void startWeatherUpdate(RemoteViews updateViews, int appWidgetId, boolean scheduledUpdate) {
+
+        SQLiteDbAdapter dbHelper = new SQLiteDbAdapter(mContext);
+
+        // create location in database from old preferences
+        if (Preferences.getLocationType(mContext, appWidgetId) == ConfigureLocationActivity.LOCATION_TYPE_CUSTOM) {
+            dbHelper.open();
+            Cursor locationsCursor = dbHelper.fetchAllLocations();
+
+            float latPref = Preferences.getLocationLat(mContext, appWidgetId);
+            float lonPref = Preferences.getLocationLon(mContext, appWidgetId);
+            String locationPref = Preferences.getLocation(mContext, appWidgetId);
+            long locationIDPref = Preferences.getLocationId(mContext, appWidgetId);
+            boolean bFound = false;
+
+            if (locationsCursor != null && locationsCursor.getCount() > 0) {
+                locationsCursor.moveToFirst();
+
+                do {
+                    long locId = locationsCursor.getLong(locationsCursor.getColumnIndex(SQLiteDbAdapter.KEY_LOCATION_ID));
+
+                    if (locId != -1 && locationIDPref == locId) {
+                        bFound = true;
+                    }
+
+                    locationsCursor.moveToNext();
+
+                } while (!locationsCursor.isAfterLast());
+            }
+
+            if (!bFound && locationIDPref >= 0) {
+                dbHelper.createLocation(locationIDPref, latPref, lonPref, locationPref);
+            }
+
+            dbHelper.close();
+        }
+
+        dbHelper.open();
+        Cursor locationsCursor = dbHelper.fetchAllLocations();
+        List<Long> locations = new ArrayList<>();
+
+        if (locationsCursor != null && locationsCursor.getCount() > 0) {
+            locationsCursor.moveToFirst();
+
+            do {
+                long locId = locationsCursor.getLong(locationsCursor.getColumnIndex(SQLiteDbAdapter.KEY_LOCATION_ID));
+
+                if (locId != -1) {
+                    locations.add(locId);
+                }
+
+                locationsCursor.moveToNext();
+
+            } while (!locationsCursor.isAfterLast());
+        }
+
+        dbHelper.close();
+
+        int locationType = Preferences.getLocationType(mContext, appWidgetId);
+
+        if (locationType == ConfigureLocationActivity.LOCATION_TYPE_CURRENT) {
+            WidgetManager.HttpTaskInfo info = new WidgetManager.HttpTaskInfo();
+            info.updateViews = updateViews;
+            info.appWidgetId = appWidgetId;
+            info.scheduledUpdate = scheduledUpdate;
+            info.locationId = -1;
+            info.context = mContext;
+
+            info.last = locations.size() <= 0;
+
+            new WidgetManager.HttpTask().execute(info);
+        }
+
+        for (int i = 0; i < locations.size(); i++) {
+            WidgetManager.HttpTaskInfo info = new WidgetManager.HttpTaskInfo();
+            info.updateViews = updateViews;
+            info.appWidgetId = appWidgetId;
+            info.scheduledUpdate = scheduledUpdate;
+            info.locationId = locations.get(i);
+            info.context = mContext;
+
+            info.last = i == locations.size() - 1;
+
+            new WidgetManager.HttpTask().execute(info);
+        }
+    }
+
+    private class HttpTask extends AsyncTask<WidgetManager.HttpTaskInfo, Void, Boolean> {
+
+        RemoteViews updateViews = null;
+        int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+        boolean scheduledUpdate = false;
+        long locId = -1;
+        Context context = null;
+        boolean last = false;
+
+        public Boolean doInBackground(WidgetManager.HttpTaskInfo... info) {
+            updateViews = info[0].updateViews;
+            appWidgetId = info[0].appWidgetId;
+            scheduledUpdate = info[0].scheduledUpdate;
+            locId = info[0].locationId;
+            context = info[0].context;
+            last = info[0].last;
+
+            boolean current = getCurrentWeatherData(updateViews, appWidgetId, locId, scheduledUpdate);
+            boolean forecast = getForecastData(updateViews, appWidgetId, locId, scheduledUpdate);
+
+            return (current || forecast);
+        }
+
+        public void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+
+            if (result) {
+                //sendBroadcast(new Intent(UPDATE_FORECAST));
+
+				/*Intent intent = new Intent(WEATHER_UPDATE);
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+	    		sendBroadcast(intent);*/
+
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                appWidgetManager.updateAppWidget(appWidgetId, updateViews);
+            }
+
+            if (last) {
+                updateViews.setViewVisibility(R.id.viewButtonRefresh, View.VISIBLE);
+                updateViews.setViewVisibility(R.id.progressRefresh, View.GONE);
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                appWidgetManager.updateAppWidget(appWidgetId, updateViews);
+
+                Intent intent = new Intent(UPDATE_FORECAST);
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                mContext.sendBroadcast(intent);
+            }
+        }
+    }
+
+    class HttpTaskInfo {
+        RemoteViews updateViews;
+        int appWidgetId;
+        boolean scheduledUpdate;
+        long locationId;
+        Context context;
+        boolean last;
+    }
+
+    @SuppressWarnings("unused")
+    boolean getCurrentWeatherData(RemoteViews updateViews, int appWidgetId, long locId, boolean scheduledUpdate) {
+        Log.d(LOG_TAG, "WidgetUpdateService getCurrentWeatherData appWidgetId: " + appWidgetId + " scheduled: " + scheduledUpdate);
+
+        boolean showWeather = Preferences.getShowWeather(mContext, appWidgetId);
+
+        if (!showWeather)
+            return false;
+
+        float lat = Preferences.getLocationLat(mContext, appWidgetId);
+        float lon = Preferences.getLocationLon(mContext, appWidgetId);
+
+        String lang = Preferences.getLanguageOptions(mContext);
+
+        if (lang.equals("")) {
+            String langDef = Locale.getDefault().getLanguage();
+
+            if (!langDef.equals(""))
+                lang = langDef;
+            else
+                lang = "en";
+        }
+
+        if ((locId == -1) && (lat == -222 || lon == -222 || Float.isNaN(lat) || Float.isNaN(lon))) {
+            if (scheduledUpdate)
+                Preferences.setWeatherSuccess(mContext, appWidgetId, false);
+
+            readCachedWeatherData(updateViews, appWidgetId);
+
+            return false;
+        }
+
+        boolean ret = true;
+        try {
+            Reader responseReader;
+            HttpClient client = new DefaultHttpClient();
+            HttpGet request;
+
+            if (locId >= 0) {
+                request = new HttpGet(String.format(WEATHER_SERVICE_ID_URL, locId/*Preferences.getLocationId(mContext, appWidgetId)*/, lang));
+            } else if (lat != -222 && lon != -222 && !Float.isNaN(lat) && !Float.isNaN(lon)) {
+                request = new HttpGet(String.format(WEATHER_SERVICE_COORD_URL, lat, lon, lang));
+            } else {
+                if (scheduledUpdate)
+                    Preferences.setWeatherSuccess(mContext, appWidgetId, false);
+
+                readCachedWeatherData(updateViews, appWidgetId);
+
+                return false;
+            }
+
+            HttpResponse response = client.execute(request);
+
+            StatusLine status = response.getStatusLine();
+            Log.d(LOG_TAG, "Request returned status " + status);
+
+            HttpEntity entity = response.getEntity();
+            responseReader = new InputStreamReader(entity.getContent());
+
+            char[] buf = new char[1024];
+            StringBuilder result = new StringBuilder();
+            int read = responseReader.read(buf);
+
+            while (read >= 0) {
+                result.append(buf, 0, read);
+                read = responseReader.read(buf);
+            }
+
+            if (result.length() > 0) {
+                String parseString = result.toString();
+
+                if (!parseString.isEmpty() && !parseString.contains("<html>")) {
+                    parseString = parseString.trim();
+
+                    if (parseString.endsWith("\n"))
+                        parseString = parseString.substring(0, parseString.length() - 1);
+
+                    String start = parseString.substring(0, 1);
+                    String end = parseString.substring(parseString.length() - 1, parseString.length());
+
+                    if ((start.equalsIgnoreCase("{") && end.equalsIgnoreCase("}"))
+                            || (start.equalsIgnoreCase("[") && end.equalsIgnoreCase("]"))) {
+
+                        long locIdTemp = Preferences.getLocationId(mContext, appWidgetId);
+
+                        if (locId >= 0 && locId == locIdTemp || locId == -1 && !Float.isNaN(lat) && !Float.isNaN(lon))
+                            parseWeatherData(updateViews, appWidgetId, result.toString(), false, scheduledUpdate);
+
+                        // save cache
+                        File parentDirectory = new File(mContext.getFilesDir().getAbsolutePath());
+
+                        if (!parentDirectory.exists()) {
+                            Log.e(LOG_TAG, "Cache file parent directory does not exist.");
+
+                            if (!parentDirectory.mkdirs()) {
+                                Log.e(LOG_TAG, "Cannot create cache file parent directory.");
+                            }
+                        }
+
+                        File cacheFile;
+
+                        if (locId >= 0)
+                            cacheFile = new File(parentDirectory, "weather_cache_loc_" + locId);
+                        else
+                            cacheFile = new File(parentDirectory, "weather_cache_" + appWidgetId);
+
+                        cacheFile.createNewFile();
+
+                        final BufferedWriter cacheWriter = new BufferedWriter(new FileWriter(cacheFile), result.length());
+                        cacheWriter.write(result.toString());
+                        cacheWriter.close();
+                    }
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            if (scheduledUpdate)
+                Preferences.setWeatherSuccess(mContext, appWidgetId, false);
+
+            readCachedWeatherData(updateViews, appWidgetId);
+
+            ret = false;
+        }
+
+        return ret;
+    }
+
+    @SuppressWarnings("unused")
+    boolean getForecastData(RemoteViews updateViews, int appWidgetId, long locId, boolean scheduledUpdate) {
+        Log.d(LOG_TAG, "WidgetUpdateService getForecastData appWidgetId: " + appWidgetId + " scheduled: " + scheduledUpdate);
+
+        boolean showWeather = Preferences.getShowWeather(mContext, appWidgetId);
+
+        if (!showWeather)
+            return false;
+
+        float lat = Preferences.getLocationLat(mContext, appWidgetId);
+        float lon = Preferences.getLocationLon(mContext, appWidgetId);
+
+        String lang = Preferences.getLanguageOptions(mContext);
+
+        if (lang.equals("")) {
+            String langDef = Locale.getDefault().getLanguage();
+
+            if (!langDef.equals(""))
+                lang = langDef;
+            else
+                lang = "en";
+        }
+
+        if ((locId == -1) && (lat == -222 || lon == -222 || Float.isNaN(lat) || Float.isNaN(lon))) {
+            if (scheduledUpdate)
+                Preferences.setForecastSuccess(mContext, appWidgetId, false);
+
+            return false;
+        }
+
+        boolean ret = true;
+        try {
+            Reader responseReader;
+            HttpClient client = new DefaultHttpClient();
+            HttpGet request;
+
+            if (locId >= 0) {
+                request = new HttpGet(String.format(WEATHER_FORECAST_ID_URL, locId/*Preferences.getLocationId(mContext, appWidgetId)*/, lang));
+            } else if (lat != -222 && lon != -222 && !Float.isNaN(lat) && !Float.isNaN(lon)) {
+                request = new HttpGet(String.format(WEATHER_FORECAST_COORD_URL, Preferences.getLocationLat(mContext, appWidgetId),
+                        Preferences.getLocationLon(mContext, appWidgetId), lang));
+            } else {
+                if (scheduledUpdate)
+                    Preferences.setForecastSuccess(mContext, appWidgetId, false);
+
+                return false;
+            }
+
+            HttpResponse response = client.execute(request);
+
+            StatusLine status = response.getStatusLine();
+            Log.d(LOG_TAG, "Request returned status " + status);
+
+            HttpEntity entity = response.getEntity();
+            responseReader = new InputStreamReader(entity.getContent());
+
+            char[] buf = new char[1024];
+            StringBuilder result = new StringBuilder();
+            int read = responseReader.read(buf);
+
+            while (read >= 0) {
+                result.append(buf, 0, read);
+                read = responseReader.read(buf);
+            }
+
+            if (result.length() > 0) {
+                String parseString = result.toString();
+
+                if (!parseString.isEmpty() && !parseString.contains("<html>")) {
+                    parseString = parseString.trim();
+
+                    if (parseString.endsWith("\n"))
+                        parseString = parseString.substring(0, parseString.length() - 1);
+
+                    String start = parseString.substring(0, 1);
+                    String end = parseString.substring(parseString.length() - 1, parseString.length());
+
+                    if ((start.equalsIgnoreCase("{") && end.equalsIgnoreCase("}"))
+                            || (start.equalsIgnoreCase("[") && end.equalsIgnoreCase("]"))) {
+                        // save cache
+                        File parentDirectory = new File(mContext.getFilesDir().getAbsolutePath());
+
+                        if (!parentDirectory.exists()) {
+                            Log.e(LOG_TAG, "Cache file parent directory does not exist.");
+
+                            if (!parentDirectory.mkdirs()) {
+                                Log.e(LOG_TAG, "Cannot create cache file parent directory.");
+                            }
+                        }
+
+                        File cacheFile;
+
+                        if (locId >= 0)
+                            cacheFile = new File(parentDirectory, "forecast_cache_loc_" + locId);
+                        else
+                            cacheFile = new File(parentDirectory, "forecast_cache_" + appWidgetId);
+
+                        cacheFile.createNewFile();
+
+                        final BufferedWriter cacheWriter = new BufferedWriter(new FileWriter(cacheFile), result.length());
+                        cacheWriter.write(result.toString());
+                        cacheWriter.close();
+                    }
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            if (scheduledUpdate)
+                Preferences.setForecastSuccess(mContext, appWidgetId, false);
+
+            ret = false;
+        }
+
+        return ret;
+    }
+
+    @SuppressWarnings("unused")
+    void readCachedWeatherData(RemoteViews updateViews, int appWidgetId) {
+        Log.d(LOG_TAG, "WidgetUpdateService readCachedWeatherData appWidgetId: " + appWidgetId);
+
+        boolean showWeather = Preferences.getShowWeather(mContext, appWidgetId);
+
+        if (!showWeather)
+            return;
+
+        updateViews.setViewVisibility(R.id.viewButtonRefresh, View.VISIBLE);
+        updateViews.setViewVisibility(R.id.progressRefresh, View.GONE);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+        appWidgetManager.updateAppWidget(appWidgetId, updateViews);
+
+        Intent intent = new Intent(UPDATE_FORECAST);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        mContext.sendBroadcast(intent);
+
+        try {
+            File parentDirectory = new File(mContext.getFilesDir().getAbsolutePath());
+
+            if (!parentDirectory.exists()) {
+                Log.e(LOG_TAG, "Cache file parent directory does not exist.");
+
+                if (!parentDirectory.mkdirs()) {
+                    Log.e(LOG_TAG, "Cannot create cache file parent directory.");
+                }
+            }
+
+            File cacheFile;
+
+            long locId = Preferences.getLocationId(mContext, appWidgetId);
+
+            if (locId >= 0) {
+                cacheFile = new File(parentDirectory, "weather_cache_loc_" + locId);
+
+                if (!cacheFile.exists()) {
+                    cacheFile = new File(parentDirectory, "weather_cache_" + appWidgetId);
+
+                    if (!cacheFile.exists())
+                        return;
+                }
+            } else {
+                cacheFile = new File(parentDirectory, "weather_cache_" + appWidgetId);
+
+                if (!cacheFile.exists())
+                    return;
+            }
+
+            BufferedReader cacheReader = new BufferedReader(new FileReader(cacheFile));
+            char[] buf = new char[1024];
+            StringBuilder result = new StringBuilder();
+            int read = cacheReader.read(buf);
+
+            while (read >= 0) {
+                result.append(buf, 0, read);
+                read = cacheReader.read(buf);
+            }
+
+            cacheReader.close();
+
+            parseWeatherData(updateViews, appWidgetId, result.toString(), true, false);
+
+        } catch (IOException e2) {
+            e2.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("unused")
+    void parseWeatherData(RemoteViews updateViews, int appWidgetId, String parseString, boolean updateFromCache, boolean scheduledUpdate) {
+        Log.d(LOG_TAG, "WidgetUpdateService parseWeatherData appWidgetId: " + appWidgetId + " cache: " + updateFromCache + " scheduled: " + scheduledUpdate);
+
+        boolean showWeather = Preferences.getShowWeather(mContext, appWidgetId);
+
+        if (!showWeather)
+            return;
+
+        if (updateViews == null) {
+            updateViews = new RemoteViews(mContext.getPackageName(),
+                    R.layout.digitalclockwidget);
+        }
+
+        if (parseString.isEmpty() || parseString.contains("<html>"))
+            return;
+
+        parseString = parseString.trim();
+
+        if (parseString.endsWith("\n"))
+            parseString = parseString.substring(0, parseString.length() - 1);
+
+        String start = parseString.substring(0, 1);
+        String end = parseString.substring(parseString.length() - 1, parseString.length());
+
+        if (!(start.equalsIgnoreCase("{") && end.equalsIgnoreCase("}"))
+                && !(start.equalsIgnoreCase("[") && end.equalsIgnoreCase("]")))
+            return;
+
+        int iFontItem = Preferences.getWeatherFontItem(mContext, appWidgetId);
+        boolean bold = Preferences.getWeatherBoldText(mContext, appWidgetId);
+
+        int systemWeatherColor;
+        int iWeatherColorItem = Preferences.getWeatherColorItem(mContext, appWidgetId);
+
+        if (iWeatherColorItem >= 0) {
+            switch (iWeatherColorItem) {
+                case 0:
+                    systemWeatherColor = Color.BLACK;
+                    break;
+                case 1:
+                    systemWeatherColor = Color.DKGRAY;
+                    break;
+                case 2:
+                    systemWeatherColor = Color.GRAY;
+                    break;
+                case 3:
+                    systemWeatherColor = Color.LTGRAY;
+                    break;
+                case 4:
+                    systemWeatherColor = Color.WHITE;
+                    break;
+                case 5:
+                    systemWeatherColor = Color.RED;
+                    break;
+                case 6:
+                    systemWeatherColor = Color.GREEN;
+                    break;
+                case 7:
+                    systemWeatherColor = Color.BLUE;
+                    break;
+                case 8:
+                    systemWeatherColor = Color.YELLOW;
+                    break;
+                case 9:
+                    systemWeatherColor = Color.CYAN;
+                    break;
+                case 10:
+                    systemWeatherColor = Color.MAGENTA;
+                    break;
+                default:
+                    systemWeatherColor = Color.WHITE;
+                    break;
+            }
+
+            Preferences.setWeatherColorItem(mContext, appWidgetId, -1);
+            Preferences.setWeatherColor(mContext, appWidgetId, systemWeatherColor);
+        } else {
+            systemWeatherColor = Preferences.getWeatherColor(mContext, appWidgetId);
+        }
+
+        String[] mFontArray = mContext.getResources().getStringArray(R.array.fontPathValues);
+
+        String font = "fonts/Roboto.ttf";
+
+        if (mFontArray.length > iFontItem)
+            font = mFontArray[iFontItem];
+
+        try {
+            JSONTokener parser = new JSONTokener(parseString);
+            int tempScale = Preferences.getTempScale(mContext, appWidgetId);
+
+            JSONObject query = (JSONObject) parser.nextValue();
+            JSONObject weatherJSON;
+
+            if (query.has("list")) {
+
+                JSONArray list = query.getJSONArray("list");
+
+                if (list.length() == 0) {
+                    return;
+                }
+
+                weatherJSON = list.getJSONObject(0);
+            } else {
+                weatherJSON = query;
+            }
+
+            int cityId = weatherJSON.getInt("id");
+            String location = weatherJSON.getString("name");
+            String temp;
+
+            int locationType = Preferences.getLocationType(mContext, appWidgetId);
+
+            if (locationType == ConfigureLocationActivity.LOCATION_TYPE_CURRENT) {
+                Preferences.setLocation(mContext, appWidgetId, location);
+            }
+
+            updateViews.setImageViewBitmap(R.id.imageViewLoc, getFontBitmap(mContext, location, systemWeatherColor, font, bold, 12));
+
+            long timestamp = weatherJSON.getLong("dt");
+            Date time = new Date(timestamp * 1000);
+
+            JSONObject main = null;
+            try {
+                main = weatherJSON.getJSONObject("main");
+            } catch (JSONException e) {
+                Log.d(LOG_TAG, "WidgetUpdateService parseWeatherData JSONException");
+            }
+            try {
+                double currentTemp = main.getDouble("temp") - 273.15;
+
+                if (tempScale == 1)
+                    temp = String.valueOf((int) (currentTemp * 1.8 + 32)) + "°";
+                else
+                    temp = String.valueOf((int) currentTemp) + "°";
+
+                updateViews.setImageViewBitmap(R.id.imageViewTemp, getFontBitmap(mContext, temp, systemWeatherColor, font, bold, 32));
+
+            } catch (JSONException e) {
+                Log.d(LOG_TAG, "WidgetUpdateService parseWeatherData JSONException");
+            }
+
+            JSONObject windJSON = null;
+            try {
+                windJSON = weatherJSON.getJSONObject("wind");
+            } catch (JSONException e) {
+                Log.d(LOG_TAG, "WidgetUpdateService parseWeatherData JSONException");
+            }
+            try {
+                double speed = windJSON.getDouble("speed");
+            } catch (JSONException e) {
+                Log.d(LOG_TAG, "WidgetUpdateService parseWeatherData JSONException");
+            }
+            try {
+                double deg = windJSON.getDouble("deg");
+            } catch (JSONException e) {
+                Log.d(LOG_TAG, "WidgetUpdateService parseWeatherData JSONException");
+            }
+
+            try {
+                double humidityValue = weatherJSON.getJSONObject("main").getDouble("humidity");
+            } catch (JSONException e) {
+                Log.d(LOG_TAG, "WidgetUpdateService parseWeatherData JSONException");
+            }
+
+            try {
+                JSONArray weathers = weatherJSON.getJSONArray("weather");
+                for (int i = 0; i < weathers.length(); i++) {
+                    JSONObject weather = weathers.getJSONObject(i);
+                    int weatherId = weather.getInt("id");
+                    String weatherMain = weather.getString("main");
+                    String weatherDesc = weather.getString("description");
+                    weatherDesc = weatherDesc.substring(0, 1).toUpperCase() + weatherDesc.substring(1);
+                    String iconName = weather.getString("icon");
+                    String iconNameAlt = iconName + "d";
+
+                    WeatherConditions conditions = new WeatherConditions();
+
+                    int icons = Preferences.getWeatherIcons(mContext, appWidgetId);
+                    int resource;
+                    WeatherIcon[] imageArr;
+
+                    updateViews.setImageViewBitmap(R.id.imageViewDesc, getFontBitmap(mContext, weatherDesc, systemWeatherColor, font, bold, 12));
+
+                    switch (icons) {
+                        case 0:
+                            resource = R.drawable.tick_weather_04d;
+                            imageArr = conditions.m_ImageArrTick;
+                            break;
+                        case 1:
+                            resource = R.drawable.touch_weather_04d;
+                            imageArr = conditions.m_ImageArrTouch;
+                            break;
+                        case 2:
+                            resource = R.drawable.icon_set_weather_04d;
+                            imageArr = conditions.m_ImageArrIconSet;
+                            break;
+                        case 3:
+                            resource = R.drawable.weezle_weather_04d;
+                            imageArr = conditions.m_ImageArrWeezle;
+                            break;
+                        case 4:
+                            resource = R.drawable.simple_weather_04d;
+                            imageArr = conditions.m_ImageArrSimple;
+                            break;
+                        case 5:
+                            resource = R.drawable.novacons_weather_04d;
+                            imageArr = conditions.m_ImageArrNovacons;
+                            break;
+                        case 6:
+                            resource = R.drawable.sticker_weather_04d;
+                            imageArr = conditions.m_ImageArrSticker;
+                            break;
+                        case 7:
+                            resource = R.drawable.plain_weather_04d;
+                            imageArr = conditions.m_ImageArrPlain;
+                            break;
+                        case 8:
+                            resource = R.drawable.flat_weather_04d;
+                            imageArr = conditions.m_ImageArrFlat;
+                            break;
+                        case 9:
+                            resource = R.drawable.dvoid_weather_04d;
+                            imageArr = conditions.m_ImageArrDvoid;
+                            break;
+                        case 10:
+                            resource = R.drawable.ikonko_weather_04d;
+                            imageArr = conditions.m_ImageArrIkonko;
+                            break;
+                        case 11:
+                            resource = R.drawable.smooth_weather_04d;
+                            imageArr = conditions.m_ImageArrSmooth;
+                            break;
+                        case 12:
+                            resource = R.drawable.bubble_weather_04d;
+                            imageArr = conditions.m_ImageArrBubble;
+                            break;
+                        case 13:
+                            resource = R.drawable.stylish_weather_04d;
+                            imageArr = conditions.m_ImageArrStylish;
+                            break;
+                        case 14:
+                            resource = R.drawable.garmahis_weather_04d;
+                            imageArr = conditions.m_ImageArrGarmahis;
+                            break;
+                        case 15:
+                            resource = R.drawable.iconbest_weather_04d;
+                            imageArr = conditions.m_ImageArrIconBest;
+                            break;
+                        case 16:
+                            resource = R.drawable.cartoon_weather_04d;
+                            imageArr = conditions.m_ImageArrCartoon;
+                            break;
+                        case 17:
+                            resource = R.drawable.flaticon_weather_04d;
+                            imageArr = conditions.m_ImageArrFlaticon;
+                            break;
+                        case 18:
+                            resource = R.drawable.icon8_weather_04d;
+                            imageArr = conditions.m_ImageArrIcon8;
+                            break;
+                        default:
+                            resource = R.drawable.tick_weather_04d;
+                            imageArr = conditions.m_ImageArrTick;
+                            break;
+                    }
+
+                    updateViews.setImageViewResource(R.id.imageViewWeather, resource);
+
+                    float lat = Preferences.getLocationLat(mContext, appWidgetId);
+                    float lon = Preferences.getLocationLon(mContext, appWidgetId);
+                    boolean bDay = true;
+
+                    if (!Float.isNaN(lat) && !Float.isNaN(lon)) {
+                        SunriseSunsetCalculator calc;
+                        SunriseSunsetLocation loc = new SunriseSunsetLocation(String.valueOf(lat), String.valueOf(lon));
+                        calc = new SunriseSunsetCalculator(loc, TimeZone.getDefault());
+                        Calendar calendarForDate = Calendar.getInstance();
+                        Calendar civilSunriseCalendarForDate = calc.getCivilSunriseCalendarForDate(calendarForDate);
+                        Calendar civilSunsetCalendarForDate = calc.getCivilSunsetCalendarForDate(calendarForDate);
+
+                        bDay = !(calendarForDate.before(civilSunriseCalendarForDate) || calendarForDate.after(civilSunsetCalendarForDate));
+                    }
+
+                    for (WeatherIcon anImageArr : imageArr) {
+                        if (iconName.equals(anImageArr.iconName) || iconNameAlt.equals(anImageArr.iconName)) {
+
+                            if (anImageArr.bDay != bDay)
+                                updateViews.setImageViewResource(R.id.imageViewWeather, anImageArr.altIconId);
+                            else
+                                updateViews.setImageViewResource(R.id.imageViewWeather, anImageArr.iconId);
+                        }
+                    }
+                }
+            } catch (JSONException e) {
+                Log.d(LOG_TAG, "WidgetUpdateService parseWeatherData JSONException");
+            }
+
+            if (!updateFromCache) {
+                Preferences.setLastRefresh(mContext, appWidgetId, System.currentTimeMillis());
+
+                if (scheduledUpdate)
+                    Preferences.setWeatherSuccess(mContext, appWidgetId, true);
+            }
+
+            long lastRefresh = Preferences.getLastRefresh(mContext, appWidgetId);
+
+            if (lastRefresh > 0) {
+                boolean bShow24Hrs = Preferences.getShow24Hrs(mContext, appWidgetId);
+                int iDateFormatItem = Preferences.getDateFormatItem(mContext, appWidgetId);
+                Date resultDate = new Date(lastRefresh);
+
+                String currentTime;
+
+                if (bShow24Hrs) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                    currentTime = sdf.format(resultDate);
+                } else {
+                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+                    currentTime = sdf.format(resultDate);
+                }
+
+                String currentDate;
+                String[] mTestArray = mContext.getResources().getStringArray(R.array.dateFormat);
+
+                SimpleDateFormat sdf = new SimpleDateFormat(mTestArray[iDateFormatItem]);
+                currentDate = sdf.format(resultDate);
+
+                updateViews.setImageViewBitmap(R.id.imageViewLast,
+                        getFontBitmap(mContext, currentDate + ", " + currentTime, systemWeatherColor, font, bold, 12));
+            } else {
+                updateViews.setImageViewBitmap(R.id.imageViewLast,
+                        getFontBitmap(mContext, mContext.getResources().getString(R.string.lastrefreshnever), systemWeatherColor, font, bold, 12));
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -603,7 +2286,7 @@ public class WidgetManager {
     }
 
     public void updateBatteryStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
-        Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateBatteryStatus");
+        Log.d(LOG_TAG, "WidgetManager updateBatteryStatus");
 
         if (intentExtra == null)
             return;
@@ -837,7 +2520,7 @@ public class WidgetManager {
 
     @SuppressWarnings("unused")
     public void updateAirplaneMode(RemoteViews updateViews, String intentExtra, int appWidgetId) {
-        Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateAirplaneMode");
+        Log.d(LOG_TAG, "WidgetManager updateAirplaneMode");
 
         if (intentExtra == null)
             return;
@@ -898,7 +2581,7 @@ public class WidgetManager {
             }
         }
 
-        Log.v(WIDGET_MANAGER_LOG_TAG, "getBluetoothState - " + bluetoothState);
+        Log.v(LOG_TAG, "getBluetoothState - " + bluetoothState);
 
         return bluetoothState;
 
@@ -906,7 +2589,7 @@ public class WidgetManager {
 
     public void setBluetoothState(boolean bluetoothState) {
 
-        Log.v(WIDGET_MANAGER_LOG_TAG, "setBluetoothState - " + bluetoothState);
+        Log.v(LOG_TAG, "setBluetoothState - " + bluetoothState);
 
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter
                 .getDefaultAdapter();
@@ -929,7 +2612,7 @@ public class WidgetManager {
     }
 
     public void updateBluetoothStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
-        Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateBluetoothStatus");
+        Log.d(LOG_TAG, "WidgetManager updateBluetoothStatus");
 
         if (intentExtra == null)
             return;
@@ -993,7 +2676,7 @@ public class WidgetManager {
 
     public void setTorchState(boolean torchState) {
 
-        Log.v(WIDGET_MANAGER_LOG_TAG, "setTorchState - " + torchState);
+        Log.v(LOG_TAG, "setTorchState - " + torchState);
 
         PackageManager packageManager = mContext.getPackageManager();
 
@@ -1062,7 +2745,7 @@ public class WidgetManager {
     }
 
     public void updateTorchStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
-        Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateTorchStatus");
+        Log.d(LOG_TAG, "WidgetManager updateTorchStatus");
 
         if (intentExtra == null)
             return;
@@ -1137,7 +2820,7 @@ public class WidgetManager {
             }
         }
 
-        Log.v(WIDGET_MANAGER_LOG_TAG, "getWifiState - " + wifiState);
+        Log.v(LOG_TAG, "getWifiState - " + wifiState);
 
         return wifiState;
 
@@ -1145,7 +2828,7 @@ public class WidgetManager {
 
     public void setWifiState(boolean wifiState) {
 
-        Log.v(WIDGET_MANAGER_LOG_TAG, "setWifiState - " + wifiState);
+        Log.v(LOG_TAG, "setWifiState - " + wifiState);
 
         WifiManager wifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
@@ -1162,7 +2845,7 @@ public class WidgetManager {
     }
 
     public void updateWifiStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
-        Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateWifiStatus");
+        Log.d(LOG_TAG, "WidgetManager updateWifiStatus");
 
         if (intentExtra == null)
             return;
@@ -1232,14 +2915,14 @@ public class WidgetManager {
     protected Boolean getSyncStatus() {
 
         Boolean syncStatus = ContentResolver.getMasterSyncAutomatically();
-        Log.v(WIDGET_MANAGER_LOG_TAG, "getSyncStatus - " + syncStatus);
+        Log.v(LOG_TAG, "getSyncStatus - " + syncStatus);
 
         return syncStatus;
     }
 
     public void setSyncStatus(boolean syncStatus) {
 
-        Log.v(WIDGET_MANAGER_LOG_TAG, "setSyncStatus - " + syncStatus);
+        Log.v(LOG_TAG, "setSyncStatus - " + syncStatus);
 
         ContentResolver.setMasterSyncAutomatically(syncStatus);
     }
@@ -1253,7 +2936,7 @@ public class WidgetManager {
     }
 
     public void updateSyncStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
-        Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateSyncStatus");
+        Log.d(LOG_TAG, "WidgetManager updateSyncStatus");
 
         if (intentExtra == null)
             return;
@@ -1305,7 +2988,7 @@ public class WidgetManager {
 
         Boolean orientation = (Settings.System.getInt(mContext.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1);
 
-        Log.v(WIDGET_MANAGER_LOG_TAG, "getOrientation - " + orientation);
+        Log.v(LOG_TAG, "getOrientation - " + orientation);
 
         // false = auto-rotation is disabled
         // true = auto-rotation is enabled
@@ -1314,7 +2997,7 @@ public class WidgetManager {
 
     public void setOrientation(boolean orientation) {
 
-        Log.v(WIDGET_MANAGER_LOG_TAG, "setOrientation - " + orientation);
+        Log.v(LOG_TAG, "setOrientation - " + orientation);
 
         Settings.System.putInt(mContext.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, orientation ? 1 : 0);
     }
@@ -1328,7 +3011,7 @@ public class WidgetManager {
     }
 
     public void updateOrientation(RemoteViews updateViews, String intentExtra, int appWidgetId) {
-        Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateOrientation");
+        Log.d(LOG_TAG, "WidgetManager updateOrientation");
 
         if (intentExtra == null)
             return;
@@ -1395,7 +3078,7 @@ public class WidgetManager {
             nfcState = false;
         }
 
-        Log.v(WIDGET_MANAGER_LOG_TAG, "getNfcState - " + nfcState);
+        Log.v(LOG_TAG, "getNfcState - " + nfcState);
 
         return nfcState;
 
@@ -1414,7 +3097,7 @@ public class WidgetManager {
     }
 
     public void updateNfcStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
-        Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateNfcStatus");
+        Log.d(LOG_TAG, "WidgetManager updateNfcStatus");
 
         int currentApiVersion = android.os.Build.VERSION.SDK_INT;
 
@@ -1496,7 +3179,7 @@ public class WidgetManager {
             }
         }
 
-        Log.v(WIDGET_MANAGER_LOG_TAG, "getMobileState - " + mobileState);
+        Log.v(LOG_TAG, "getMobileState - " + mobileState);
 
         return mobileState;
 
@@ -1504,7 +3187,7 @@ public class WidgetManager {
 
     public void setMobileState(boolean mobileState) {
 
-        Log.v(WIDGET_MANAGER_LOG_TAG, "setMobileState - " + mobileState);
+        Log.v(LOG_TAG, "setMobileState - " + mobileState);
 
         int currentApiVersion = android.os.Build.VERSION.SDK_INT;
 
@@ -1700,7 +3383,7 @@ public class WidgetManager {
     }
 
     public void updateDataStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
-        Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateMobileStatus");
+        Log.d(LOG_TAG, "WidgetManager updateMobileStatus");
 
         if (intentExtra == null)
             return;
@@ -1794,7 +3477,7 @@ public class WidgetManager {
 
         gpsState = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-        Log.v(WIDGET_MANAGER_LOG_TAG, "getGpsState - " + gpsState);
+        Log.v(LOG_TAG, "getGpsState - " + gpsState);
 
         return gpsState;
 
@@ -1832,7 +3515,7 @@ public class WidgetManager {
     }
 
     public void updateGpsStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
-        Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateGpsStatus");
+        Log.d(LOG_TAG, "WidgetManager updateGpsStatus");
 
         if (intentExtra == null)
             return;
@@ -1889,7 +3572,7 @@ public class WidgetManager {
             ringerState = audioManager.getRingerMode();
         }
 
-        Log.v(WIDGET_MANAGER_LOG_TAG, "getRingerState - " + ringerState);
+        Log.v(LOG_TAG, "getRingerState - " + ringerState);
 
         return ringerState;
 
@@ -1897,7 +3580,7 @@ public class WidgetManager {
 
     public void setRingerState(int ringerState) {
 
-        Log.v(WIDGET_MANAGER_LOG_TAG, "setRingerState - " + ringerState);
+        Log.v(LOG_TAG, "setRingerState - " + ringerState);
 
         NotificationManager notificationManager =
                 (NotificationManager) mContext.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1974,7 +3657,7 @@ public class WidgetManager {
     }
 
     public void updateRingerStatus(RemoteViews updateViews, String intentExtra, int appWidgetId) {
-        Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateRingerStatus");
+        Log.d(LOG_TAG, "WidgetManager updateRingerStatus");
 
         if (intentExtra == null)
             return;
@@ -2084,7 +3767,7 @@ public class WidgetManager {
                 Settings.System.putInt(cr, Settings.System.SCREEN_BRIGHTNESS, brightness);
             }
         } catch (Settings.SettingNotFoundException e) {
-            Log.d(WIDGET_MANAGER_LOG_TAG, "toggleBrightness: " + e);
+            Log.d(LOG_TAG, "toggleBrightness: " + e);
         }
     }
 
@@ -2115,11 +3798,11 @@ public class WidgetManager {
 
     public void setBrightness(int brightness) {
 
-        Log.v(WIDGET_MANAGER_LOG_TAG, "setBrightness - " + brightness);
+        Log.v(LOG_TAG, "setBrightness - " + brightness);
     }
 
     public void updateBrightness(RemoteViews updateViews, String intentExtra, int appWidgetId) {
-        Log.d(WIDGET_MANAGER_LOG_TAG, "WidgetManager updateBrightness");
+        Log.d(LOG_TAG, "WidgetManager updateBrightness");
 
         if (intentExtra == null)
             return;
@@ -2170,5 +3853,18 @@ public class WidgetManager {
 
         updateViews.setTextColor(R.id.textViewBrightness, off ? colorTextOff : colorTextOn);
         updateViews.setInt(R.id.imageViewBrightnessInd, "setColorFilter", off ? colorOff : colorOn);
+    }
+
+    public void updatePowerWidgets(Context context, String intentAction) {
+        final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        toggleWidgets(intentAction);
+
+        for (int appWidgetId : appWidgetManager.getAppWidgetIds(new ComponentName(context, PowerAppWidgetProvider.class))) {
+            RemoteViews remoteViews = buildPowerUpdate(intentAction, appWidgetId);
+
+            if (remoteViews != null) {
+                updatePowerWidgetStatus(remoteViews, intentAction, appWidgetId);
+            }
+        }
     }
 }

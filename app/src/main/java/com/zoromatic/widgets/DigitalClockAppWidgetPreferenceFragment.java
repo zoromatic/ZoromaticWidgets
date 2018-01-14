@@ -664,11 +664,13 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
                     if ((id == -1) && (lat == -222 || lon == -222 || Float.isNaN(lat) || Float.isNaN(lon))) {
                         Toast.makeText(context.getApplicationContext(), getResources().getText(R.string.nolocationdefined), Toast.LENGTH_LONG).show();
                     } else {
-                        Intent startIntent = new Intent(context, WidgetUpdateService.class);
+                        /*Intent startIntent = new Intent(context, WidgetUpdateService.class);
                         startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.WEATHER_UPDATE);
                         startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
 
-                        context.startService(startIntent);
+                        context.startService(startIntent);*/
+
+                        new DigitalClockAppWidgetProvider().updateWidget(context, mAppWidgetId, true, true);
                     }
 
                     return true;

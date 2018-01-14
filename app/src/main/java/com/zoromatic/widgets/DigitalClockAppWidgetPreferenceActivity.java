@@ -106,12 +106,16 @@ public class DigitalClockAppWidgetPreferenceActivity extends ThemeAppCompatActiv
     @Override
     public void onBackPressed() {
 
-        Intent startIntent = new Intent(this, WidgetUpdateService.class);
+        /*Intent startIntent = new Intent(this, WidgetUpdateService.class);
         startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_TIME_CHANGED);
         startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
         this.startService(startIntent);
 
         setResult(RESULT_OK, startIntent);
+        */
+
+        new DigitalClockAppWidgetProvider().updateWidget(this, mAppWidgetId, true, false);
+        setResult(RESULT_OK);
 
         finish();
     }

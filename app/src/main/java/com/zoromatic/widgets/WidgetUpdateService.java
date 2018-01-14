@@ -45,6 +45,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -59,6 +60,7 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -101,12 +103,13 @@ import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
+
+import junit.runner.Version;
 
 import static java.lang.Thread.sleep;
 
@@ -168,6 +171,10 @@ public class WidgetUpdateService extends Service {
     public static String APPWIDGET_RESIZE = "com.sec.android.widgetapp.APPWIDGET_RESIZE";
     public static String APPWIDGET_UPDATE_OPTIONS = "android.appwidget.action.APPWIDGET_UPDATE_OPTIONS";
 
+    private static final String ACTION_ALARM_CHANGED = "android.app.action.NEXT_ALARM_CLOCK_CHANGED";
+    private static final String ACTION_ALARM_CHANGED_V18 = "android.intent.action.ALARM_CHANGED";
+    private static final String ACTION_CLOCK_UPDATE = "com.zoromatic.widgets.CLOCK_UPDATE";
+
     protected static long GPS_UPDATE_TIME_INTERVAL = 3000; // milliseconds
     protected static float GPS_UPDATE_DISTANCE_INTERVAL = 0; // meters
     private WidgetGPSListener mGpsListener = null;
@@ -176,6 +183,13 @@ public class WidgetUpdateService extends Service {
     private RotationObserver mRotationObserver;
     private static Camera camera;
     private static boolean flashOn = false;
+
+    private BroadcastReceiver mTimeChangedReceiver;
+    private BroadcastReceiver mAmPmCheckReceiver;
+    private BroadcastReceiver mAlarmChangedReceiver;
+    private BroadcastReceiver mLocaleChangedReceiver;
+
+    private PendingIntent triggerUpdateIntent;
 
     private static IntentFilter mIntentFilter;
     private WidgetInfoReceiver mWidgetInfo = null;
@@ -203,6 +217,14 @@ public class WidgetUpdateService extends Service {
     static {
 
         mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(Intent.ACTION_TIME_CHANGED);
+        mIntentFilter.addAction(Intent.ACTION_TIME_TICK);
+        mIntentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+        mIntentFilter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
+        mIntentFilter.addAction(Intent.ACTION_BOOT_COMPLETED);
+        mIntentFilter.addAction(CLOCK_WIDGET_UPDATE);
+        mIntentFilter.addAction(WEATHER_UPDATE);
+
         mIntentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
         mIntentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         mIntentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
@@ -210,11 +232,6 @@ public class WidgetUpdateService extends Service {
         mIntentFilter.addAction(LOCATION_PROVIDERS_CHANGED);
         mIntentFilter.addAction(LOCATION_GPS_ENABLED_CHANGED);
         mIntentFilter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
-        mIntentFilter.addAction(Intent.ACTION_TIME_CHANGED);
-        mIntentFilter.addAction(Intent.ACTION_TIME_TICK);
-        mIntentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-        mIntentFilter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
-        mIntentFilter.addAction(Intent.ACTION_BOOT_COMPLETED);
         mIntentFilter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
         mIntentFilter.addAction(NFC_ADAPTER_STATE_CHANGED);
         mIntentFilter.addAction(SYNC_CONN_STATUS_CHANGED);
@@ -245,8 +262,6 @@ public class WidgetUpdateService extends Service {
         mIntentFilter.addAction(MOBILE_DATA_WIDGET_UPDATE);
         mIntentFilter.addAction(GPS_WIDGET_UPDATE);
         mIntentFilter.addAction(RINGER_WIDGET_UPDATE);
-        mIntentFilter.addAction(CLOCK_WIDGET_UPDATE);
-        mIntentFilter.addAction(WEATHER_UPDATE);
         mIntentFilter.addAction(AIRPLANE_WIDGET_UPDATE);
         mIntentFilter.addAction(BRIGHTNESS_WIDGET_UPDATE);
         mIntentFilter.addAction(NFC_WIDGET_UPDATE);
@@ -402,55 +417,13 @@ public class WidgetUpdateService extends Service {
         }
     }
 
+    public WidgetUpdateService(){
+        Log.d(LOG_TAG, "WidgetUpdateService");
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-
-        if (mWidgetInfo == null) {
-            mWidgetInfo = new WidgetInfoReceiver();
-            registerReceiver(mWidgetInfo, mIntentFilter);
-
-            sendBroadcast(new Intent(FLASHLIGHT_CHANGED));
-            sendBroadcast(new Intent(BRIGHTNESS_CHANGED));
-        }
-
-        LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        if (mGpsListener == null && mLocListener == null) {
-            if (locManager != null) {
-                boolean gps_enabled = false;
-
-                try {
-                    gps_enabled = locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-                } catch (Exception e) {
-                    Log.e(LOG_TAG, "", e);
-                }
-
-                if (gps_enabled) {
-                    mGpsListener = new WidgetGPSListener();
-                    mLocListener = new WidgetLocationListener();
-
-                    try {
-                        locManager.addGpsStatusListener(mGpsListener);
-                        locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                                GPS_UPDATE_TIME_INTERVAL, GPS_UPDATE_DISTANCE_INTERVAL,
-                                mLocListener);
-                    } catch (SecurityException e) {
-                        Log.e(LOG_TAG, "", e);
-                    }
-                }
-            }
-        }
-
-        if (mSettingsObserver == null) {
-            mSettingsObserver = new BrightnessObserver(new Handler(), this);
-            mSettingsObserver.startObserving();
-        }
-
-        if (mRotationObserver == null) {
-            mRotationObserver = new RotationObserver(new Handler(), this);
-            mRotationObserver.startObserving();
-        }
     }
 
     @Override
@@ -481,6 +454,11 @@ public class WidgetUpdateService extends Service {
                 unregisterReceiver(mWidgetInfo);
                 mWidgetInfo = null;
             }
+
+            if (Build.VERSION.SDK_INT >= VERSION_CODES.N) {
+                stopForeground(true);
+                stopSelf();
+            }
         } catch (Exception e) {
             Log.e(LOG_TAG, "", e);
         }
@@ -507,8 +485,74 @@ public class WidgetUpdateService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(LOG_TAG, "WidgetUpdateService onStartCommand");
+        super.onStartCommand(intent, flags, startId);
 
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        if (Build.VERSION.SDK_INT >= VERSION_CODES.N) {
+            showNotification();
+        }
+
+        if (mWidgetInfo == null) {
+            mWidgetInfo = new WidgetInfoReceiver();
+            registerReceiver(mWidgetInfo, mIntentFilter);
+
+            sendBroadcast(new Intent(FLASHLIGHT_CHANGED));
+            sendBroadcast(new Intent(BRIGHTNESS_CHANGED));
+        }
+
+        LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (mGpsListener == null && mLocListener == null) {
+            if (locManager != null) {
+                boolean gps_enabled = false;
+
+                try {
+                    gps_enabled = locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                } catch (Exception e) {
+                    Log.e(LOG_TAG, "", e);
+                }
+
+                if (gps_enabled) {
+                    mGpsListener = new WidgetGPSListener();
+                    mLocListener = new WidgetLocationListener();
+
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                Intent permissionsIntent = new Intent(this, SetPermissionsActivity.class);
+                                permissionsIntent.putExtra(SetPermissionsActivity.PERMISSIONS_TYPE, SetPermissionsActivity.PERMISSIONS_REQUEST_LOCATION);
+                                permissionsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(permissionsIntent);
+                            } else {
+                                locManager.addGpsStatusListener(mGpsListener);
+                                locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                                        GPS_UPDATE_TIME_INTERVAL, GPS_UPDATE_DISTANCE_INTERVAL,
+                                        mLocListener);
+                            }
+                        } else {
+                            locManager.addGpsStatusListener(mGpsListener);
+                            locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                                    GPS_UPDATE_TIME_INTERVAL, GPS_UPDATE_DISTANCE_INTERVAL,
+                                    mLocListener);
+                        }
+                    } catch (SecurityException e) {
+                        Log.e(LOG_TAG, "", e);
+                    }
+                }
+            }
+        }
+
+        if (mSettingsObserver == null) {
+            mSettingsObserver = new BrightnessObserver(new Handler(), this);
+            mSettingsObserver.startObserving();
+        }
+
+        if (mRotationObserver == null) {
+            mRotationObserver = new RotationObserver(new Handler(), this);
+            mRotationObserver.startObserving();
+        }
+
+        /*AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
 
         if (appWidgetManager == null)
             return START_NOT_STICKY;
@@ -1017,9 +1061,36 @@ public class WidgetUpdateService extends Service {
                     }
                 }
             }
-        }
+        }*/
 
         return START_STICKY;
+    }
+
+    private void showNotification() {
+        Intent notificationIntent = new Intent(this, DigitalClockAppWidgetPreferenceActivity.class);
+        //notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                notificationIntent, 0);
+
+        Bitmap icon = BitmapFactory.decodeResource(getResources(),
+                R.drawable.icon);
+
+        Notification notification = new NotificationCompat.Builder(this)
+                .setContentTitle(getResources().getString(R.string.app_name))
+                .setTicker(getResources().getString(R.string.app_name))
+                .setContentText(getResources().getString(R.string.app_name))
+                .setSmallIcon(R.drawable.icon)
+                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
+                .setContentIntent(pendingIntent)
+                .setOngoing(true)
+                .setDefaults(Notification.FLAG_NO_CLEAR)
+                .setWhen(0)
+                .setPriority(Notification.PRIORITY_HIGH).build();
+        startForeground(101,
+                notification);
+
     }
 
     @Override

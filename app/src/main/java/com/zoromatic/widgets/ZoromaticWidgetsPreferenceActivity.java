@@ -27,7 +27,7 @@ public class ZoromaticWidgetsPreferenceActivity extends ThemeAppCompatActivity {
 
         setContentView(R.layout.activity_prefs);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         PreferenceFragment existingFragment = (PreferenceFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);

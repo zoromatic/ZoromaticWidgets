@@ -191,7 +191,7 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
 
                 @Override
                 public boolean onPreferenceClick(Preference p) {
-                    Context contextLocal = (Context) getActivity();
+                    Context contextLocal = getActivity();
                     Intent startIntent = new Intent(contextLocal, WidgetUpdateService.class);
                     startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_CONFIGURATION_CHANGED);
 
