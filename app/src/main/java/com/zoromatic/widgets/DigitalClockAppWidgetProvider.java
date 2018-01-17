@@ -7,6 +7,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -92,12 +93,23 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
         Log.d(LOG_TAG, "DigitalClockAppWidgetProvider onDisabled");
         super.onDisabled(context);
         context.stopService(new Intent(context, WidgetUpdateService.class));
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, DigitalClockAppWidgetProvider.class));
+
+        removeDependencies(context, appWidgetIds);
     }
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         Log.d(LOG_TAG, "DigitalClockAppWidgetProvider onDeleted");
 
+        removeDependencies(context, appWidgetIds);
+
+        super.onDeleted(context, appWidgetIds);
+    }
+
+    private void removeDependencies(Context context, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
             File parentDirectory = new File(context.getFilesDir().getAbsolutePath());
 
@@ -120,8 +132,6 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
             }
             pending.cancel();
         }
-
-        super.onDeleted(context, appWidgetIds);
     }
 
     public static void setAlarm(Context context, int appWidgetId) {

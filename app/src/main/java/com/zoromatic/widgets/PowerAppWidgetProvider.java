@@ -20,8 +20,12 @@ public class PowerAppWidgetProvider extends AppWidgetProvider {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
         context.startService(new Intent(context, WidgetUpdateService.class));
-        RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.powerwidget);
-        appWidgetManager.updateAppWidget(appWidgetIds, updateViews);
+        updateWidgets(context, appWidgetIds, Intent.ACTION_CONFIGURATION_CHANGED);
+    }
+
+    @Override
+    public void onEnabled(Context context) {
+        super.onEnabled(context);
     }
 
     public void updateWidgets(Context context, int[] appWidgetIds, String intentAction) {
@@ -30,20 +34,6 @@ public class PowerAppWidgetProvider extends AppWidgetProvider {
         WidgetManager widgetManager = new WidgetManager(context);
 
         widgetManager.updatePowerWidgets(context, intentAction);
-
-        RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.powerwidget);
-        appWidgetManager.updateAppWidget(appWidgetIds, updateViews);
-    }
-
-    public void updateWidget(Context context, int appWidgetId, String intentAction) {
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-
-        WidgetManager widgetManager = new WidgetManager(context);
-
-        widgetManager.updatePowerWidgets(context, intentAction);
-
-        RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.powerwidget);
-        appWidgetManager.updateAppWidget(appWidgetId, updateViews);
     }
 
     @Override

@@ -1067,30 +1067,35 @@ public class WidgetUpdateService extends Service {
     }
 
     private void showNotification() {
-        Intent notificationIntent = new Intent(this, DigitalClockAppWidgetPreferenceActivity.class);
-        //notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                notificationIntent, 0);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIdsDigitalClock = appWidgetManager.getAppWidgetIds(new ComponentName(this, DigitalClockAppWidgetProvider.class));
+        int[] appWidgetIdsPower = appWidgetManager.getAppWidgetIds(new ComponentName(this, PowerAppWidgetProvider.class));
 
-        Bitmap icon = BitmapFactory.decodeResource(getResources(),
-                R.drawable.icon);
+        if (appWidgetIdsDigitalClock.length > 0 || appWidgetIdsPower.length > 0) {
+            Intent notificationIntent = new Intent(this, DigitalClockAppWidgetPreferenceActivity.class);
+            //notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                    notificationIntent, 0);
 
-        Notification notification = new NotificationCompat.Builder(this)
-                .setContentTitle(getResources().getString(R.string.app_name))
-                .setTicker(getResources().getString(R.string.app_name))
-                .setContentText(getResources().getString(R.string.app_name))
-                .setSmallIcon(R.drawable.icon)
-                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
-                .setContentIntent(pendingIntent)
-                .setOngoing(true)
-                .setDefaults(Notification.FLAG_NO_CLEAR)
-                .setWhen(0)
-                .setPriority(Notification.PRIORITY_HIGH).build();
-        startForeground(101,
-                notification);
+            Bitmap icon = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.icon);
 
+            Notification notification = new NotificationCompat.Builder(this)
+                    .setContentTitle(getResources().getString(R.string.app_name))
+                    .setTicker(getResources().getString(R.string.app_name))
+                    .setContentText(getResources().getString(R.string.app_name))
+                    .setSmallIcon(R.drawable.icon)
+                    .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
+                    .setContentIntent(pendingIntent)
+                    .setOngoing(true)
+                    .setDefaults(Notification.FLAG_NO_CLEAR)
+                    .setWhen(0)
+                    .setPriority(Notification.PRIORITY_HIGH).build();
+            startForeground(101,
+                    notification);
+        }
     }
 
     @Override
