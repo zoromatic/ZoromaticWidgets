@@ -36,11 +36,5 @@ public class ZoromaticWidgetsApplication extends Application {
         android.content.res.Configuration conf = res.getConfiguration();
         conf.locale = new Locale(lang.toLowerCase());
         res.updateConfiguration(conf, dm);
-
-        //startService(new Intent(this, WidgetUpdateService.class));
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(getApplicationContext(), DigitalClockAppWidgetProvider.class));
-
-        new DigitalClockAppWidgetProvider().updateWidgets(getApplicationContext(), appWidgetIds, true, false);
     }
 }

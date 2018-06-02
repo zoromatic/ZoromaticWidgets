@@ -103,13 +103,12 @@ import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
-
-import junit.runner.Version;
 
 import static java.lang.Thread.sleep;
 
@@ -170,10 +169,7 @@ public class WidgetUpdateService extends Service {
     public static String POWER_TORCH_WIDGET_UPDATE = "com.zoromatic.widgets.POWER_TORCH_WIDGET_UPDATE";
     public static String APPWIDGET_RESIZE = "com.sec.android.widgetapp.APPWIDGET_RESIZE";
     public static String APPWIDGET_UPDATE_OPTIONS = "android.appwidget.action.APPWIDGET_UPDATE_OPTIONS";
-
-    private static final String ACTION_ALARM_CHANGED = "android.app.action.NEXT_ALARM_CLOCK_CHANGED";
-    private static final String ACTION_ALARM_CHANGED_V18 = "android.intent.action.ALARM_CHANGED";
-    private static final String ACTION_CLOCK_UPDATE = "com.zoromatic.widgets.CLOCK_UPDATE";
+    public static String BATTERY_NOTIFICATION = "com.zoromatic.widgets.BATTERY_NOTIFICATION";
 
     protected static long GPS_UPDATE_TIME_INTERVAL = 3000; // milliseconds
     protected static float GPS_UPDATE_DISTANCE_INTERVAL = 0; // meters
@@ -184,14 +180,7 @@ public class WidgetUpdateService extends Service {
     private static Camera camera;
     private static boolean flashOn = false;
 
-    private BroadcastReceiver mTimeChangedReceiver;
-    private BroadcastReceiver mAmPmCheckReceiver;
-    private BroadcastReceiver mAlarmChangedReceiver;
-    private BroadcastReceiver mLocaleChangedReceiver;
-
-    private PendingIntent triggerUpdateIntent;
-
-    private static IntentFilter mIntentFilter;
+   private static IntentFilter mIntentFilter;
     private WidgetInfoReceiver mWidgetInfo = null;
 
     public static String WEATHER_SERVICE_COORD_URL = "http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
@@ -552,7 +541,7 @@ public class WidgetUpdateService extends Service {
             mRotationObserver.startObserving();
         }
 
-        /*AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
 
         if (appWidgetManager == null)
             return START_NOT_STICKY;
@@ -598,7 +587,13 @@ public class WidgetUpdateService extends Service {
 
         boolean scheduledUpdate = intent.getBooleanExtra(WidgetInfoReceiver.SCHEDULED_UPDATE, false);
 
+        if (intentExtra != null && intentExtra.equals(BATTERY_NOTIFICATION)) {
+            updateNotificationBatteryStatus(intent);
+        }
+
         if (intentExtra != null && intentExtra.equals(Intent.ACTION_BATTERY_CHANGED)) {
+            updateNotificationBatteryStatus(intent);
+
             int rawLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
             int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
             int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS,
@@ -710,23 +705,25 @@ public class WidgetUpdateService extends Service {
             thisWidget = new ComponentName(this,
                     DigitalClockAppWidgetProvider.class);
 
-            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+            if (thisWidget != null) {
+                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
-            if (appWidgetIds.length > 0) {
-                for (int appWidgetId : appWidgetIds) {
+                if (appWidgetIds.length > 0) {
+                    for (int appWidgetId : appWidgetIds) {
 
-                    boolean showWeather = Preferences.getShowWeather(this, appWidgetId);
+                        boolean showWeather = Preferences.getShowWeather(this, appWidgetId);
 
-                    if (showWeather) {
-                        remoteViews = buildClockUpdate(appWidgetId);
-                        updateClockStatus(remoteViews, appWidgetId, true);
+                        if (showWeather) {
+                            remoteViews = buildClockUpdate(appWidgetId);
+                            updateClockStatus(remoteViews, appWidgetId, true);
 
-                        // translate weather info if locale is changed
-                        if (intentExtra.equals(UPDATE_WIDGETS) || intentExtra.equals(Intent.ACTION_LOCALE_CHANGED)) {
-                            updateWeatherStatus(remoteViews, appWidgetId, true);
+                            // translate weather info if locale is changed
+                            if (intentExtra.equals(UPDATE_WIDGETS) || intentExtra.equals(Intent.ACTION_LOCALE_CHANGED)) {
+                                updateWeatherStatus(remoteViews, appWidgetId, true);
+                            }
+
+                            appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
                         }
-
-                        appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
                     }
                 }
             }
@@ -739,15 +736,18 @@ public class WidgetUpdateService extends Service {
                 powerWidget = new ComponentName(this, PowerAppWidgetProvider.class);
                 newIntent = new Intent(this, WidgetUpdateService.class);
                 newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, POWER_WIDGET_UPDATE_ALL);
-                int[] appPowerWidgetIds = appWidgetManager.getAppWidgetIds(powerWidget);
+                int[] appWidgetIds = null;
 
-                if (appPowerWidgetIds != null && appPowerWidgetIds.length > 0) {
-                    WidgetManager widgetManager = new WidgetManager(this);
-                    for (int appWidgetId : appPowerWidgetIds) {
-                        remoteViews = widgetManager.buildPowerUpdate(POWER_WIDGET_UPDATE_ALL, appWidgetId);
+                if (powerWidget != null) {
+                    appWidgetIds = appWidgetManager.getAppWidgetIds(powerWidget);
+                }
+
+                if (appWidgetIds != null && appWidgetIds.length > 0) {
+                    for (int appWidgetId : appWidgetIds) {
+                        remoteViews = buildPowerUpdate(newIntent, appWidgetId);
 
                         if (remoteViews != null) {
-                            widgetManager.updatePowerWidgetStatus(remoteViews, POWER_WIDGET_UPDATE_ALL, appWidgetId);
+                            updatePowerWidgetStatus(remoteViews, newIntent, appWidgetId);
                         }
                     }
                 }
@@ -1061,7 +1061,7 @@ public class WidgetUpdateService extends Service {
                     }
                 }
             }
-        }*/
+        }
 
         return START_STICKY;
     }
@@ -1419,8 +1419,7 @@ public class WidgetUpdateService extends Service {
                     Log.e(LOG_TAG, "", e);
                 }
             } else {
-                if (VERSION.SDK_INT >= VERSION_CODES.GINGERBREAD_MR1 &&
-                        getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC)) {
+                if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC)) {
                     NfcManager manager = (NfcManager) getSystemService(Context.NFC_SERVICE);
                     NfcAdapter adapter = null;
 
@@ -4156,14 +4155,18 @@ public class WidgetUpdateService extends Service {
                 mWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             }
 
-            if (scheduledUpdate && bWiFiOnly && !mWifi.isConnected()) {
+            if (mWifi != null && scheduledUpdate && bWiFiOnly && !mWifi.isConnected()) {
                 Preferences.setWeatherSuccess(this, appWidgetId, false);
                 readCachedWeatherData(updateViews, appWidgetId);
 
                 return;
             }
 
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            NetworkInfo activeNetworkInfo = null;
+
+            if (connectivityManager != null) {
+                activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            }
 
             if (activeNetworkInfo == null) {
                 if (scheduledUpdate)

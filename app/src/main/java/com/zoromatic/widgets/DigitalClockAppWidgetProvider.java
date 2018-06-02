@@ -10,7 +10,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -23,18 +22,82 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
 
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
-        /*Intent startIntent = new Intent(context, WidgetUpdateService.class);
+        Intent startIntent = new Intent(context, WidgetUpdateService.class);
         startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_TIME_CHANGED);
         startIntent.putExtra(WidgetInfoReceiver.UPDATE_WEATHER, true);
         startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 
-        context.startService(startIntent);*/
+        context.startService(startIntent);
 
-        updateWidgets(context, appWidgetIds, true, false);
+        updateWidgets(context, appWidgetIds, false, false);
 
         for (int appWidgetId : appWidgetIds) {
             setAlarm(context, appWidgetId);
         }
+    }
+
+    @Override
+    public void onEnabled(Context context) {
+        super.onEnabled(context);
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+
+        String action = intent.getAction();
+
+        if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) ||
+                action.equals(AppWidgetManager.ACTION_APPWIDGET_ENABLED) ||
+                action.equals("com.motorola.blur.home.ACTION_SET_WIDGET_SIZE") ||
+                action.equals("mobi.intuitit.android.hpp.ACTION_READY")) {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            ComponentName thisWidget = new ComponentName(context,
+                    DigitalClockAppWidgetProvider.class);
+
+            if (thisWidget != null) {
+                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+
+                if (appWidgetIds.length <= 0) {
+                    return;
+                }
+
+                Intent startIntent = new Intent(context, WidgetUpdateService.class);
+                startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_TIME_CHANGED);
+                startIntent.putExtra(WidgetInfoReceiver.UPDATE_WEATHER, true);
+                startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+
+                context.startService(startIntent);
+            }
+        }
+    }
+
+    @Override
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        Log.d(LOG_TAG, "DigitalClockAppWidgetProvider onDeleted");
+
+        for (int appWidgetId : appWidgetIds) {
+            File parentDirectory = new File(context.getFilesDir().getAbsolutePath());
+
+            if (!parentDirectory.exists()) {
+                Log.e(LOG_TAG, "Cache file parent directory does not exist.");
+
+                if (!parentDirectory.mkdirs()) {
+                    Log.e(LOG_TAG, "Cannot create cache file parent directory.");
+                }
+            }
+
+            File cacheFile = new File(parentDirectory, "weather_cache_" + appWidgetId);
+            cacheFile.delete();
+
+            AlarmManager alarmManager = (AlarmManager) context
+                    .getSystemService(Context.ALARM_SERVICE);
+            PendingIntent pending = createClockTickIntent(context, appWidgetId);
+            alarmManager.cancel(pending);
+            pending.cancel();
+        }
+
+        super.onDeleted(context, appWidgetIds);
     }
 
     public void updateWidgets(Context context, int[] appWidgetIds, boolean startService, boolean updateWeather) {
@@ -61,84 +124,14 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    public void updateWidget(Context context, int appWidgetId, boolean startService, boolean updateWeather) {
-        if (startService)
-            context.startService(new Intent(context, WidgetUpdateService.class));
-
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-
-        WidgetManager widgetManager = new WidgetManager(context);
-        RemoteViews remoteViews;
-
-        remoteViews = widgetManager.buildClockUpdate(appWidgetId);
-        widgetManager.updateClockStatus(remoteViews, appWidgetId);
-
-        if (updateWeather)
-            widgetManager.updateWeatherStatus(remoteViews, appWidgetId, false);
-        else
-            widgetManager.readCachedWeatherData(remoteViews, appWidgetId);
-
-        appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
-
-        //setAlarm(context, appWidgetId);
-    }
-
-    @Override
-    public void onEnabled(Context context) {
-        super.onEnabled(context);
-    }
-
-    @Override
-    public void onDisabled(Context context) {
-        Log.d(LOG_TAG, "DigitalClockAppWidgetProvider onDisabled");
-        super.onDisabled(context);
-        context.stopService(new Intent(context, WidgetUpdateService.class));
-
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, DigitalClockAppWidgetProvider.class));
-
-        removeDependencies(context, appWidgetIds);
-    }
-
-    @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
-        Log.d(LOG_TAG, "DigitalClockAppWidgetProvider onDeleted");
-
-        removeDependencies(context, appWidgetIds);
-
-        super.onDeleted(context, appWidgetIds);
-    }
-
-    private void removeDependencies(Context context, int[] appWidgetIds) {
-        for (int appWidgetId : appWidgetIds) {
-            File parentDirectory = new File(context.getFilesDir().getAbsolutePath());
-
-            if (!parentDirectory.exists()) {
-                Log.e(LOG_TAG, "Cache file parent directory does not exist.");
-
-                if (!parentDirectory.mkdirs()) {
-                    Log.e(LOG_TAG, "Cannot create cache file parent directory.");
-                }
-            }
-
-            File cacheFile = new File(parentDirectory, "weather_cache_" + appWidgetId);
-            cacheFile.delete();
-
-            AlarmManager alarmManager = (AlarmManager) context
-                    .getSystemService(Context.ALARM_SERVICE);
-            PendingIntent pending = createClockTickIntent(context, appWidgetId);
-            if (alarmManager != null) {
-                alarmManager.cancel(pending);
-            }
-            pending.cancel();
-        }
-    }
-
     public static void setAlarm(Context context, int appWidgetId) {
         Log.d(LOG_TAG, "DigitalClockAppWidgetProvider setAlarm");
 
         AlarmManager alarmManager = (AlarmManager) context
                 .getSystemService(Context.ALARM_SERVICE);
+
+        if (alarmManager == null)
+            return;
 
         Calendar calendar = Calendar.getInstance();
         long lastRefresh = Preferences.getLastRefresh(context, appWidgetId);
@@ -148,7 +141,7 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
         }
 
         int refreshIntervalCode = Preferences.getRefreshInterval(context, appWidgetId);
-        int refreshInterval;
+        int refreshInterval = 3 * 3600 * 1000; // default is 3 hours
 
         switch (refreshIntervalCode) {
             case 0:
@@ -161,31 +154,23 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
                 refreshInterval = refreshIntervalCode * 3600 * 1000;
                 break;
             default:
-                refreshInterval = 3 * 3600 * 1000; // 3 hours
+                refreshInterval = 3 * 3600 * 1000;
                 break;
         }
 
         //refreshInterval = 5*60*1000; // test on 5 minutes
         calendar.setTimeInMillis(lastRefresh);
-        long startAlarm = calendar.getTimeInMillis() + refreshInterval;
+        //long startAlarm = calendar.getTimeInMillis() + refreshInterval;
 
-        if (alarmManager != null) {
-            PendingIntent clockTickIntent = createClockTickIntent(context, appWidgetId);
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, startAlarm,
-                    refreshInterval, clockTickIntent);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, refreshInterval,
-                        clockTickIntent);
-            }
-        }
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
+                refreshInterval, createClockTickIntent(context, appWidgetId));
     }
 
     private static PendingIntent createClockTickIntent(Context context, int appWidgetId) {
         Log.d(LOG_TAG, "DigitalClockAppWidgetProvider createClockTickIntent");
         Intent intent = new Intent(WidgetUpdateService.WEATHER_UPDATE);
-        //intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        //intent.putExtra(WidgetInfoReceiver.SCHEDULED_UPDATE, true);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        intent.putExtra(WidgetInfoReceiver.SCHEDULED_UPDATE, true);
 
         return PendingIntent.getBroadcast(context, appWidgetId,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);

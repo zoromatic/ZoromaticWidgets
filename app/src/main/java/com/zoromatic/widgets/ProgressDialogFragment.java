@@ -1,7 +1,5 @@
 package com.zoromatic.widgets;
 
-import com.alertdialogpro.ProgressDialogPro;
-
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -63,8 +61,8 @@ public class ProgressDialogFragment extends DialogFragment {
 
         String theme = Preferences.getMainTheme(getActivity());
 
-        ProgressDialogPro dialog = new ProgressDialogPro(getActivity(),
-                theme.compareToIgnoreCase("light") == 0 ? R.style.Theme_AlertDialogPro_Material_Light : R.style.Theme_AlertDialogPro_Material);
+        ProgressDialog dialog = new ProgressDialog(getActivity(),
+                theme.compareToIgnoreCase("light") == 0 ? R.style.AppCompatAlertDialogStyleLight : R.style.AppCompatAlertDialogStyle);
 
         dialog.setTitle(title);
         dialog.setMessage(message);

@@ -19,25 +19,29 @@ public class PowerAppWidgetProvider extends AppWidgetProvider {
 
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
-        context.startService(new Intent(context, WidgetUpdateService.class));
-        updateWidgets(context, appWidgetIds, Intent.ACTION_CONFIGURATION_CHANGED);
+        Intent startIntent = new Intent(context, WidgetUpdateService.class);
+        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.POWER_WIDGET_UPDATE_ALL);
+
+        context.startService(startIntent);
+
+        updateWidgets(context, appWidgetIds, Intent.ACTION_CONFIGURATION_CHANGED, false);
     }
 
     @Override
-    public void onEnabled(Context context) {
-        super.onEnabled(context);
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+
+        Intent startIntent = new Intent(context, WidgetUpdateService.class);
+        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.POWER_WIDGET_UPDATE_ALL);
+
+        context.startService(startIntent);
     }
 
-    public void updateWidgets(Context context, int[] appWidgetIds, String intentAction) {
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+    public void updateWidgets(Context context, int[] appWidgetIds, String intentAction, boolean startService) {
+        if (startService)
+            context.startService(new Intent(context, WidgetUpdateService.class));
 
         WidgetManager widgetManager = new WidgetManager(context);
-
         widgetManager.updatePowerWidgets(context, intentAction);
-    }
-
-    @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
-        super.onDeleted(context, appWidgetIds);
     }
 }

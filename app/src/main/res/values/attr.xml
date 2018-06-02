@@ -26,6 +26,8 @@
     <!--<attr name="tabTextColor" format="reference" />-->
     <attr name="toolbarNewStyle" format="reference" />
     <attr name="colorSwitchStyle" format="reference" />
+    <!--<attr name="colorPrimary" format="reference" />
+    <attr name="colorPrimaryDark" format="reference" />-->
 
     <declare-styleable name="ColorSwitch">
         <attr name="switch_colorControlActivated" format="reference" />

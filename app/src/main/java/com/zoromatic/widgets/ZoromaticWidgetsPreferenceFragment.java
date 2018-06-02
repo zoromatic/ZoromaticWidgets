@@ -14,8 +14,6 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 
-import com.zoromatic.widgets.PreferenceFragment;
-
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.DisplayMetrics;
@@ -26,9 +24,7 @@ import android.widget.Toast;
 
 @SuppressLint("NewApi")
 public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
-    public static final int RESULT_CANCELED = 0;
     public static final int RESULT_OK = -1;
-    public static final int RESULT_FIRST_USER = 1;
     public boolean mAboutOpen = false;
     public static final String ABOUT = "about";
     public static final int REQUEST_THEME = 0;
@@ -39,7 +35,7 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
     public void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
 
-        context = (Context) getActivity();
+        context = getActivity();
 
         if (context != null) {
             String lang = Preferences.getLanguageOptions(context);
@@ -88,8 +84,6 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
         PreferenceManager localPrefs = getPreferenceManager();
         localPrefs.setSharedPreferencesName(Preferences.PREF_NAME);
 
-        //addPreferencesFromResource(R.xml.zoromaticwidgets_prefs);
-
         Bundle bundle = getArguments();
 
         if (bundle != null) {
@@ -109,16 +103,6 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
         } else {
             addPreferencesFromResource(R.xml.zoromaticwidgets_prefs);
         }
-
-        
-        /*String category = getArguments().getString("category");
-        if (category != null) {
-            if (category.equals(getString(R.string.category_general))) {
-                addPreferencesFromResource(R.xml.zoromaticwidgets_prefs);
-            } else {
-            	getActivity().finish();
-            }
-        }*/
 
         ListPreference mainTheme = (ListPreference) findPreference(Preferences.PREF_MAIN_THEME);
 
@@ -143,12 +127,6 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
 
         boolean bShowBatteryNotif = Preferences.getShowBatteryNotif(context);
         
-        /*SwitchPreference showBatteryNotif = (SwitchPreference)findPreference(Preferences.PREF_BATTERY_NOTIF_KEY);
-        
-        if (showBatteryNotif != null) { 
-        	showBatteryNotif.setChecked(bShowBatteryNotif);        	
-        }*/
-
         ListPreference batteryIcons = (ListPreference) findPreference(Preferences.PREF_BATTERY_ICONS);
 
         if (batteryIcons != null) {
@@ -337,19 +315,19 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
 
     		/*if (key.equals(Preferences.PREF_BATTERY_NOTIF)) {
                 SwitchPreference showBatteryNotif = (SwitchPreference)findPreference(Preferences.PREF_BATTERY_NOTIF);
-    	        
+
     	        if (showBatteryNotif != null)
     	        {
     	        	boolean bShowBattery = showBatteryNotif.isChecked();
     	        	Preferences.setShowBatteryNotif(context, bShowBattery);
-    	        	
+
     	        	ListPreference batteryIcons = (ListPreference)findPreference(Preferences.PREF_BATTERY_ICONS);
-    	        	
+
     	        	if (batteryIcons != null)
     	        		batteryIcons.setEnabled(bShowBattery);
-    	        	
+
     	        	Intent startIntent = new Intent(context, WidgetUpdateService.class);
-    	            startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_BATTERY_CHANGED);        
+    	            startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_BATTERY_CHANGED);
 
     	            context.startService(startIntent);
     	        }

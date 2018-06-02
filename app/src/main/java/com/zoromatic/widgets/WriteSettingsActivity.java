@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
@@ -26,8 +27,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-
-import com.alertdialogpro.AlertDialogPro;
 
 public class WriteSettingsActivity extends ThemeActivity {
 
@@ -47,8 +46,8 @@ public class WriteSettingsActivity extends ThemeActivity {
 
         String theme = Preferences.getMainTheme(getDialogContext());
 
-        AlertDialogPro.Builder alertDialogBuilder = new AlertDialogPro.Builder(getDialogContext(),
-                theme.compareToIgnoreCase("light") == 0 ? R.style.Theme_AlertDialogPro_Material_Light : R.style.Theme_AlertDialogPro_Material);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getDialogContext(),
+                theme.compareToIgnoreCase("light") == 0 ? R.style.AppCompatAlertDialogStyleLight : R.style.AppCompatAlertDialogStyle);
 
         alertDialogBuilder.setView(writeSettings);
 
@@ -74,7 +73,7 @@ public class WriteSettingsActivity extends ThemeActivity {
                     }
                 });
 
-        AlertDialogPro dialog = alertDialogBuilder.show();
+        AlertDialog dialog = alertDialogBuilder.show();
         dialog.setCanceledOnTouchOutside(false);
 
         if (dialog != null) {
@@ -106,156 +105,6 @@ public class WriteSettingsActivity extends ThemeActivity {
             }
         }
     }
-
-    private Context getDialogContext() {
-        final Context context;
-        String theme = Preferences.getMainTheme(this);
-        int colorScheme = Preferences.getMainColorScheme(this);
-
-        if (theme.compareToIgnoreCase("light") == 0) {
-            switch (colorScheme) {
-                case 0:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightBlack);
-                    break;
-                case 1:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightWhite);
-                    break;
-                case 2:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightRed);
-                    break;
-                case 3:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightPink);
-                    break;
-                case 4:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightPurple);
-                    break;
-                case 5:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightDeepPurple);
-                    break;
-                case 6:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightIndigo);
-                    break;
-                case 7:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightBlue);
-                    break;
-                case 8:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightLightBlue);
-                    break;
-                case 9:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightCyan);
-                    break;
-                case 10:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightTeal);
-                    break;
-                case 11:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightGreen);
-                    break;
-                case 12:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightLightGreen);
-                    break;
-                case 13:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightLime);
-                    break;
-                case 14:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightYellow);
-                    break;
-                case 15:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightAmber);
-                    break;
-                case 16:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightOrange);
-                    break;
-                case 17:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightDeepOrange);
-                    break;
-                case 18:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightBrown);
-                    break;
-                case 19:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightGrey);
-                    break;
-                case 20:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightBlueGrey);
-                    break;
-                default:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightBlack);
-                    break;
-            }
-
-        } else {
-            switch (colorScheme) {
-                case 0:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkBlack);
-                    break;
-                case 1:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkWhite);
-                    break;
-                case 2:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkRed);
-                    break;
-                case 3:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkPink);
-                    break;
-                case 4:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkPurple);
-                    break;
-                case 5:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkDeepPurple);
-                    break;
-                case 6:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkIndigo);
-                    break;
-                case 7:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkBlue);
-                    break;
-                case 8:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkLightBlue);
-                    break;
-                case 9:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkCyan);
-                    break;
-                case 10:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkTeal);
-                    break;
-                case 11:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkGreen);
-                    break;
-                case 12:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkLightGreen);
-                    break;
-                case 13:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkLime);
-                    break;
-                case 14:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkYellow);
-                    break;
-                case 15:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkAmber);
-                    break;
-                case 16:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkOrange);
-                    break;
-                case 17:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkDeepOrange);
-                    break;
-                case 18:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkBrown);
-                    break;
-                case 19:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkGrey);
-                    break;
-                case 20:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkBlueGrey);
-                    break;
-                default:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkBlack);
-                    break;
-            }
-        }
-
-        return context;
-    }
-
 
     @Override
     public void onBackPressed() {

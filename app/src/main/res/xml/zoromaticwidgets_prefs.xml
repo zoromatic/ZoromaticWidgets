@@ -9,7 +9,7 @@
         android:title="@string/theme_colors"
         android:icon="?attr/iconPalette"
         android:summary="@string/configurethemeandcolors"
-        android:key="@string/category_theme"></Preference>
+        android:key="@string/category_theme" />
 
     <PreferenceScreen
         android:title="@string/widgets_settings"
@@ -19,14 +19,14 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.zoromatic.widgets"
-            android:targetClass="com.zoromatic.widgets.ConfigureWidgetsActivity"></intent>
+            android:targetClass="com.zoromatic.widgets.ConfigureWidgetsActivity" />
     </PreferenceScreen>
 
     <Preference
         android:title="@string/batterynotification"
         android:icon="?attr/iconBattery"
         android:summary="@string/showbatterynotification"
-        android:key="@string/category_notification"></Preference>
+        android:key="@string/category_notification" />
 
     <com.zoromatic.widgets.ImageListPreference
         android:defaultValue="0"
@@ -59,13 +59,13 @@
         android:key="restartservice_"
         android:icon="?attr/iconRestart"
         android:summary="@string/restartservicedesc"
-        android:title="@string/restartservice"></PreferenceScreen>
+        android:title="@string/restartservice" />
 
     <PreferenceScreen
         android:key="zoromaticabout_"
         android:icon="?attr/iconAbout"
         android:summary="@string/about_app"
-        android:title="@string/app_name"></PreferenceScreen>
+        android:title="@string/app_name" />
 
     <!-- </PreferenceCategory> -->
 

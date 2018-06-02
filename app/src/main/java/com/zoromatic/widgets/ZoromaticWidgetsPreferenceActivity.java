@@ -131,7 +131,7 @@ public class ZoromaticWidgetsPreferenceActivity extends ThemeAppCompatActivity {
                                 }
 
                                 Intent startIntent = new Intent(getApplicationContext(), WidgetUpdateService.class);
-                                startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_BATTERY_CHANGED);
+                                startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.BATTERY_NOTIFICATION);
 
                                 startService(startIntent);
                             }

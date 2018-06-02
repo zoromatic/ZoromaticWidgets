@@ -11,9 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-
-import com.alertdialogpro.AlertDialogPro;
 
 public class SetPermissionsActivity extends AppCompatActivity {
     public static final String PERMISSIONS_TYPE = "PERMISSIONS_TYPE";
@@ -179,8 +178,8 @@ public class SetPermissionsActivity extends AppCompatActivity {
             mContext = getActivity();
             String theme = Preferences.getMainTheme(getContext());
 
-            AlertDialogPro.Builder builder = new AlertDialogPro.Builder(mContext,
-                    theme.compareToIgnoreCase("light") == 0 ? R.style.Theme_AlertDialogPro_Material_Light : R.style.Theme_AlertDialogPro_Material);
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext,
+                    theme.compareToIgnoreCase("light") == 0 ? R.style.AppCompatAlertDialogStyleLight : R.style.AppCompatAlertDialogStyle);
 
             if (mPermissionType == PERMISSIONS_REQUEST_LOCATION) {
                 builder

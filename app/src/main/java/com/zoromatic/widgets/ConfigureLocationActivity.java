@@ -35,8 +35,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import com.alertdialogpro.AlertDialogPro;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -59,6 +57,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.SpannableString;
@@ -1095,7 +1094,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
         public void onClick(DialogInterface dialog,
                             int whichButton) {
 
-            EditText input = (EditText) ((AlertDialogPro) dialog).findViewById(R.id.text_id);
+            EditText input = (EditText) ((AlertDialog) dialog).findViewById(R.id.text_id);
 
             if (input != null) {
                 Editable value = input.getText();

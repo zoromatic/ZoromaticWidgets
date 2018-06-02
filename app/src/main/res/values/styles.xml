@@ -39,13 +39,32 @@
     </style>
 
     <style name="DrawerArrowStyleDark" parent="Widget.AppCompat.DrawerArrowToggle">
-        <item name="spinBars">true</item>
+        <!--<item name="spinBars">true</item>
+        <item name="color">@android:color/white</item>-->
+        <!-- The drawing color for the bars -->
         <item name="color">@android:color/white</item>
+        <!-- Whether bars should rotate or not during transition -->
+        <item name="spinBars">true</item>
+        <!-- The total size of the drawable -->
+        <item name="drawableSize">6sp</item>
+        <!-- The max gap between the bars when they are parallel to each other -->
+        <item name="gapBetweenBars">2sp</item>
+        <!--&lt;!&ndash; The size of the top and bottom bars when they merge to the middle bar to form an arrow &ndash;&gt;-->
+        <!--<item name="topBottomBarArrowSize">3sp</item>-->
+        <!--&lt;!&ndash; The size of the middle bar when top and bottom bars merge into middle bar to form an arrow &ndash;&gt;-->
+        <!--<item name="middleBarArrowSize">4sp</item>-->
+        <!--&lt;!&ndash; The size of the bars when they are parallel to each other &ndash;&gt;-->
+        <!--<item name="barSize">5sp</item>-->
+        <!-- The thickness (stroke size) for the bar paint -->
+        <item name="thickness">3sp</item>
     </style>
 
     <style name="DrawerArrowStyleLight" parent="Widget.AppCompat.DrawerArrowToggle">
-        <item name="spinBars">true</item>
         <item name="color">@android:color/black</item>
+        <item name="spinBars">true</item>
+        <item name="drawableSize">6sp</item>
+        <item name="gapBetweenBars">2sp</item>
+        <item name="thickness">3sp</item>
     </style>
 
     <style name="AlertDialogStyleDark">
@@ -72,6 +91,16 @@
         <item name="android:bottomBright">@android:color/white</item>
         <item name="android:bottomMedium">@android:color/white</item>
         <item name="android:centerMedium">@android:color/white</item>
+    </style>
+
+    <style name="AppCompatAlertDialogStyleLight" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!--<item name="colorAccent">@color/some_different_accent_color</item>
+        <item name="android:textColorPrimary">@color/some_custom_text_color</item>-->
+    </style>
+
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Dialog.Alert">
+        <!--<item name="colorAccent">@color/some_different_accent_color</item>
+        <item name="android:textColorPrimary">@color/some_custom_text_color</item>-->
     </style>
 
     <style name="MaterialCheckBox" parent="android:Widget.CompoundButton.CheckBox">

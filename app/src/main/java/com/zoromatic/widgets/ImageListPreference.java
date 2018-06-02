@@ -3,8 +3,6 @@
  */
 package com.zoromatic.widgets;
 
-import com.alertdialogpro.AlertDialogPro;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,6 +13,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.ListPreference;
+import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListAdapter;
@@ -169,8 +168,8 @@ public class ImageListPreference extends ListPreference {
 
         String theme = Preferences.getMainTheme(getContext());
 
-        AlertDialogPro.Builder builder = new AlertDialogPro.Builder(context,
-                theme.compareToIgnoreCase("light") == 0 ? R.style.Theme_AlertDialogPro_Material_Light : R.style.Theme_AlertDialogPro_Material);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context,
+                theme.compareToIgnoreCase("light") == 0 ? R.style.AppCompatAlertDialogStyleLight : R.style.AppCompatAlertDialogStyle);
         builder.setTitle(getTitle());
         builder.setIcon(getDialogIcon());
         builder.setNegativeButton(getNegativeButtonText(), this);

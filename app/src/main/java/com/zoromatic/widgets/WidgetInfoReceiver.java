@@ -29,7 +29,7 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         try {
-            String action = intent.getAction();
+            /*String action = intent.getAction();
 
             if (action == null)
                 return;
@@ -114,9 +114,9 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
                 if (appWidgetIds.length > 0) {
                     new PowerAppWidgetProvider().updateWidgets(context, appWidgetIds, action);
                 }
-            }
+            }*/
 
-            /*AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 
             String action = intent.getAction();
 
@@ -311,7 +311,7 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
                         }
                     }
                 }
-            }*/
+            }
 
         } catch (Exception e) {
             Log.e(LOG_TAG, "", e);

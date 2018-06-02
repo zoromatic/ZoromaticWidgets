@@ -17,7 +17,7 @@ public class ZoromaticWidgetsActivity extends ThemeActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //initializeActivity();
+        initializeActivity();
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, DigitalClockAppWidgetProvider.class));
@@ -26,7 +26,13 @@ public class ZoromaticWidgetsActivity extends ThemeActivity {
             new DigitalClockAppWidgetProvider().updateWidgets(this, appWidgetIds, true, false);
         }
 
-        finish();
+        appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, PowerAppWidgetProvider.class));
+
+        if (appWidgetIds.length > 0) {
+            new PowerAppWidgetProvider().updateWidgets(this, appWidgetIds, Intent.ACTION_CONFIGURATION_CHANGED, false);
+        }
+
+        //finish();
     }
 
     private void initializeActivity() {

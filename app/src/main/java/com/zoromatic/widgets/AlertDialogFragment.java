@@ -1,11 +1,10 @@
 package com.zoromatic.widgets;
 
-import com.alertdialogpro.AlertDialogPro;
-
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.widget.EditText;
 
 public class AlertDialogFragment extends DialogFragment {
@@ -26,18 +25,18 @@ public class AlertDialogFragment extends DialogFragment {
         input.setId(R.id.text_id);
 
         String theme = Preferences.getMainTheme(getActivity());
-        AlertDialogPro.Builder builder = null;
+        AlertDialog.Builder builder = null;
 
         if (items != null) {
-            builder = new AlertDialogPro.Builder(getActivity(),
-                    theme.compareToIgnoreCase("light") == 0 ? R.style.Theme_AlertDialogPro_Material_Light : R.style.Theme_AlertDialogPro_Material)
+            builder = new AlertDialog.Builder(getActivity(),
+                    theme.compareToIgnoreCase("light") == 0 ? R.style.AppCompatAlertDialogStyleLight : R.style.AppCompatAlertDialogStyle)
                     .setTitle(title)
                     .setOnCancelListener(((ConfigureLocationActivity) getActivity()).dialogCancelListener)
                     .setOnKeyListener(((ConfigureLocationActivity) getActivity()).dialogKeyListener)
                     .setSingleChoiceItems(items, 0, ((ConfigureLocationActivity) getActivity()).dialogSelectLocationClickListener);
         } else if (editBox) {
-            builder = new AlertDialogPro.Builder(getActivity(),
-                    theme.compareToIgnoreCase("light") == 0 ? R.style.Theme_AlertDialogPro_Material_Light : R.style.Theme_AlertDialogPro_Material)
+            builder = new AlertDialog.Builder(getActivity(),
+                    theme.compareToIgnoreCase("light") == 0 ? R.style.AppCompatAlertDialogStyleLight : R.style.AppCompatAlertDialogStyle)
                     .setTitle(getResources().getString(R.string.new_location))
                     .setMessage(getResources().getString(R.string.enter_location))
                     .setView(input)
@@ -50,8 +49,8 @@ public class AlertDialogFragment extends DialogFragment {
                                 }
                             });
         } else if (locationDisabled) {
-            builder = new AlertDialogPro.Builder(getActivity(),
-                    theme.compareToIgnoreCase("light") == 0 ? R.style.Theme_AlertDialogPro_Material_Light : R.style.Theme_AlertDialogPro_Material)
+            builder = new AlertDialog.Builder(getActivity(),
+                    theme.compareToIgnoreCase("light") == 0 ? R.style.AppCompatAlertDialogStyleLight : R.style.AppCompatAlertDialogStyle)
                     .setTitle(title)
                     .setMessage(message)
                     .setOnCancelListener(((ConfigureLocationActivity) getActivity()).dialogCancelListener)
@@ -59,8 +58,8 @@ public class AlertDialogFragment extends DialogFragment {
                     .setPositiveButton(android.R.string.yes, ((ConfigureLocationActivity) getActivity()).dialogLocationDisabledClickListener)
                     .setNegativeButton(android.R.string.no, ((ConfigureLocationActivity) getActivity()).dialogLocationDisabledClickListener);
         } else if (deleteWidgets) {
-            builder = new AlertDialogPro.Builder(getActivity(),
-                    theme.compareToIgnoreCase("light") == 0 ? R.style.Theme_AlertDialogPro_Material_Light : R.style.Theme_AlertDialogPro_Material)
+            builder = new AlertDialog.Builder(getActivity(),
+                    theme.compareToIgnoreCase("light") == 0 ? R.style.AppCompatAlertDialogStyleLight : R.style.AppCompatAlertDialogStyle)
                     .setTitle(title)
                     .setMessage(message)
                     .setOnCancelListener(((ConfigureWidgetsActivity) getActivity()).dialogCancelListener)
@@ -69,7 +68,7 @@ public class AlertDialogFragment extends DialogFragment {
                     .setNegativeButton(android.R.string.no, ((ConfigureWidgetsActivity) getActivity()).dialogDeleteWidgetClickListener);
         }
 
-        AlertDialogPro dialog = builder.show();
+        AlertDialog dialog = builder.show();
 
         return dialog;
     }
