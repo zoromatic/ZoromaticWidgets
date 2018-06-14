@@ -2,6 +2,8 @@ package com.zoromatic.widgets;
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
+import android.appwidget.AppWidgetManager;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -11,17 +13,13 @@ import android.support.annotation.RequiresApi;
 public class WidgetUpdateJobService extends JobService {
     @Override
     public boolean onStartJob(final JobParameters params) {
+        Intent startIntent = new Intent(getApplicationContext(), WidgetUpdateService.class);
+        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.WEATHER_UPDATE);
+        startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, params.getJobId());
 
-        HandlerThread handlerThread = new HandlerThread("SomeOtherThread");
+        startService(startIntent);
 
-        Handler handler = new Handler(handlerThread.getLooper());
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                // do some stuff, or not
-                jobFinished(params, true); // see this, we are saying we just finished the job
-            }
-        });
+        jobFinished(params, true); // see this, we are saying we just finished the job
 
         return true;
     }

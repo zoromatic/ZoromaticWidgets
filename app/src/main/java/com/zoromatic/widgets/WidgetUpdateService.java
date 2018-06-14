@@ -688,7 +688,7 @@ public class WidgetUpdateService extends Service {
             updateNotificationBatteryStatus(intent);
 
             ComponentName thisWidget;
-            ComponentName powerWidget;
+            //ComponentName powerWidget;
             RemoteViews remoteViews;
 
             // update all widgets
@@ -733,24 +733,11 @@ public class WidgetUpdateService extends Service {
 
             try {
                 //update power widget
-                powerWidget = new ComponentName(this, PowerAppWidgetProvider.class);
                 newIntent = new Intent(this, WidgetUpdateService.class);
                 newIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, POWER_WIDGET_UPDATE_ALL);
-                int[] appWidgetIds = null;
 
-                if (powerWidget != null) {
-                    appWidgetIds = appWidgetManager.getAppWidgetIds(powerWidget);
-                }
-
-                if (appWidgetIds != null && appWidgetIds.length > 0) {
-                    for (int appWidgetId : appWidgetIds) {
-                        remoteViews = buildPowerUpdate(newIntent, appWidgetId);
-
-                        if (remoteViews != null) {
-                            updatePowerWidgetStatus(remoteViews, newIntent, appWidgetId);
-                        }
-                    }
-                }
+                WidgetManager widgetManager = new WidgetManager(this);
+                widgetManager.updatePowerWidgets(this, intentExtra);
 
                 // update single widgets
                 thisWidget = new ComponentName(this, BatteryAppWidgetProvider.class);
@@ -1039,25 +1026,9 @@ public class WidgetUpdateService extends Service {
 
                                     intentExtra.equals(POWER_WIDGET_UPDATE_ALL)) {
 
-                        ComponentName powerWidget = new ComponentName(this,
-                                PowerAppWidgetProvider.class);
 
-                        //toggleWidgets(intent);
-
-                        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(powerWidget);
-
-                        if (appWidgetIds != null) {
-                            WidgetManager widgetManager = new WidgetManager(this);
-
-                            for (int appWidgetId : appWidgetIds) {
-
-                                RemoteViews updatePowerViews = widgetManager.buildPowerUpdate(intentExtra, appWidgetId);
-
-                                if (updatePowerViews != null) {
-                                    widgetManager.updatePowerWidgetStatus(updatePowerViews, intentExtra, appWidgetId);
-                                }
-                            }
-                        }
+                        WidgetManager widgetManager = new WidgetManager(this);
+                        widgetManager.updatePowerWidgets(this, intentExtra);
                     }
                 }
             }

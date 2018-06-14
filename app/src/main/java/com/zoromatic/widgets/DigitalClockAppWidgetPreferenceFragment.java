@@ -16,6 +16,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -1098,7 +1099,11 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
                 Preferences.setRefreshInterval(context, mAppWidgetId, refreshInterval.findIndexOfValue(refreshInterval.getValue()));
                 refreshInterval.setSummary(refreshInterval.getEntries()[Preferences.getRefreshInterval(context, mAppWidgetId)]);
 
-                DigitalClockAppWidgetProvider.setAlarm(context, mAppWidgetId);
+                if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    DigitalClockAppWidgetProvider.scheduleJob(context, mAppWidgetId);
+                } else {
+                    DigitalClockAppWidgetProvider.setAlarm(context, mAppWidgetId);
+                }
             }
         }
 
