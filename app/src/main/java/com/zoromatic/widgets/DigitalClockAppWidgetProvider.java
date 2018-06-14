@@ -2,19 +2,25 @@ package com.zoromatic.widgets;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
     private static final String LOG_TAG = "DigitalClockWidget";
+    private static final int UPDATE_WIDGET_JOB_ID = 5689;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -32,7 +38,11 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
         updateWidgets(context, appWidgetIds, false, false);
 
         for (int appWidgetId : appWidgetIds) {
-            setAlarm(context, appWidgetId);
+            if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                scheduleJob(context, appWidgetId);
+            } else {
+                setAlarm(context, appWidgetId);
+            }
         }
     }
 
@@ -90,11 +100,14 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
             File cacheFile = new File(parentDirectory, "weather_cache_" + appWidgetId);
             cacheFile.delete();
 
-            AlarmManager alarmManager = (AlarmManager) context
-                    .getSystemService(Context.ALARM_SERVICE);
-            PendingIntent pending = createClockTickIntent(context, appWidgetId);
-            alarmManager.cancel(pending);
-            pending.cancel();
+
+            if ( Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                AlarmManager alarmManager = (AlarmManager) context
+                        .getSystemService(Context.ALARM_SERVICE);
+                PendingIntent pending = createClockTickIntent(context, appWidgetId);
+                alarmManager.cancel(pending);
+                pending.cancel();
+            }
         }
 
         super.onDeleted(context, appWidgetIds);
@@ -122,6 +135,51 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
 
             //setAlarm(context, appWidgetId);
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void scheduleJob(Context context, int appWidgetId) {
+        final JobScheduler jobScheduler = (JobScheduler) context.getSystemService(
+                Context.JOB_SCHEDULER_SERVICE);
+
+        final ComponentName name = new ComponentName(context, WidgetUpdateJobService.class);
+        final int result;
+
+        if (jobScheduler != null) {
+            result = jobScheduler.schedule(getJobInfo(appWidgetId/*UPDATE_WIDGET_JOB_ID*/, 1, name));
+
+            if (result == JobScheduler.RESULT_SUCCESS) {
+                Log.d(LOG_TAG, "Scheduled job successfully!");
+            }
+        }
+    }
+
+    private JobInfo getJobInfo(final int id, final long hour,
+                               final ComponentName name) {
+        final JobInfo jobInfo;
+        final long interval = TimeUnit.HOURS.toMillis(hour);
+        final boolean isPersistent = true;
+        //final int networkType = JobInfo.NETWORK_TYPE_ANY;
+
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            jobInfo = new JobInfo.Builder(id, name)
+                    .setMinimumLatency(interval)
+                    //.setRequiredNetworkType(networkType)
+                    .setPersisted(isPersistent)
+                    .build();
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                jobInfo = new JobInfo.Builder(id, name)
+                        .setPeriodic(interval)
+                        //.setRequiredNetworkType(networkType)
+                        .setPersisted(isPersistent)
+                        .build();
+            } else {
+                jobInfo = null;
+            }
+        }
+
+        return jobInfo;
     }
 
     public static void setAlarm(Context context, int appWidgetId) {

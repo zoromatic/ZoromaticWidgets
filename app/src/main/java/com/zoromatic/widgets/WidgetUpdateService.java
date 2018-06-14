@@ -1042,7 +1042,7 @@ public class WidgetUpdateService extends Service {
                         ComponentName powerWidget = new ComponentName(this,
                                 PowerAppWidgetProvider.class);
 
-                        toggleWidgets(intent);
+                        //toggleWidgets(intent);
 
                         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(powerWidget);
 
