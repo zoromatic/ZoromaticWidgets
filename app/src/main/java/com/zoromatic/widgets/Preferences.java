@@ -92,6 +92,7 @@ public class Preferences {
     public static final String PREF_THRESHOLD_BATTERY3_KEY = "thresholdbattery3_";
     public static final String PREF_THRESHOLD_BATTERY4_KEY = "thresholdbattery4_";
     public static final String PREF_BRIGHTNESS_OPTIONS_KEY = "brightnessoptions_";
+    public static final String PREF_FOREGROUND_SERVICE_KEY = "foregroundservice_";
 
     private static SharedPreferences getPreferences(Context context) {
         return context.getSharedPreferences(PREF_NAME, 0);
@@ -436,430 +437,440 @@ public class Preferences {
                 .getInt(PREF_BRIGHTNESS_OPTIONS_KEY + 0, 0);
     }
 
+    public static boolean getForegroundService(Context context) {
+        return getPreferences(context)
+                .getBoolean(PREF_FOREGROUND_SERVICE_KEY, false);
+    }
+
     public static void setShowDate(Context context, int appWidgetId,
                                    boolean value) {
         getPreferences(context).edit()
-                .putBoolean(PREF_DATE_KEY + appWidgetId, value).commit();
+                .putBoolean(PREF_DATE_KEY + appWidgetId, value).apply();
     }
 
     public static void setShow24Hrs(Context context, int appWidgetId,
                                     boolean value) {
         getPreferences(context).edit()
-                .putBoolean(PREF_24HRS_KEY + appWidgetId, value).commit();
+                .putBoolean(PREF_24HRS_KEY + appWidgetId, value).apply();
     }
 
     public static void setClockColorItem(Context context, int appWidgetId, int value) {
         getPreferences(context).edit()
-                .putInt(PREF_COLOR_KEY + appWidgetId, value).commit();
+                .putInt(PREF_COLOR_KEY + appWidgetId, value).apply();
     }
 
     public static void setDateFormatItem(Context context, int appWidgetId,
                                          int value) {
         getPreferences(context).edit()
-                .putInt(PREF_DATEFORMAT_KEY + appWidgetId, value).commit();
+                .putInt(PREF_DATEFORMAT_KEY + appWidgetId, value).apply();
     }
 
     public static void setShowBattery(Context context, int appWidgetId,
                                       boolean value) {
         getPreferences(context).edit()
-                .putBoolean(PREF_BATTERY_KEY + appWidgetId, value).commit();
+                .putBoolean(PREF_BATTERY_KEY + appWidgetId, value).apply();
     }
 
     public static void setOpacity(Context context, int appWidgetId,
                                   int value) {
         getPreferences(context).edit()
-                .putInt(PREF_TRANSPARENCY_KEY + appWidgetId, value).commit();
+                .putInt(PREF_TRANSPARENCY_KEY + appWidgetId, value).apply();
     }
 
     public static void setShowBatteryNotif(Context context, boolean value) {
         getPreferences(context).edit()
-                .putBoolean(PREF_BATTERY_NOTIF_KEY, value).commit();
+                .putBoolean(PREF_BATTERY_NOTIF_KEY, value).apply();
     }
 
     public static void setShowTempNotif(Context context, boolean value) {
         getPreferences(context).edit()
-                .putBoolean(PREF_TEMP_NOTIF_KEY, value).commit();
+                .putBoolean(PREF_TEMP_NOTIF_KEY, value).apply();
     }
 
     public static void setRefreshInterval(Context context, int appWidgetId,
                                           int value) {
         getPreferences(context).edit()
-                .putInt(PREF_REFRESH_INTERVAL_KEY + appWidgetId, value).commit();
+                .putInt(PREF_REFRESH_INTERVAL_KEY + appWidgetId, value).apply();
     }
 
     public static void setTempScale(Context context, int appWidgetId,
                                     int value) {
         getPreferences(context).edit()
-                .putInt(PREF_TEMP_SCALE_KEY + appWidgetId, value).commit();
+                .putInt(PREF_TEMP_SCALE_KEY + appWidgetId, value).apply();
     }
 
     public static void setLocationLat(Context context, int appWidgetId,
                                       float value) {
         getPreferences(context).edit()
-                .putFloat(PREF_LOCATION_LAT_KEY + appWidgetId, value).commit();
+                .putFloat(PREF_LOCATION_LAT_KEY + appWidgetId, value).apply();
     }
 
     public static void setLocationLon(Context context, int appWidgetId,
                                       float value) {
         getPreferences(context).edit()
-                .putFloat(PREF_LOCATION_LON_KEY + appWidgetId, value).commit();
+                .putFloat(PREF_LOCATION_LON_KEY + appWidgetId, value).apply();
     }
 
     public static void setLocation(Context context, int appWidgetId,
                                    String value) {
         getPreferences(context).edit()
-                .putString(PREF_LOCATION_KEY + appWidgetId, value).commit();
+                .putString(PREF_LOCATION_KEY + appWidgetId, value).apply();
     }
 
     public static void setLocationId(Context context, int appWidgetId,
                                      long value) {
         getPreferences(context).edit()
-                .putLong(PREF_LOCATION_ID_KEY + appWidgetId, value).commit();
+                .putLong(PREF_LOCATION_ID_KEY + appWidgetId, value).apply();
     }
 
     public static void setLastAlarm(Context context, int appWidgetId,
                                     long value) {
         getPreferences(context).edit()
-                .putLong(PREF_LAST_ALARM_KEY + appWidgetId, value).commit();
+                .putLong(PREF_LAST_ALARM_KEY + appWidgetId, value).apply();
     }
 
     public static void setLastRefresh(Context context, int appWidgetId,
                                       long value) {
         getPreferences(context).edit()
-                .putLong(PREF_LAST_REFRESH_KEY + appWidgetId, value).commit();
+                .putLong(PREF_LAST_REFRESH_KEY + appWidgetId, value).apply();
     }
 
     public static void setWeatherSuccess(Context context, int appWidgetId,
                                          boolean value) {
         getPreferences(context).edit()
-                .putBoolean(PREF_WEATHER_SUCCESS + appWidgetId, value).commit();
+                .putBoolean(PREF_WEATHER_SUCCESS + appWidgetId, value).apply();
     }
 
     public static void setForecastSuccess(Context context, int appWidgetId,
                                           boolean value) {
         getPreferences(context).edit()
-                .putBoolean(PREF_FORECAST_SUCCESS + appWidgetId, value).commit();
+                .putBoolean(PREF_FORECAST_SUCCESS + appWidgetId, value).apply();
     }
 
     public static void setRefreshWiFiOnly(Context context, int appWidgetId,
                                           boolean value) {
         getPreferences(context).edit()
-                .putBoolean(PREF_REFRESH_WIFI_ONLY + appWidgetId, value).commit();
+                .putBoolean(PREF_REFRESH_WIFI_ONLY + appWidgetId, value).apply();
     }
 
     public static void setClockSkin(Context context, int appWidgetId,
                                     int value) {
         getPreferences(context).edit()
-                .putInt(PREF_CLOCK_SKIN + appWidgetId, value).commit();
+                .putInt(PREF_CLOCK_SKIN + appWidgetId, value).apply();
     }
 
     public static void setMainTheme(Context context, String value) {
         getPreferences(context).edit()
-                .putString(PREF_MAIN_THEME + 0, value).commit();
+                .putString(PREF_MAIN_THEME + 0, value).apply();
     }
 
     public static void setMainColorScheme(Context context, int value) {
         getPreferences(context).edit()
-                .putInt(PREF_MAIN_COLOR_SCHEME + 0, value).commit();
+                .putInt(PREF_MAIN_COLOR_SCHEME + 0, value).apply();
     }
 
     public static void setForecastTheme(Context context, int appWidgetId, String value) {
         getPreferences(context).edit()
-                .putString(PREF_FORECAST_THEME + appWidgetId, value).commit();
+                .putString(PREF_FORECAST_THEME + appWidgetId, value).apply();
     }
 
     public static void setSoundOptions(Context context, int value) {
         getPreferences(context).edit()
-                .putInt(PREF_SOUND_OPTIONS_KEY, value).commit();
+                .putInt(PREF_SOUND_OPTIONS_KEY, value).apply();
     }
 
     public static void setLanguageOptions(Context context, String value) {
         getPreferences(context).edit()
-                .putString(PREF_LANGUAGE_OPTIONS_KEY, value).commit();
+                .putString(PREF_LANGUAGE_OPTIONS_KEY, value).apply();
     }
 
     public static void setWeatherIcons(Context context, int appWidgetId,
                                        int value) {
         getPreferences(context).edit()
-                .putInt(PREF_WEATHER_ICONS_KEY + appWidgetId, value).commit();
+                .putInt(PREF_WEATHER_ICONS_KEY + appWidgetId, value).apply();
     }
 
     public static void setFontItem(Context context, int appWidgetId, int value) {
         getPreferences(context).edit()
-                .putInt(PREF_FONT_KEY + appWidgetId, value).commit();
+                .putInt(PREF_FONT_KEY + appWidgetId, value).apply();
     }
 
     public static void setBoldText(Context context, int appWidgetId,
                                    boolean value) {
         getPreferences(context).edit()
-                .putBoolean(PREF_BOLD_TEXT_KEY + appWidgetId, value).commit();
+                .putBoolean(PREF_BOLD_TEXT_KEY + appWidgetId, value).apply();
     }
 
     public static void setShowWeather(Context context, int appWidgetId,
                                       boolean value) {
         getPreferences(context).edit()
-                .putBoolean(PREF_SHOW_WEATHER_KEY + appWidgetId, value).commit();
+                .putBoolean(PREF_SHOW_WEATHER_KEY + appWidgetId, value).apply();
     }
 
     public static void setLocationType(Context context, int appWidgetId,
                                        int value) {
         getPreferences(context).edit()
-                .putInt(PREF_LOCATION_TYPE_KEY + appWidgetId, value).commit();
+                .putInt(PREF_LOCATION_TYPE_KEY + appWidgetId, value).apply();
     }
 
     public static void setBatteryIcons(Context context, int value) {
         getPreferences(context).edit()
-                .putInt(PREF_BATTERY_ICONS_KEY, value).commit();
+                .putInt(PREF_BATTERY_ICONS_KEY, value).apply();
     }
 
     public static void setWeatherColorItem(Context context, int appWidgetId, int value) {
         getPreferences(context).edit()
-                .putInt(PREF_WEATHER_COLOR_KEY + appWidgetId, value).commit();
+                .putInt(PREF_WEATHER_COLOR_KEY + appWidgetId, value).apply();
     }
 
     public static void setWeatherFontItem(Context context, int appWidgetId, int value) {
         getPreferences(context).edit()
-                .putInt(PREF_WEATHER_FONT_KEY + appWidgetId, value).commit();
+                .putInt(PREF_WEATHER_FONT_KEY + appWidgetId, value).apply();
     }
 
     public static void setWeatherBoldText(Context context, int appWidgetId,
                                           boolean value) {
         getPreferences(context).edit()
-                .putBoolean(PREF_WEATHER_BOLD_TEXT_KEY + appWidgetId, value).commit();
+                .putBoolean(PREF_WEATHER_BOLD_TEXT_KEY + appWidgetId, value).apply();
     }
 
     public static void setDateColorItem(Context context, int appWidgetId, int value) {
         getPreferences(context).edit()
-                .putInt(PREF_DATE_COLOR_KEY + appWidgetId, value).commit();
+                .putInt(PREF_DATE_COLOR_KEY + appWidgetId, value).apply();
     }
 
     public static void setDateFontItem(Context context, int appWidgetId, int value) {
         getPreferences(context).edit()
-                .putInt(PREF_DATE_FONT_KEY + appWidgetId, value).commit();
+                .putInt(PREF_DATE_FONT_KEY + appWidgetId, value).apply();
     }
 
     public static void setDateBoldText(Context context, int appWidgetId,
                                        boolean value) {
         getPreferences(context).edit()
-                .putBoolean(PREF_DATE_BOLD_TEXT_KEY + appWidgetId, value).commit();
+                .putBoolean(PREF_DATE_BOLD_TEXT_KEY + appWidgetId, value).apply();
     }
 
     public static void setWidgetColorItem(Context context, int appWidgetId, int value) {
         getPreferences(context).edit()
-                .putInt(PREF_WIDGET_COLOR_KEY + appWidgetId, value).commit();
+                .putInt(PREF_WIDGET_COLOR_KEY + appWidgetId, value).apply();
     }
 
     public static void setClockColor(Context context, int appWidgetId, int value) {
         getPreferences(context).edit()
-                .putInt(PREF_CLOCK_COLOR_PICKER_KEY + appWidgetId, value).commit();
+                .putInt(PREF_CLOCK_COLOR_PICKER_KEY + appWidgetId, value).apply();
     }
 
     public static void setDateColor(Context context, int appWidgetId, int value) {
         getPreferences(context).edit()
-                .putInt(PREF_DATE_COLOR_PICKER_KEY + appWidgetId, value).commit();
+                .putInt(PREF_DATE_COLOR_PICKER_KEY + appWidgetId, value).apply();
     }
 
     public static void setWeatherColor(Context context, int appWidgetId, int value) {
         getPreferences(context).edit()
-                .putInt(PREF_WEATHER_COLOR_PICKER_KEY + appWidgetId, value).commit();
+                .putInt(PREF_WEATHER_COLOR_PICKER_KEY + appWidgetId, value).apply();
     }
 
     public static void setWidgetColor(Context context, int appWidgetId, int value) {
         getPreferences(context).edit()
-                .putInt(PREF_WIDGET_COLOR_PICKER_KEY + appWidgetId, value).commit();
+                .putInt(PREF_WIDGET_COLOR_PICKER_KEY + appWidgetId, value).apply();
     }
 
     public static void setShowBluetooth(Context context, int appWidgetId,
                                         boolean value) {
         getPreferences(context).edit()
                 .putBoolean(PREF_SHOW_BLUETOOTH_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setShowGps(Context context, int appWidgetId,
                                   boolean value) {
         getPreferences(context).edit()
                 .putBoolean(PREF_SHOW_GPS_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setShowMobile(Context context, int appWidgetId,
                                      boolean value) {
         getPreferences(context).edit()
                 .putBoolean(PREF_SHOW_MOBILE_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setShowRinger(Context context, int appWidgetId,
                                      boolean value) {
         getPreferences(context).edit()
                 .putBoolean(PREF_SHOW_RINGER_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setShowWiFi(Context context, int appWidgetId,
                                    boolean value) {
         getPreferences(context).edit()
                 .putBoolean(PREF_SHOW_WIFI_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setShowAirplane(Context context, int appWidgetId,
                                        boolean value) {
         getPreferences(context).edit()
                 .putBoolean(PREF_SHOW_AIRPLANE_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setShowBrightness(Context context, int appWidgetId,
                                          boolean value) {
         getPreferences(context).edit()
                 .putBoolean(PREF_SHOW_BRIGHTNESS_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setShowNfc(Context context, int appWidgetId,
                                   boolean value) {
         getPreferences(context).edit()
                 .putBoolean(PREF_SHOW_NFC_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setShowSync(Context context, int appWidgetId,
                                    boolean value) {
         getPreferences(context).edit()
                 .putBoolean(PREF_SHOW_SYNC_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setShowOrientation(Context context, int appWidgetId,
                                           boolean value) {
         getPreferences(context).edit()
                 .putBoolean(PREF_SHOW_ORIENTATION_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setShowTorch(Context context, int appWidgetId,
                                     boolean value) {
         getPreferences(context).edit()
                 .putBoolean(PREF_SHOW_TORCH_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setShowBatteryStatus(Context context, int appWidgetId,
                                             boolean value) {
         getPreferences(context).edit()
                 .putBoolean(PREF_SHOW_BATTERY_STATUS_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setShowSettings(Context context, int appWidgetId,
                                        boolean value) {
         getPreferences(context).edit()
                 .putBoolean(PREF_SHOW_SETTINGS_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setColorOn(Context context, int appWidgetId,
                                   int value) {
         getPreferences(context).edit()
                 .putInt(PREF_COLOR_ON_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setColorOff(Context context, int appWidgetId,
                                    int value) {
         getPreferences(context).edit()
                 .putInt(PREF_COLOR_OFF_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setColorTransition(Context context, int appWidgetId,
                                           int value) {
         getPreferences(context).edit()
                 .putInt(PREF_COLOR_TRANSITION_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setColorBackground(Context context, int appWidgetId,
                                           int value) {
         getPreferences(context).edit()
                 .putInt(PREF_COLOR_BACKGROUND_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setPowerOpacity(Context context, int appWidgetId,
                                        int value) {
         getPreferences(context).edit()
                 .putInt(PREF_POWER_TRANSPARENCY_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setColorTextOn(Context context, int appWidgetId,
                                       int value) {
         getPreferences(context).edit()
                 .putInt(PREF_COLOR_TEXT_ON_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setColorTextOff(Context context, int appWidgetId,
                                        int value) {
         getPreferences(context).edit()
                 .putInt(PREF_COLOR_TEXT_OFF_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setColorBattery1(Context context, int appWidgetId,
                                         int value) {
         getPreferences(context).edit()
                 .putInt(PREF_COLOR_BATTERY1_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setColorBattery2(Context context, int appWidgetId,
                                         int value) {
         getPreferences(context).edit()
                 .putInt(PREF_COLOR_BATTERY2_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setColorBattery3(Context context, int appWidgetId,
                                         int value) {
         getPreferences(context).edit()
                 .putInt(PREF_COLOR_BATTERY3_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setColorBattery4(Context context, int appWidgetId,
                                         int value) {
         getPreferences(context).edit()
                 .putInt(PREF_COLOR_BATTERY4_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setThresholdBattery2(Context context, int appWidgetId,
                                             int value) {
         getPreferences(context).edit()
                 .putInt(PREF_THRESHOLD_BATTERY2_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setThresholdBattery3(Context context, int appWidgetId,
                                             int value) {
         getPreferences(context).edit()
                 .putInt(PREF_THRESHOLD_BATTERY3_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setThresholdBattery4(Context context, int appWidgetId,
                                             int value) {
         getPreferences(context).edit()
                 .putInt(PREF_THRESHOLD_BATTERY4_KEY + appWidgetId,
-                        value).commit();
+                        value).apply();
     }
 
     public static void setBrightnessOptions(Context context, int value) {
         getPreferences(context).edit()
-                .putInt(PREF_BRIGHTNESS_OPTIONS_KEY + 0, value).commit();
+                .putInt(PREF_BRIGHTNESS_OPTIONS_KEY + 0, value).apply();
+    }
+
+    public static void setForegroundService(Context context, boolean value) {
+        getPreferences(context).edit()
+                .putBoolean(PREF_FOREGROUND_SERVICE_KEY, value).apply();
     }
 }

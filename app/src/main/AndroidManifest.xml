@@ -419,6 +419,10 @@
             android:name=".WriteSettingsActivity"
             android:label="@string/title_activity_set_permissions"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".AllowForegroundServiceActivity"
+            android:label="@string/title_activity_allow_foreground"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
 
 </manifest>

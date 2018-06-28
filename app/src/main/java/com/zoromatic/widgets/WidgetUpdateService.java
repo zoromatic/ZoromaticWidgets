@@ -477,7 +477,7 @@ public class WidgetUpdateService extends Service {
         super.onStartCommand(intent, flags, startId);
 
         if (Build.VERSION.SDK_INT >= VERSION_CODES.N) {
-            showNotification();
+            showNotification(Preferences.getForegroundService(this));
         }
 
         if (mWidgetInfo == null) {
@@ -1037,35 +1037,39 @@ public class WidgetUpdateService extends Service {
         return START_STICKY;
     }
 
-    private void showNotification() {
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        int[] appWidgetIdsDigitalClock = appWidgetManager.getAppWidgetIds(new ComponentName(this, DigitalClockAppWidgetProvider.class));
-        int[] appWidgetIdsPower = appWidgetManager.getAppWidgetIds(new ComponentName(this, PowerAppWidgetProvider.class));
+    private void showNotification(boolean show) {
+        if (show) {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+            int[] appWidgetIdsDigitalClock = appWidgetManager.getAppWidgetIds(new ComponentName(this, DigitalClockAppWidgetProvider.class));
+            int[] appWidgetIdsPower = appWidgetManager.getAppWidgetIds(new ComponentName(this, PowerAppWidgetProvider.class));
 
-        if (appWidgetIdsDigitalClock.length > 0 || appWidgetIdsPower.length > 0) {
-            Intent notificationIntent = new Intent(this, DigitalClockAppWidgetPreferenceActivity.class);
-            //notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                    notificationIntent, 0);
+            if (appWidgetIdsDigitalClock.length > 0 || appWidgetIdsPower.length > 0) {
+                Intent notificationIntent = new Intent(this, DigitalClockAppWidgetPreferenceActivity.class);
+                //notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
+                notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                        notificationIntent, 0);
 
-            Bitmap icon = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.icon);
+                Bitmap icon = BitmapFactory.decodeResource(getResources(),
+                        R.drawable.icon);
 
-            Notification notification = new NotificationCompat.Builder(this)
-                    .setContentTitle(getResources().getString(R.string.app_name))
-                    .setTicker(getResources().getString(R.string.app_name))
-                    .setContentText(getResources().getString(R.string.app_name))
-                    .setSmallIcon(R.drawable.icon)
-                    .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
-                    .setContentIntent(pendingIntent)
-                    .setOngoing(true)
-                    .setDefaults(Notification.FLAG_NO_CLEAR)
-                    .setWhen(0)
-                    .setPriority(Notification.PRIORITY_HIGH).build();
-            startForeground(101,
-                    notification);
+                Notification notification = new NotificationCompat.Builder(this)
+                        .setContentTitle(getResources().getString(R.string.app_name))
+                        .setTicker(getResources().getString(R.string.app_name))
+                        .setContentText(getResources().getString(R.string.app_name))
+                        .setSmallIcon(R.drawable.icon)
+                        .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
+                        .setContentIntent(pendingIntent)
+                        .setOngoing(true)
+                        .setDefaults(Notification.FLAG_NO_CLEAR)
+                        .setWhen(0)
+                        .setPriority(Notification.PRIORITY_HIGH).build();
+                startForeground(101,
+                        notification);
+            }
+        } else {
+            stopForeground(true);
         }
     }
 

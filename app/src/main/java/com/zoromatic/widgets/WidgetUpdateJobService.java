@@ -15,6 +15,7 @@ public class WidgetUpdateJobService extends JobService {
     public boolean onStartJob(final JobParameters params) {
         Intent startIntent = new Intent(getApplicationContext(), WidgetUpdateService.class);
         startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.WEATHER_UPDATE);
+        startIntent.putExtra(WidgetInfoReceiver.SCHEDULED_UPDATE, true);
         startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, params.getJobId());
 
         startService(startIntent);

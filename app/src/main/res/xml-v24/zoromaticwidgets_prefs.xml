@@ -12,6 +12,19 @@
         android:key="@string/category_theme" />
 
     <PreferenceScreen
+        android:title="@string/foreground_service"
+        android:key="widgetssettings_"
+        android:icon="?attr/iconForeground"
+        android:summary="@string/title_activity_allow_foreground">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="foregroundservice_"
+            android:summary="@string/title_activity_allow_foreground"
+            android:title="@string/foreground_service" />
+    </PreferenceScreen>
+
+    <PreferenceScreen
         android:title="@string/widgets_settings"
         android:key="widgetssettings_"
         android:icon="?attr/iconWidgets"

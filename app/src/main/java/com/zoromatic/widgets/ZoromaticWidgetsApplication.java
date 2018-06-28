@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.util.DisplayMetrics;
 
 public class ZoromaticWidgetsApplication extends Application {
@@ -36,5 +37,10 @@ public class ZoromaticWidgetsApplication extends Application {
         android.content.res.Configuration conf = res.getConfiguration();
         conf.locale = new Locale(lang.toLowerCase());
         res.updateConfiguration(conf, dm);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !Preferences.getForegroundService(this)) {
+            Intent allowForegroundServiceIntent = new Intent(this, AllowForegroundServiceActivity.class);
+            startActivity(allowForegroundServiceIntent);
+        }
     }
 }

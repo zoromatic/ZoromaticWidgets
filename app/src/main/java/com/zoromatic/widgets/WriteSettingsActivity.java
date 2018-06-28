@@ -1,31 +1,19 @@
 package com.zoromatic.widgets;
 
+import android.annotation.TargetApi;
 import android.app.Dialog;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.provider.Settings.SettingNotFoundException;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.util.TypedValue;
-import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 public class WriteSettingsActivity extends ThemeActivity {
@@ -76,33 +64,31 @@ public class WriteSettingsActivity extends ThemeActivity {
         AlertDialog dialog = alertDialogBuilder.show();
         dialog.setCanceledOnTouchOutside(false);
 
-        if (dialog != null) {
-            final Resources res = getResources();
-            TypedValue outValue = new TypedValue();
-            getTheme().resolveAttribute(R.attr.colorPrimaryDark,
-                    outValue,
-                    true);
-            int primaryColor = outValue.resourceId;
-            int color;
+        final Resources res = getResources();
+        TypedValue outValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorPrimaryDark,
+                outValue,
+                true);
+        int primaryColor = outValue.resourceId;
+        int color;
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                color = res.getColor(primaryColor, getTheme());
-            else
-                color = res.getColor(primaryColor);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            color = res.getColor(primaryColor, getTheme());
+        else
+            color = res.getColor(primaryColor);
 
-            // Title
-            final int titleId = res.getIdentifier("alertTitle", "id", "android");
-            final View titleView = dialog.findViewById(titleId);
-            if (titleView != null) {
-                ((TextView) titleView).setTextColor(color);
-            }
+        // Title
+        final int titleId = res.getIdentifier("alertTitle", "id", "android");
+        final View titleView = dialog.findViewById(titleId);
+        if (titleView != null) {
+            ((TextView) titleView).setTextColor(color);
+        }
 
-            // Title divider
-            final int titleDividerId = res.getIdentifier("titleDivider", "id", "android");
-            final View titleDivider = dialog.findViewById(titleDividerId);
-            if (titleDivider != null) {
-                titleDivider.setBackgroundColor(color);
-            }
+        // Title divider
+        final int titleDividerId = res.getIdentifier("titleDivider", "id", "android");
+        final View titleDivider = dialog.findViewById(titleDividerId);
+        if (titleDivider != null) {
+            titleDivider.setBackgroundColor(color);
         }
     }
 
@@ -119,9 +105,10 @@ public class WriteSettingsActivity extends ThemeActivity {
     protected void onResume() {
         super.onResume();
 
-        this.setTitle(getResources().getString(R.string.brightnessdesc));
+        this.setTitle(getResources().getString(R.string.title_activity_write_settings));
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     public void startAllowWritingSettingsActivity() {
         Intent settingsIntent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
         startActivity(settingsIntent);

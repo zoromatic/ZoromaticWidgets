@@ -386,4 +386,8 @@
     <string name="temp_low">Low:\u0020</string>
     <string name="temp_high">High:\u0020</string>
 
+    <string name="title_activity_allow_foreground">Allow Foreground Service</string>
+    <string name="foreground_service">Foreground Service</string>
+    <string name="allow_foreground_text">Foreground service allows widgets to run properly on Android 7 and later, with minimum batery consumption. Without it, widgets will run unreliably. \n\nWould you like to start foreground service?</string>
+
 </resources>

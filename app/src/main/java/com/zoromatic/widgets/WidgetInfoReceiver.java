@@ -12,6 +12,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -291,7 +292,23 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
                             }
 
                             long currentTime = System.currentTimeMillis();
-                            int refreshInterval = Preferences.getRefreshInterval(context, appWidgetId) * 3600 * 1000;
+                            int refreshIntervalCode = Preferences.getRefreshInterval(context, appWidgetId);
+                            int refreshInterval = 3 * 3600 * 1000; // default is 3 hours
+
+                            switch (refreshIntervalCode) {
+                                case 0:
+                                    refreshInterval = (int) (0.5 * 3600 * 1000);
+                                    break;
+                                case 1:
+                                case 2:
+                                case 3:
+                                case 6:
+                                    refreshInterval = refreshIntervalCode * 3600 * 1000;
+                                    break;
+                                default:
+                                    refreshInterval = 3 * 3600 * 1000;
+                                    break;
+                            }
 
                             if (lastRefresh > 0 && currentTime > 0 && refreshInterval > 0) {
                                 if (currentTime - lastRefresh > refreshInterval) {
@@ -307,6 +324,14 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
 
                                 Log.d(LOG_TAG, "WidgetInfoReceiver onReceive startService(refreshIntent) " + thisWidget.getClassName());
                                 context.startService(refreshIntent);
+
+                                /*if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    DigitalClockAppWidgetProvider.scheduleJob(context, appWidgetId);
+                                } else {
+                                    DigitalClockAppWidgetProvider.setAlarm(context, appWidgetId);
+                                }
+
+                                Log.d(LOG_TAG, "WidgetInfoReceiver onReceive restart alarms / jobs " + thisWidget.getClassName());*/
                             }
                         }
                     }

@@ -2,7 +2,6 @@ package com.zoromatic.widgets;
 
 import android.app.Dialog;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -16,7 +15,6 @@ import android.provider.Settings.SettingNotFoundException;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +52,7 @@ public class BrightnessActivity extends ThemeActivity {
         super.onCreate(savedInstanceState);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (isMarshmallowSixPointZiro()) {
+            if (isMarshmallowSixPointZero()) {
                 if (Settings.System.canWrite(this)) {
                     mBrightnessActivity = this;
 
@@ -331,7 +329,7 @@ public class BrightnessActivity extends ThemeActivity {
         this.brightnessValue = brightnessValue;
     }
 
-    public static boolean isMarshmallowSixPointZiro() {
+    public static boolean isMarshmallowSixPointZero() {
         //We need to check if phone is 6.0
         return android.os.Build.VERSION.RELEASE.matches("6.0");
     }

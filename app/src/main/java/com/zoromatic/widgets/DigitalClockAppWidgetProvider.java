@@ -103,7 +103,7 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
             File cacheFile = new File(parentDirectory, "weather_cache_" + appWidgetId);
             cacheFile.delete();
 
-
+            // cancel previous alarms / jobs
             if ( Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 AlarmManager alarmManager = (AlarmManager) context
                         .getSystemService(Context.ALARM_SERVICE);
@@ -117,7 +117,9 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
                     List<JobInfo> allPendingJobs = jobScheduler.getAllPendingJobs();
                     for (JobInfo jobInfo : allPendingJobs) {
                         int jobId = jobInfo.getId();
-                        jobScheduler.cancel(jobId);
+
+                        if (jobId == appWidgetId)
+                            jobScheduler.cancel(jobId);
                     }
                 }
             }
@@ -164,6 +166,7 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
         int result;
 
         if (jobScheduler != null) {
+            // cancel previous jobs
             List<JobInfo> allPendingJobs = jobScheduler.getAllPendingJobs();
             for (JobInfo jobInfo : allPendingJobs) {
                 int jobId = jobInfo.getId();
@@ -187,7 +190,7 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
         //final int networkType = JobInfo.NETWORK_TYPE_ANY;
 
         int refreshIntervalCode = Preferences.getRefreshInterval(context, appWidgetId);
-        int refreshInterval = 3 * 3600 * 1000; // default is 3 hours
+        int refreshInterval; // default is 3 hours
 
         switch (refreshIntervalCode) {
             case 0:
@@ -204,13 +207,13 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
                 break;
         }
 
-        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        /*if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             jobInfo = new JobInfo.Builder(appWidgetId, componentName)
                     .setMinimumLatency(refreshInterval)
                     //.setRequiredNetworkType(networkType)
                     .setPersisted(isPersistent)
                     .build();
-        } else {
+        } else {*/
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 jobInfo = new JobInfo.Builder(appWidgetId, componentName)
                         .setPeriodic(refreshInterval)
@@ -220,7 +223,7 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
             } else {
                 jobInfo = null;
             }
-        }
+        /*}*/
 
         return jobInfo;
     }
@@ -234,6 +237,11 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
         if (alarmManager == null)
             return;
 
+        // cancel previous alarms
+        PendingIntent pending = createWeatherUpdateEvent(context, appWidgetId);
+        alarmManager.cancel(pending);
+        pending.cancel();
+
         Calendar calendar = Calendar.getInstance();
         long lastRefresh = Preferences.getLastRefresh(context, appWidgetId);
 
@@ -242,7 +250,7 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
         }
 
         int refreshIntervalCode = Preferences.getRefreshInterval(context, appWidgetId);
-        int refreshInterval = 3 * 3600 * 1000; // default is 3 hours
+        int refreshInterval; // default is 3 hours
 
         switch (refreshIntervalCode) {
             case 0:
@@ -270,8 +278,8 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
     private static PendingIntent createWeatherUpdateEvent(Context context, int appWidgetId) {
         Log.d(LOG_TAG, "DigitalClockAppWidgetProvider createWeatherUpdateEvent");
         Intent intent = new Intent(WidgetUpdateService.WEATHER_UPDATE);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         intent.putExtra(WidgetInfoReceiver.SCHEDULED_UPDATE, true);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
         return PendingIntent.getBroadcast(context, appWidgetId,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);

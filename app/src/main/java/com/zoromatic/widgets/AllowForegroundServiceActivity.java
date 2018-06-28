@@ -16,7 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-public class WriteSettingsActivity extends ThemeActivity {
+public class AllowForegroundServiceActivity extends ThemeActivity {
 
     private static String LOG_TAG = "WriteSettingsActivity";
 
@@ -40,12 +40,19 @@ public class WriteSettingsActivity extends ThemeActivity {
         alertDialogBuilder.setView(writeSettings);
 
         alertDialogBuilder
-                .setTitle(getResources().getString(R.string.title_activity_write_settings))
-                .setMessage(getString(R.string.marshmallow_text))
-                .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                .setTitle(getResources().getString(R.string.title_activity_allow_foreground))
+                .setMessage(getString(R.string.allow_foreground_text))
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        startAllowWritingSettingsActivity();
+                        Preferences.setForegroundService(getDialogContext(), true);
+                        finish();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Preferences.setForegroundService(getDialogContext(), false);
                         finish();
                     }
                 })
@@ -97,6 +104,7 @@ public class WriteSettingsActivity extends ThemeActivity {
         super.onBackPressed();
 
         setResult(RESULT_CANCELED);
+        Preferences.setForegroundService(getDialogContext(), false);
 
         finish();
     }
@@ -105,12 +113,6 @@ public class WriteSettingsActivity extends ThemeActivity {
     protected void onResume() {
         super.onResume();
 
-        this.setTitle(getResources().getString(R.string.brightnessdesc));
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    public void startAllowWritingSettingsActivity() {
-        Intent settingsIntent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-        startActivity(settingsIntent);
+        this.setTitle(getResources().getString(R.string.title_activity_allow_foreground));
     }
 }

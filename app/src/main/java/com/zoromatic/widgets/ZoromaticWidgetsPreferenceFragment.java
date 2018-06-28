@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 
@@ -160,6 +161,12 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
 
             language.setValueIndex(language.findIndexOfValue(lang));
             language.setSummary(language.getEntries()[language.findIndexOfValue(lang)]);
+        }
+
+        CheckBoxPreference foregroundService = (CheckBoxPreference) findPreference(Preferences.PREF_FOREGROUND_SERVICE_KEY);
+
+        if (foregroundService != null) {
+            foregroundService.setChecked(Preferences.getForegroundService(context));
         }
 
         Preference restart = findPreference(Preferences.PREF_RESTART_SERVICE);
@@ -388,6 +395,19 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
                     Intent intent = getActivity().getIntent();
                     getActivity().finish();
                     getActivity().startActivity(intent);
+                }
+            }
+
+            if (key.equals(Preferences.PREF_FOREGROUND_SERVICE_KEY)) {
+                CheckBoxPreference foregroundService = (CheckBoxPreference) findPreference(Preferences.PREF_FOREGROUND_SERVICE_KEY);
+
+                if (foregroundService != null) {
+                    Preferences.setForegroundService(context, foregroundService.isChecked());
+
+                    Intent startIntent = new Intent(context, WidgetUpdateService.class);
+                    startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_CONFIGURATION_CHANGED);
+
+                    context.startService(startIntent);
                 }
             }
         }
