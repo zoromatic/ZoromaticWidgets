@@ -16,7 +16,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
-import android.widget.RemoteViews;
 
 public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
     private static final String LOG_TAG = "DigitalClockWidget";
@@ -37,18 +36,13 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
 
         context.startService(startIntent);
 
-        updateWidgets(context, appWidgetIds, false, false);
-
-        /*if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-
-            final ComponentName componentName = new ComponentName(context, WidgetUpdateJobService.class);
-            scheduleJob(context, componentName);
-        } else {
-            for (int appWidgetId : appWidgetIds) {
+        for (int appWidgetId : appWidgetIds) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                scheduleJob(context, appWidgetId);
+            } else {
                 setAlarm(context, appWidgetId);
             }
-        }*/
+        }
     }
 
     @Override
@@ -128,38 +122,6 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
         super.onDeleted(context, appWidgetIds);
     }
 
-    public void updateWidgets(Context context, int[] appWidgetIds, boolean startService, boolean updateWeather) {
-        if (startService)
-            context.startService(new Intent(context, WidgetUpdateService.class));
-
-        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        }
-
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-
-        WidgetManager widgetManager = new WidgetManager(context);
-        RemoteViews remoteViews;
-
-        for (int appWidgetId : appWidgetIds) {
-            remoteViews = widgetManager.buildClockUpdate(appWidgetId);
-            widgetManager.updateClockStatus(remoteViews, appWidgetId);
-
-            if (updateWeather)
-                widgetManager.updateWeatherStatus(remoteViews, appWidgetId, false);
-            else
-                widgetManager.readCachedWeatherData(remoteViews, appWidgetId);
-
-            appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
-
-            if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                scheduleJob(context, appWidgetId);
-            } else {
-                setAlarm(context, appWidgetId);
-            }
-        }
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void scheduleJob(Context context, int appWidgetId) {
         final ComponentName componentName = new ComponentName(context, WidgetUpdateJobService.class);
@@ -207,13 +169,13 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
                 break;
         }
 
-        /*if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             jobInfo = new JobInfo.Builder(appWidgetId, componentName)
                     .setMinimumLatency(refreshInterval)
                     //.setRequiredNetworkType(networkType)
                     .setPersisted(isPersistent)
                     .build();
-        } else {*/
+        } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 jobInfo = new JobInfo.Builder(appWidgetId, componentName)
                         .setPeriodic(refreshInterval)
@@ -223,7 +185,7 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
             } else {
                 jobInfo = null;
             }
-        /*}*/
+        }
 
         return jobInfo;
     }
@@ -277,7 +239,7 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
 
     private static PendingIntent createWeatherUpdateEvent(Context context, int appWidgetId) {
         Log.d(LOG_TAG, "DigitalClockAppWidgetProvider createWeatherUpdateEvent");
-        Intent intent = new Intent(WidgetUpdateService.WEATHER_UPDATE);
+        Intent intent = new Intent(WidgetIntentDefinitions.WEATHER_UPDATE);
         intent.putExtra(WidgetInfoReceiver.SCHEDULED_UPDATE, true);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 

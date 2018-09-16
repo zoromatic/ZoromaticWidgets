@@ -387,6 +387,14 @@
     <string name="temp_high">Alta:\u0020</string>
 
     <string name="title_activity_allow_foreground">Permitir el servicio de primer plano</string>
-    <string name="allow_foreground_text">Foreground service allows widgets to run properly on Android 7 and later, with minimum batery consumption. Without it, widgets will run unreliably. \n\nWould you like to start foreground service?</string>
+    <string name="foreground_service">Servicio de primer plano</string>
+    <string name="allow_foreground_text">Foreground service allows widgets to run properly on Android 7 and later, with minimum battery consumption. Without it, widgets will run unreliably. \n\nWould you like to start foreground service? \n\nYou can always enable/disable this option in Widgets Preferences.</string>
+    <string name="do_not_show_again">Do not show this message again</string>
+
+    <string name="notification_channel">Notification Channel</string>
+    <string name="notification_channel_id">notification_channel_id</string>
+
+    <string name="battery_notification_channel">Battery Notification Channel</string>
+    <string name="battery_notification_channel_id">battery_notification_channel_id</string>
 
 </resources>

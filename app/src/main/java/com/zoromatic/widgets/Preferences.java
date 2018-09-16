@@ -93,6 +93,7 @@ public class Preferences {
     public static final String PREF_THRESHOLD_BATTERY4_KEY = "thresholdbattery4_";
     public static final String PREF_BRIGHTNESS_OPTIONS_KEY = "brightnessoptions_";
     public static final String PREF_FOREGROUND_SERVICE_KEY = "foregroundservice_";
+    public static final String PREF_FOREGROUND_SERVICE_DONT_SHOW_KEY = "servicedontshow_";
 
     private static SharedPreferences getPreferences(Context context) {
         return context.getSharedPreferences(PREF_NAME, 0);
@@ -440,6 +441,11 @@ public class Preferences {
     public static boolean getForegroundService(Context context) {
         return getPreferences(context)
                 .getBoolean(PREF_FOREGROUND_SERVICE_KEY, false);
+    }
+
+    public static boolean getForegroundServiceDontShow(Context context) {
+        return getPreferences(context)
+                .getBoolean(PREF_FOREGROUND_SERVICE_DONT_SHOW_KEY, false);
     }
 
     public static void setShowDate(Context context, int appWidgetId,
@@ -872,5 +878,10 @@ public class Preferences {
     public static void setForegroundService(Context context, boolean value) {
         getPreferences(context).edit()
                 .putBoolean(PREF_FOREGROUND_SERVICE_KEY, value).apply();
+    }
+
+    public static void setForegroundServiceDontShowKey(Context context, boolean value) {
+        getPreferences(context).edit()
+                .putBoolean(PREF_FOREGROUND_SERVICE_DONT_SHOW_KEY, value).apply();
     }
 }

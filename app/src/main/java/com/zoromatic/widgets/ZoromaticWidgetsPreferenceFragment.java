@@ -169,6 +169,12 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
             foregroundService.setChecked(Preferences.getForegroundService(context));
         }
 
+        CheckBoxPreference dontShow = (CheckBoxPreference) findPreference(Preferences.PREF_FOREGROUND_SERVICE_DONT_SHOW_KEY);
+
+        if (dontShow != null) {
+            dontShow.setChecked(Preferences.getForegroundServiceDontShow(context));
+        }
+
         Preference restart = findPreference(Preferences.PREF_RESTART_SERVICE);
 
         if (restart != null) {
@@ -371,7 +377,7 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
                     brightnessToggle.setSummary(brightnessToggle.getEntries()[Preferences.getBrightnessOptions(context)]);
 
                     Intent startIntent = new Intent(context, WidgetUpdateService.class);
-                    startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.BRIGHTNESS_CHANGED);
+                    startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetIntentDefinitions.BRIGHTNESS_CHANGED);
 
                     context.startService(startIntent);
                 }
@@ -388,7 +394,7 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
                     }
 
                     Intent startIntent = new Intent(context, WidgetUpdateService.class);
-                    startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.UPDATE_WIDGETS);
+                    startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetIntentDefinitions.UPDATE_WIDGETS);
 
                     context.startService(startIntent);
 
@@ -408,6 +414,14 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
                     startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_CONFIGURATION_CHANGED);
 
                     context.startService(startIntent);
+                }
+            }
+
+            if (key.equals(Preferences.PREF_FOREGROUND_SERVICE_DONT_SHOW_KEY)) {
+                CheckBoxPreference dontShow = (CheckBoxPreference) findPreference(Preferences.PREF_FOREGROUND_SERVICE_DONT_SHOW_KEY);
+
+                if (dontShow != null) {
+                    Preferences.setForegroundServiceDontShowKey(context, dontShow.isChecked());
                 }
             }
         }

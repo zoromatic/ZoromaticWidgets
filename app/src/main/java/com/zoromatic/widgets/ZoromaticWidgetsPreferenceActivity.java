@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -131,7 +132,7 @@ public class ZoromaticWidgetsPreferenceActivity extends ThemeAppCompatActivity {
                                 }
 
                                 Intent startIntent = new Intent(getApplicationContext(), WidgetUpdateService.class);
-                                startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.BATTERY_NOTIFICATION);
+                                startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetIntentDefinitions.BATTERY_NOTIFICATION);
 
                                 startService(startIntent);
                             }
@@ -199,6 +200,12 @@ public class ZoromaticWidgetsPreferenceActivity extends ThemeAppCompatActivity {
             if (action.equals(getString(R.string.category_theme)) || action.equals(getString(R.string.category_notification))) {
                 setResult(RESULT_OK);
             }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !Preferences.getForegroundService(this)
+                && !Preferences.getForegroundServiceDontShow(this)) {
+            Intent allowForegroundServiceIntent = new Intent(this, AllowForegroundServiceActivity.class);
+            startActivity(allowForegroundServiceIntent);
         }
 
         super.onBackPressed();

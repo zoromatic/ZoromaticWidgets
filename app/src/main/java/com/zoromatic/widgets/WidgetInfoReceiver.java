@@ -6,15 +6,12 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
-import android.os.Build;
 import android.util.Log;
-import android.widget.RemoteViews;
 
 public class WidgetInfoReceiver extends BroadcastReceiver {
 
@@ -37,12 +34,12 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
             if ((action.equals(Intent.ACTION_TIME_CHANGED) || action.equals(Intent.ACTION_TIME_TICK)
                     || action.equals(Intent.ACTION_TIMEZONE_CHANGED) || action.equals(Intent.ACTION_LOCALE_CHANGED)
                     || action.equals(Intent.ACTION_CONFIGURATION_CHANGED) || action.equals(Intent.ACTION_BOOT_COMPLETED)
-                    || action.equals(WidgetUpdateService.CLOCK_WIDGET_UPDATE) || action.equals(WidgetUpdateService.WEATHER_UPDATE))) {
+                    || action.equals(WidgetIntentDefinitions.CLOCK_WIDGET_UPDATE) || action.equals(WidgetIntentDefinitions.WEATHER_UPDATE))) {
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                 int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, DigitalClockAppWidgetProvider.class));
 
                 if (appWidgetIds.length > 0) {
-                    if (action.equals(WidgetUpdateService.WEATHER_UPDATE))
+                    if (action.equals(WidgetIntentDefinitions.WEATHER_UPDATE))
                         new DigitalClockAppWidgetProvider().updateWidgets(context, appWidgetIds, true, true);
                     else
                         new DigitalClockAppWidgetProvider().updateWidgets(context, appWidgetIds, true, false);
@@ -130,7 +127,7 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
             startIntent.putExtra(INTENT_EXTRA, action);
 
             if (action != null) {
-                if (action.equals(WidgetUpdateService.WEATHER_UPDATE)) {
+                if (action.equals(WidgetIntentDefinitions.WEATHER_UPDATE)) {
                     int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                             AppWidgetManager.INVALID_APPWIDGET_ID);
 
@@ -146,14 +143,14 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
                     if (action.equals(Intent.ACTION_TIME_CHANGED)
                             || action.equals(Intent.ACTION_TIME_TICK)
                             || action.equals(Intent.ACTION_TIMEZONE_CHANGED)
-                            || action.equals(WidgetUpdateService.CLOCK_WIDGET_UPDATE)
+                            || action.equals(WidgetIntentDefinitions.CLOCK_WIDGET_UPDATE)
                             || action.equals(Intent.ACTION_CONFIGURATION_CHANGED)) {
 
                         thisWidget = new ComponentName(context,
                                 DigitalClockAppWidgetProvider.class);
 
                         if (action.equals(Intent.ACTION_TIMEZONE_CHANGED)
-                                || action.equals(WidgetUpdateService.CLOCK_WIDGET_UPDATE)
+                                || action.equals(WidgetIntentDefinitions.CLOCK_WIDGET_UPDATE)
                                 || action.equals(Intent.ACTION_CONFIGURATION_CHANGED)) {
 
                             startIntent.putExtra(WidgetInfoReceiver.UPDATE_WEATHER, true);
@@ -166,19 +163,19 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
                     }
 
                     if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)
-                            || action.equals(WidgetUpdateService.BLUETOOTH_WIDGET_UPDATE)) {
+                            || action.equals(WidgetIntentDefinitions.BLUETOOTH_WIDGET_UPDATE)) {
                         thisWidget = new ComponentName(context,
                                 BluetoothAppWidgetProvider.class);
                     }
 
                     if (action.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)
-                            || action.equals(WidgetUpdateService.WIFI_WIDGET_UPDATE)) {
+                            || action.equals(WidgetIntentDefinitions.WIFI_WIDGET_UPDATE)) {
                         thisWidget = new ComponentName(context,
                                 WifiAppWidgetProvider.class);
                     }
 
                     if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)
-                            || action.equals(WidgetUpdateService.MOBILE_DATA_WIDGET_UPDATE)) {
+                            || action.equals(WidgetIntentDefinitions.MOBILE_DATA_WIDGET_UPDATE)) {
                         thisWidget = new ComponentName(context,
                                 MobileAppWidgetProvider.class);
 
@@ -192,51 +189,51 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
                         }
                     }
 
-                    if (action.equals(WidgetUpdateService.LOCATION_PROVIDERS_CHANGED)
-                            || action.equals(WidgetUpdateService.LOCATION_GPS_ENABLED_CHANGED)
-                            || action.equals(WidgetUpdateService.GPS_WIDGET_UPDATE)) {
+                    if (action.equals(WidgetIntentDefinitions.LOCATION_PROVIDERS_CHANGED)
+                            || action.equals(WidgetIntentDefinitions.LOCATION_GPS_ENABLED_CHANGED)
+                            || action.equals(WidgetIntentDefinitions.GPS_WIDGET_UPDATE)) {
                         thisWidget = new ComponentName(context,
                                 GpsAppWidgetProvider.class);
                     }
 
                     if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)
-                            || action.equals(WidgetUpdateService.RINGER_WIDGET_UPDATE)) {
+                            || action.equals(WidgetIntentDefinitions.RINGER_WIDGET_UPDATE)) {
                         thisWidget = new ComponentName(context,
                                 RingerAppWidgetProvider.class);
                     }
 
                     if (action.equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)
-                            || action.equals(WidgetUpdateService.AIRPLANE_WIDGET_UPDATE)) {
+                            || action.equals(WidgetIntentDefinitions.AIRPLANE_WIDGET_UPDATE)) {
                         thisWidget = new ComponentName(context,
                                 AirplaneAppWidgetProvider.class);
                     }
 
-                    if (action.equals(WidgetUpdateService.BRIGHTNESS_CHANGED)
-                            || action.equals(WidgetUpdateService.BRIGHTNESS_WIDGET_UPDATE)) {
+                    if (action.equals(WidgetIntentDefinitions.BRIGHTNESS_CHANGED)
+                            || action.equals(WidgetIntentDefinitions.BRIGHTNESS_WIDGET_UPDATE)) {
                         thisWidget = new ComponentName(context,
                                 BrightnessAppWidgetProvider.class);
                     }
 
-                    if (action.equals(WidgetUpdateService.NFC_ADAPTER_STATE_CHANGED)
-                            || action.equals(WidgetUpdateService.NFC_WIDGET_UPDATE)) {
+                    if (action.equals(WidgetIntentDefinitions.NFC_ADAPTER_STATE_CHANGED)
+                            || action.equals(WidgetIntentDefinitions.NFC_WIDGET_UPDATE)) {
                         thisWidget = new ComponentName(context,
                                 NfcAppWidgetProvider.class);
                     }
 
-                    if (action.equals(WidgetUpdateService.SYNC_CONN_STATUS_CHANGED)
-                            || action.equals(WidgetUpdateService.SYNC_WIDGET_UPDATE)) {
+                    if (action.equals(WidgetIntentDefinitions.SYNC_CONN_STATUS_CHANGED)
+                            || action.equals(WidgetIntentDefinitions.SYNC_WIDGET_UPDATE)) {
                         thisWidget = new ComponentName(context,
                                 SyncAppWidgetProvider.class);
                     }
 
-                    if (action.equals(WidgetUpdateService.AUTO_ROTATE_CHANGED)
-                            || action.equals(WidgetUpdateService.ORIENTATION_WIDGET_UPDATE)) {
+                    if (action.equals(WidgetIntentDefinitions.AUTO_ROTATE_CHANGED)
+                            || action.equals(WidgetIntentDefinitions.ORIENTATION_WIDGET_UPDATE)) {
                         thisWidget = new ComponentName(context,
                                 OrientationAppWidgetProvider.class);
                     }
 
-                    if (action.equals(WidgetUpdateService.FLASHLIGHT_CHANGED)
-                            || action.equals(WidgetUpdateService.TORCH_WIDGET_UPDATE)) {
+                    if (action.equals(WidgetIntentDefinitions.FLASHLIGHT_CHANGED)
+                            || action.equals(WidgetIntentDefinitions.TORCH_WIDGET_UPDATE)) {
                         thisWidget = new ComponentName(context,
                                 TorchAppWidgetProvider.class);
                     }
@@ -250,9 +247,9 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
                     }
                 }
 
-                if (action.equals(WidgetUpdateService.WEATHER_UPDATE) || thisWidget != null) {
-                    if (action.equals(WidgetUpdateService.WEATHER_UPDATE)) {
-                        Log.d(LOG_TAG, "WidgetInfoReceiver onReceive startService(startIntent) " + WidgetUpdateService.WEATHER_UPDATE);
+                if (action.equals(WidgetIntentDefinitions.WEATHER_UPDATE) || thisWidget != null) {
+                    if (action.equals(WidgetIntentDefinitions.WEATHER_UPDATE)) {
+                        Log.d(LOG_TAG, "WidgetInfoReceiver onReceive startService(startIntent) " + WidgetIntentDefinitions.WEATHER_UPDATE);
                     } else {
                         if (thisWidget != null) {
                             Log.d(LOG_TAG, "WidgetInfoReceiver onReceive startService(startIntent) " + thisWidget.getClassName());
@@ -318,7 +315,7 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
 
                             if (!weatherSuccess) {
                                 Intent refreshIntent = new Intent(context, WidgetUpdateService.class);
-                                refreshIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.WEATHER_UPDATE);
+                                refreshIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetIntentDefinitions.WEATHER_UPDATE);
                                 refreshIntent.putExtra(WidgetInfoReceiver.SCHEDULED_UPDATE, true);
                                 refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 

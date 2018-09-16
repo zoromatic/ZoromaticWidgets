@@ -272,7 +272,7 @@ public class BrightnessActivity extends ThemeActivity {
 
     void updateWidget() {
         Intent startIntent = new Intent(this, WidgetUpdateService.class);
-        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.UPDATE_SINGLE_BRIGHTNESS_WIDGET);
+        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetIntentDefinitions.UPDATE_SINGLE_BRIGHTNESS_WIDGET);
 
         startService(startIntent);
     }

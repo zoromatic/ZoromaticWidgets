@@ -11,4 +11,12 @@
     android:layout_margin="4dp"
     tools:context=".WriteSettingsActivity">
 
+    <CheckBox
+        android:id="@+id/skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/do_not_show_again"
+        android:visibility="gone">
+    </CheckBox>
+
 </LinearLayout>

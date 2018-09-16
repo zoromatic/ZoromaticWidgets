@@ -442,4 +442,8 @@
         <item>#2093cd</item>
         <item>#ad62a7</item>
     </array>
+
+    <string-array name="do_not_show_again_array">
+        <item>@string/do_not_show_again</item>
+    </string-array>
 </resources>

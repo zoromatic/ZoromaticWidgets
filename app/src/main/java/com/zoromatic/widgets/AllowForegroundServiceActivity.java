@@ -14,6 +14,7 @@ import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 public class AllowForegroundServiceActivity extends ThemeActivity {
@@ -32,6 +33,9 @@ public class AllowForegroundServiceActivity extends ThemeActivity {
         LayoutInflater li = LayoutInflater.from(getDialogContext());
         View writeSettings = li.inflate(R.layout.writesettings, null);
 
+        final CheckBox checkBox = writeSettings.findViewById(R.id.skip);
+        checkBox.setVisibility(View.VISIBLE);
+
         String theme = Preferences.getMainTheme(getDialogContext());
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getDialogContext(),
@@ -46,6 +50,7 @@ public class AllowForegroundServiceActivity extends ThemeActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Preferences.setForegroundService(getDialogContext(), true);
+                        Preferences.setForegroundServiceDontShowKey(getDialogContext(), checkBox.isChecked());
                         finish();
                     }
                 })
@@ -53,9 +58,16 @@ public class AllowForegroundServiceActivity extends ThemeActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Preferences.setForegroundService(getDialogContext(), false);
+                        Preferences.setForegroundServiceDontShowKey(getDialogContext(), checkBox.isChecked());
                         finish();
                     }
                 })
+                /*.setMultiChoiceItems(R.array.do_not_show_again_array, null, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+
+                    }
+                })*/
                 .setOnKeyListener(new Dialog.OnKeyListener() {
                     @Override
                     public boolean onKey(DialogInterface dialog, int keyCode,

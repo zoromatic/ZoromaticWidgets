@@ -5,8 +5,6 @@ import android.app.job.JobService;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.support.annotation.RequiresApi;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -14,7 +12,7 @@ public class WidgetUpdateJobService extends JobService {
     @Override
     public boolean onStartJob(final JobParameters params) {
         Intent startIntent = new Intent(getApplicationContext(), WidgetUpdateService.class);
-        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.WEATHER_UPDATE);
+        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetIntentDefinitions.WEATHER_UPDATE);
         startIntent.putExtra(WidgetInfoReceiver.SCHEDULED_UPDATE, true);
         startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, params.getJobId());
 

@@ -97,7 +97,7 @@ public class PowerAppWidgetPreferenceActivity extends ThemeAppCompatActivity {
     public void onBackPressed() {
 
         Intent startIntent = new Intent(this, WidgetUpdateService.class);
-        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.POWER_WIDGET_UPDATE_ALL);
+        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetIntentDefinitions.POWER_WIDGET_UPDATE_ALL);
         startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
         this.startService(startIntent);
 

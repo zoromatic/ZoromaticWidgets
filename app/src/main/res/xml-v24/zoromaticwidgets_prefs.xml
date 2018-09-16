@@ -22,6 +22,12 @@
             android:key="foregroundservice_"
             android:summary="@string/title_activity_allow_foreground"
             android:title="@string/foreground_service" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="servicedontshow_"
+            android:summary="@string/dont_show_service_warning"
+            android:title="@string/title_dont_show_service_warning" />
     </PreferenceScreen>
 
     <PreferenceScreen

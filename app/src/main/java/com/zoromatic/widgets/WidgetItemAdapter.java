@@ -30,7 +30,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.BatteryManager;
-//import android.support.v7.internal.widget.CheckBox;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,10 +44,10 @@ import android.widget.TextView;
 public class WidgetItemAdapter extends BaseAdapter {
     private static String LOG_TAG = "WidgetItemAdapter";
     Context context;
-    List<WidgetRowItem> WidgetRowItems;
-    public boolean mActivityDelete = false;
+    private List<WidgetRowItem> WidgetRowItems;
+    private boolean mActivityDelete = false;
 
-    public WidgetItemAdapter(Context context, List<WidgetRowItem> items, boolean activityDelete) {
+    WidgetItemAdapter(Context context, List<WidgetRowItem> items, boolean activityDelete) {
         this.context = context;
         this.WidgetRowItems = items;
         this.mActivityDelete = activityDelete;
@@ -70,30 +69,31 @@ public class WidgetItemAdapter extends BaseAdapter {
 
         LayoutInflater mInflater = (LayoutInflater)
                 context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.widget_row, parent, false);
-            holder = new ViewHolder();
-            holder.linearLayout = (LinearLayout) convertView.findViewById(R.id.viewHolder);
+            if (mInflater != null) {
+                convertView = mInflater.inflate(R.layout.widget_row, parent, false);
+                holder = new ViewHolder();
+                holder.linearLayout = convertView.findViewById(R.id.viewHolder);
 
-            if (className.equals(PowerAppWidgetProvider.class.getSimpleName())) {
-                mInflater.inflate(R.layout.powerwidget, holder.linearLayout);
+                if (className.equals(PowerAppWidgetProvider.class.getSimpleName())) {
+                    mInflater.inflate(R.layout.powerwidget, holder.linearLayout);
 
-                updatePowerWidget(holder, appWidgetId);
+                    updatePowerWidget(holder, appWidgetId);
 
-            } else if (className.equals(DigitalClockAppWidgetProvider.class.getSimpleName())) {
-                mInflater.inflate(R.layout.digitalclockwidget, holder.linearLayout);
+                } else if (className.equals(DigitalClockAppWidgetProvider.class.getSimpleName())) {
+                    mInflater.inflate(R.layout.digitalclockwidget, holder.linearLayout);
 
-                updateClockWidget(holder, appWidgetId);
-                updateWeatherWidget(holder, appWidgetId);
+                    updateClockWidget(holder, appWidgetId);
+                    updateWeatherWidget(holder, appWidgetId);
+                }
+
+                convertView.setTag(holder);
             }
-
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
         }
 
         if (convertView != null) {
-            ImageView image = (ImageView) convertView.findViewById(R.id.iconWidget);
+            ImageView image = convertView.findViewById(R.id.iconWidget);
             if (image != null) {
                 image.setVisibility(mActivityDelete ? View.GONE : View.VISIBLE);
 
@@ -106,7 +106,7 @@ public class WidgetItemAdapter extends BaseAdapter {
                 image.setImageBitmap(letterTile);
             }
 
-            CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checkBoxSelect);
+            CheckBox checkBox = convertView.findViewById(R.id.checkBoxSelect);
             if (checkBox != null) {
                 checkBox.setVisibility(mActivityDelete ? View.VISIBLE : View.GONE);
 
@@ -141,7 +141,6 @@ public class WidgetItemAdapter extends BaseAdapter {
 
         int colorOn = WidgetUpdateService.WIDGET_COLOR_ON;
         int colorOff = WidgetUpdateService.WIDGET_COLOR_OFF;
-        //int colorTransition = WidgetUpdateService.WIDGET_COLOR_TRANSITION;
         int colorBackground = WidgetUpdateService.WIDGET_COLOR_BACKGROUND;
         int colorTextOn = WidgetUpdateService.WIDGET_COLOR_TEXT_ON;
         int colorTextOff = WidgetUpdateService.WIDGET_COLOR_TEXT_OFF;
@@ -149,19 +148,12 @@ public class WidgetItemAdapter extends BaseAdapter {
         if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
             colorOn = Preferences.getColorOn(context, appWidgetId);
             colorOff = Preferences.getColorOff(context, appWidgetId);
-            //colorTransition = Preferences.getColorTransition(context, appWidgetId);
             colorBackground = Preferences.getColorBackground(context, appWidgetId);
             colorTextOn = Preferences.getColorTextOn(context, appWidgetId);
             colorTextOff = Preferences.getColorTextOff(context, appWidgetId);
         }
 
-		/*View tempViewPowerWidget = holder.linearLayout.findViewById(R.id.powerWidget);
-
-        if (tempViewPowerWidget != null) {
-        	tempViewPowerWidget.setBackgroundColor(colorBackground);
-        }*/
-
-        ImageView tempImageViewBackground = (ImageView) holder.linearLayout.findViewById(R.id.backgroundImage);
+		ImageView tempImageViewBackground = holder.linearLayout.findViewById(R.id.backgroundImage);
 
         if (tempImageViewBackground != null) {
             int iOpacity = Preferences.getPowerOpacity(context, appWidgetId);
@@ -181,27 +173,20 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowBluetooth) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                //View tempView = tempViewWidget.findViewById(R.id.layoutBluetooth);
+                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.bluetooth_on);
+                ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewBluetooth);
 
-                //if (tempView != null)
-                //	tempView.setBackgroundColor(colorBackground);
-
-                BitmapDrawable bitmapDrawable = WidgetUpdateService.setIconColor(context, colorOn, R.drawable.bluetooth_on);
-
-                ImageView tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewBluetooth);
-
-                if (tempImageView != null) {
+                if (bitmapDrawable != null && tempImageView != null) {
                     tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
                 }
 
-                TextView tempTextView = (TextView) tempViewWidget.findViewById(R.id.textViewBluetooth);
+                TextView tempTextView = tempViewWidget.findViewById(R.id.textViewBluetooth);
 
                 if (tempTextView != null) {
-                    //tempTextView.setBackgroundColor(colorOn);
                     tempTextView.setTextColor(colorTextOn);
                 }
 
-                tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewBluetoothInd);
+                tempImageView = tempViewWidget.findViewById(R.id.imageViewBluetoothInd);
 
                 if (tempImageView != null) {
                     tempImageView.setColorFilter(colorOn);
@@ -218,27 +203,20 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowGps) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                //View tempView = tempViewWidget.findViewById(R.id.layoutGps);
+                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.gps_on);
+                ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewGps);
 
-                //if (tempView != null)
-                //	tempView.setBackgroundColor(colorBackground);
-
-                BitmapDrawable bitmapDrawable = WidgetUpdateService.setIconColor(context, colorOn, R.drawable.gps_on);
-
-                ImageView tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewGps);
-
-                if (tempImageView != null) {
+                if (bitmapDrawable != null && tempImageView != null) {
                     tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
                 }
 
-                TextView tempTextView = (TextView) tempViewWidget.findViewById(R.id.textViewGps);
+                TextView tempTextView = tempViewWidget.findViewById(R.id.textViewGps);
 
                 if (tempTextView != null) {
-                    //tempTextView.setBackgroundColor(colorOn);
                     tempTextView.setTextColor(colorTextOn);
                 }
 
-                tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewGpsInd);
+                tempImageView = tempViewWidget.findViewById(R.id.imageViewGpsInd);
 
                 if (tempImageView != null) {
                     tempImageView.setColorFilter(colorOn);
@@ -254,27 +232,20 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowMobile) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                //View tempView = tempViewWidget.findViewById(R.id.layoutMobile);
+                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.data_on);
+                ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewMobile);
 
-                //if (tempView != null)
-                //	tempView.setBackgroundColor(colorBackground);
-
-                BitmapDrawable bitmapDrawable = WidgetUpdateService.setIconColor(context, colorOn, R.drawable.data_on);
-
-                ImageView tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewMobile);
-
-                if (tempImageView != null) {
+                if (bitmapDrawable != null && tempImageView != null) {
                     tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
                 }
 
-                TextView tempTextView = (TextView) tempViewWidget.findViewById(R.id.textViewMobile);
+                TextView tempTextView = tempViewWidget.findViewById(R.id.textViewMobile);
 
                 if (tempTextView != null) {
-                    //tempTextView.setBackgroundColor(colorOn);
                     tempTextView.setTextColor(colorTextOn);
                 }
 
-                tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewMobileInd);
+                tempImageView = tempViewWidget.findViewById(R.id.imageViewMobileInd);
 
                 if (tempImageView != null) {
                     tempImageView.setColorFilter(colorOn);
@@ -290,27 +261,20 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowRinger) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                //View tempView = tempViewWidget.findViewById(R.id.layoutRinger);
+                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.ringer_normal);
+                ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewRinger);
 
-                //if (tempView != null)
-                //	tempView.setBackgroundColor(colorBackground);
-
-                BitmapDrawable bitmapDrawable = WidgetUpdateService.setIconColor(context, colorOn, R.drawable.ringer_normal);
-
-                ImageView tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewRinger);
-
-                if (tempImageView != null) {
+                if (bitmapDrawable != null && tempImageView != null) {
                     tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
                 }
 
-                TextView tempTextView = (TextView) tempViewWidget.findViewById(R.id.textViewRinger);
+                TextView tempTextView = tempViewWidget.findViewById(R.id.textViewRinger);
 
                 if (tempTextView != null) {
-                    //tempTextView.setBackgroundColor(colorOn);
                     tempTextView.setTextColor(colorTextOn);
                 }
 
-                tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewRingerInd);
+                tempImageView = tempViewWidget.findViewById(R.id.imageViewRingerInd);
 
                 if (tempImageView != null) {
                     tempImageView.setColorFilter(colorOn);
@@ -326,27 +290,20 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowWifi) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                //View tempView = tempViewWidget.findViewById(R.id.layoutWiFi);
+                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.wifi_on);
+                ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewWiFi);
 
-                //if (tempView != null)
-                //	tempView.setBackgroundColor(colorBackground);
-
-                BitmapDrawable bitmapDrawable = WidgetUpdateService.setIconColor(context, colorOn, R.drawable.wifi_on);
-
-                ImageView tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewWiFi);
-
-                if (tempImageView != null) {
+                if (bitmapDrawable != null && tempImageView != null) {
                     tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
                 }
 
-                TextView tempTextView = (TextView) tempViewWidget.findViewById(R.id.textViewWiFi);
+                TextView tempTextView = tempViewWidget.findViewById(R.id.textViewWiFi);
 
                 if (tempTextView != null) {
-                    //tempTextView.setBackgroundColor(colorOn);
                     tempTextView.setTextColor(colorTextOn);
                 }
 
-                tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewWiFiInd);
+                tempImageView = tempViewWidget.findViewById(R.id.imageViewWiFiInd);
 
                 if (tempImageView != null) {
                     tempImageView.setColorFilter(colorOn);
@@ -362,27 +319,20 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowAirplane) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                //View tempView = tempViewWidget.findViewById(R.id.layoutAirplane);
+                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.airplane_on);
+                ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewAirplane);
 
-                //if (tempView != null)
-                //	tempView.setBackgroundColor(colorBackground);
-
-                BitmapDrawable bitmapDrawable = WidgetUpdateService.setIconColor(context, colorOn, R.drawable.airplane_on);
-
-                ImageView tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewAirplane);
-
-                if (tempImageView != null) {
+                if (bitmapDrawable != null && tempImageView != null) {
                     tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
                 }
 
-                TextView tempTextView = (TextView) tempViewWidget.findViewById(R.id.textViewAirplane);
+                TextView tempTextView = tempViewWidget.findViewById(R.id.textViewAirplane);
 
                 if (tempTextView != null) {
-                    //tempTextView.setBackgroundColor(colorOn);
                     tempTextView.setTextColor(colorTextOn);
                 }
 
-                tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewAirplaneInd);
+                tempImageView = tempViewWidget.findViewById(R.id.imageViewAirplaneInd);
 
                 if (tempImageView != null) {
                     tempImageView.setColorFilter(colorOn);
@@ -398,27 +348,20 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowBrightness) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                //View tempView = tempViewWidget.findViewById(R.id.layoutBrightness);
+                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.brightness_on);
+                ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewBrightness);
 
-                //if (tempView != null)
-                //	tempView.setBackgroundColor(colorBackground);
-
-                BitmapDrawable bitmapDrawable = WidgetUpdateService.setIconColor(context, colorOn, R.drawable.brightness_on);
-
-                ImageView tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewBrightness);
-
-                if (tempImageView != null) {
+                if (bitmapDrawable != null && tempImageView != null) {
                     tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
                 }
 
-                TextView tempTextView = (TextView) tempViewWidget.findViewById(R.id.textViewBrightness);
+                TextView tempTextView = tempViewWidget.findViewById(R.id.textViewBrightness);
 
                 if (tempTextView != null) {
-                    //tempTextView.setBackgroundColor(colorOn);
                     tempTextView.setTextColor(colorTextOn);
                 }
 
-                tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewBrightnessInd);
+                tempImageView = tempViewWidget.findViewById(R.id.imageViewBrightnessInd);
 
                 if (tempImageView != null) {
                     tempImageView.setColorFilter(colorOn);
@@ -434,27 +377,20 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowNfc) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                //View tempView = tempViewWidget.findViewById(R.id.layoutNfc);
+                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.nfc_on);
+                ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewNfc);
 
-                //if (tempView != null)
-                //	tempView.setBackgroundColor(colorBackground);
-
-                BitmapDrawable bitmapDrawable = WidgetUpdateService.setIconColor(context, colorOn, R.drawable.nfc_on);
-
-                ImageView tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewNfc);
-
-                if (tempImageView != null) {
+                if (bitmapDrawable != null && tempImageView != null) {
                     tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
                 }
 
-                TextView tempTextView = (TextView) tempViewWidget.findViewById(R.id.textViewNfc);
+                TextView tempTextView = tempViewWidget.findViewById(R.id.textViewNfc);
 
                 if (tempTextView != null) {
-                    //tempTextView.setBackgroundColor(colorOn);
                     tempTextView.setTextColor(colorTextOn);
                 }
 
-                tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewNfcInd);
+                tempImageView = tempViewWidget.findViewById(R.id.imageViewNfcInd);
 
                 if (tempImageView != null) {
                     tempImageView.setColorFilter(colorOn);
@@ -470,27 +406,20 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowSync) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                //View tempView = tempViewWidget.findViewById(R.id.layoutSync);
+                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.sync_on);
+                ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewSync);
 
-                //if (tempView != null)
-                //	tempView.setBackgroundColor(colorBackground);
-
-                BitmapDrawable bitmapDrawable = WidgetUpdateService.setIconColor(context, colorOn, R.drawable.sync_on);
-
-                ImageView tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewSync);
-
-                if (tempImageView != null) {
+                if (bitmapDrawable != null && tempImageView != null) {
                     tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
                 }
 
-                TextView tempTextView = (TextView) tempViewWidget.findViewById(R.id.textViewSync);
+                TextView tempTextView = tempViewWidget.findViewById(R.id.textViewSync);
 
                 if (tempTextView != null) {
-                    //tempTextView.setBackgroundColor(colorOn);
                     tempTextView.setTextColor(colorTextOn);
                 }
 
-                tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewSyncInd);
+                tempImageView = tempViewWidget.findViewById(R.id.imageViewSyncInd);
 
                 if (tempImageView != null) {
                     tempImageView.setColorFilter(colorOn);
@@ -506,27 +435,20 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowOrientation) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                //View tempView = tempViewWidget.findViewById(R.id.layoutOrientation);
+                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.orientation_on);
+                ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewOrientation);
 
-                //if (tempView != null)
-                //	tempView.setBackgroundColor(colorBackground);
-
-                BitmapDrawable bitmapDrawable = WidgetUpdateService.setIconColor(context, colorOn, R.drawable.orientation_on);
-
-                ImageView tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewOrientation);
-
-                if (tempImageView != null) {
+                if (bitmapDrawable != null && tempImageView != null) {
                     tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
                 }
 
-                TextView tempTextView = (TextView) tempViewWidget.findViewById(R.id.textViewOrientation);
+                TextView tempTextView = tempViewWidget.findViewById(R.id.textViewOrientation);
 
                 if (tempTextView != null) {
-                    //tempTextView.setBackgroundColor(colorOn);
                     tempTextView.setTextColor(colorTextOn);
                 }
 
-                tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewOrientationInd);
+                tempImageView = tempViewWidget.findViewById(R.id.imageViewOrientationInd);
 
                 if (tempImageView != null) {
                     tempImageView.setColorFilter(colorOn);
@@ -542,27 +464,20 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowTorch) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                //View tempView = tempViewWidget.findViewById(R.id.layoutTorch);
+                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.flashlight_on);
+                ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewTorch);
 
-                //if (tempView != null)
-                //	tempView.setBackgroundColor(colorBackground);
-
-                BitmapDrawable bitmapDrawable = WidgetUpdateService.setIconColor(context, colorOn, R.drawable.flashlight_on);
-
-                ImageView tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewTorch);
-
-                if (tempImageView != null) {
+                if (bitmapDrawable != null && tempImageView != null) {
                     tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
                 }
 
-                TextView tempTextView = (TextView) tempViewWidget.findViewById(R.id.textViewTorch);
+                TextView tempTextView = tempViewWidget.findViewById(R.id.textViewTorch);
 
                 if (tempTextView != null) {
-                    //tempTextView.setBackgroundColor(colorOn);
                     tempTextView.setTextColor(colorTextOn);
                 }
 
-                tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewTorchInd);
+                tempImageView = tempViewWidget.findViewById(R.id.imageViewTorchInd);
 
                 if (tempImageView != null) {
                     tempImageView.setColorFilter(colorOn);
@@ -582,23 +497,23 @@ public class WidgetItemAdapter extends BaseAdapter {
                 String font = "fonts/Roboto.ttf";
 
                 int level = -1;
+                int status = BatteryManager.BATTERY_STATUS_UNKNOWN;
 
                 Intent batteryIntent = context.registerReceiver(
-                        null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-                int rawlevel = batteryIntent.getIntExtra(
-                        BatteryManager.EXTRA_LEVEL, -1);
-                int status = batteryIntent.getIntExtra(BatteryManager.EXTRA_STATUS,
-                        BatteryManager.BATTERY_STATUS_UNKNOWN);
-                int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE,
-                        -1);
-                if (rawlevel >= 0 && scale > 0) {
-                    level = (rawlevel * 100) / scale;
+                null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+                int rawLevel = 0;
+
+                if (batteryIntent != null) {
+                    rawLevel = batteryIntent.getIntExtra(
+                            BatteryManager.EXTRA_LEVEL, -1);
+                    status = batteryIntent.getIntExtra(BatteryManager.EXTRA_STATUS,
+                            BatteryManager.BATTERY_STATUS_UNKNOWN);
+                    int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE,
+                            -1);
+                    if (rawLevel >= 0 && scale > 0) {
+                        level = (rawLevel * 100) / scale;
+                    }
                 }
-
-                //View tempView = tempViewWidget.findViewById(R.id.layoutBatteryStatus);
-
-                //if (tempView != null)
-                //	tempView.setBackgroundColor(colorBackground);
 
                 String strLevel = String.valueOf(level);
 
@@ -621,27 +536,29 @@ public class WidgetItemAdapter extends BaseAdapter {
                     color = color4;
                 }
 
-                ImageView tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewBatteryStatus);
+                ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewBatteryStatus);
 
                 if (tempImageView != null) {
-                    tempImageView.setImageBitmap(WidgetUpdateService.getFontBitmap(context, strLevel, color, font, true, 96));
+                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, strLevel, color, font, true, 96));
                 }
 
-                tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewBatteryStatusCharge);
-                //tempImageView.setBackgroundColor(color);
+                tempImageView = tempViewWidget.findViewById(R.id.imageViewBatteryStatusCharge);
 
                 if (tempImageView != null) {
                     if (status == BatteryManager.BATTERY_STATUS_CHARGING) {
-                        tempImageView.setVisibility(View.VISIBLE);
-                        BitmapDrawable bitmapDrawable = WidgetUpdateService.setIconColor(context, color, R.drawable.high_voltage);
-                        tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                        BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, color, R.drawable.high_voltage);
+                        if (bitmapDrawable != null) {
+                            tempImageView.setVisibility(View.VISIBLE);
+                            tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                        } else {
+                            tempImageView.setVisibility(View.GONE);
+                        }
                     } else {
-                        //tempImageView.setImageBitmap(null);
                         tempImageView.setVisibility(View.GONE);
                     }
                 }
 
-                tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewBatteryStatusInd);
+                tempImageView = tempViewWidget.findViewById(R.id.imageViewBatteryStatusInd);
 
                 if (tempImageView != null) {
                     tempImageView.setColorFilter(color);
@@ -658,27 +575,20 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowSettings) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                //View tempView = tempViewWidget.findViewById(R.id.layoutSettings);
+                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOff, R.drawable.settings_on);
+                ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewSettings);
 
-                //if (tempView != null)
-                //	tempView.setBackgroundColor(colorBackground);
-
-                BitmapDrawable bitmapDrawable = WidgetUpdateService.setIconColor(context, colorOff, R.drawable.settings_on);
-
-                ImageView tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewSettings);
-
-                if (tempImageView != null) {
+                if (bitmapDrawable != null && tempImageView != null) {
                     tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
                 }
 
-                TextView tempTextView = (TextView) tempViewWidget.findViewById(R.id.textViewSettings);
+                TextView tempTextView = tempViewWidget.findViewById(R.id.textViewSettings);
 
                 if (tempTextView != null) {
-                    //tempTextView.setBackgroundColor(colorOff);
                     tempTextView.setTextColor(colorTextOff);
                 }
 
-                tempImageView = (ImageView) tempViewWidget.findViewById(R.id.imageViewSettingsInd);
+                tempImageView = tempViewWidget.findViewById(R.id.imageViewSettingsInd);
 
                 if (tempImageView != null) {
                     tempImageView.setColorFilter(colorOff);
@@ -900,22 +810,22 @@ public class WidgetItemAdapter extends BaseAdapter {
             dateFont = mFontArray[iDateFontItem];
         }
 
-        ImageView tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewClockHour);
+        ImageView tempImageView = holder.linearLayout.findViewById(R.id.imageViewClockHour);
 
         if (tempImageView != null) {
-            tempImageView.setImageBitmap(WidgetUpdateService.getFontBitmap(context, currentHour, systemClockColor, font, bold, 96));
+            tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, currentHour, systemClockColor, font, bold, 96));
         }
 
-        tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewClockMinute);
+        tempImageView = holder.linearLayout.findViewById(R.id.imageViewClockMinute);
 
         if (tempImageView != null) {
-            tempImageView.setImageBitmap(WidgetUpdateService.getFontBitmap(context, currentMinute, systemClockColor, font, bold, 96));
+            tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, currentMinute, systemClockColor, font, bold, 96));
         }
 
-        tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewClockSpace);
+        tempImageView = holder.linearLayout.findViewById(R.id.imageViewClockSpace);
 
         if (tempImageView != null) {
-            tempImageView.setImageBitmap(WidgetUpdateService.getFontBitmap(context, ":", systemClockColor, font, bold, 96));
+            tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, ":", systemClockColor, font, bold, 96));
         }
 
         String currentDate = "";
@@ -954,13 +864,13 @@ public class WidgetItemAdapter extends BaseAdapter {
             currentDate = currentDate + (bShowDate ? "\t [" : "") + level + "%" + (bShowDate ? "]" : "");
         }
 
-        tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewDate);
+        tempImageView = holder.linearLayout.findViewById(R.id.imageViewDate);
 
         if (tempImageView != null) {
-            tempImageView.setImageBitmap(WidgetUpdateService.getFontBitmap(context, currentDate, systemDateColor, dateFont, dateBold, 14));
+            tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, currentDate, systemDateColor, dateFont, dateBold, 14));
         }
 
-        ImageView tempImageViewBackground = (ImageView) holder.linearLayout.findViewById(R.id.backgroundImage);
+        ImageView tempImageViewBackground = holder.linearLayout.findViewById(R.id.backgroundImage);
 
         if (tempImageViewBackground != null) {
             tempImageViewBackground.setAlpha((int) iOpacity * 255 / 100);
@@ -975,13 +885,13 @@ public class WidgetItemAdapter extends BaseAdapter {
 
         switch (iClockSkinItem) {
             case 0:
-                tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewClockHour);
+                tempImageView = holder.linearLayout.findViewById(R.id.imageViewClockHour);
 
                 if (tempImageView != null) {
                     tempImageView.setBackgroundResource(R.drawable.bck_left);
                 }
 
-                tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewClockMinute);
+                tempImageView = holder.linearLayout.findViewById(R.id.imageViewClockMinute);
 
                 if (tempImageView != null) {
                     tempImageView.setBackgroundResource(R.drawable.bck_right);
@@ -989,13 +899,13 @@ public class WidgetItemAdapter extends BaseAdapter {
 
                 break;
             case 1:
-                tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewClockHour);
+                tempImageView = holder.linearLayout.findViewById(R.id.imageViewClockHour);
 
                 if (tempImageView != null) {
                     tempImageView.setBackgroundResource(R.drawable.bck_left_light);
                 }
 
-                tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewClockMinute);
+                tempImageView = holder.linearLayout.findViewById(R.id.imageViewClockMinute);
 
                 if (tempImageView != null) {
                     tempImageView.setBackgroundResource(R.drawable.bck_right_light);
@@ -1003,13 +913,13 @@ public class WidgetItemAdapter extends BaseAdapter {
 
                 break;
             case 2:
-                tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewClockHour);
+                tempImageView = holder.linearLayout.findViewById(R.id.imageViewClockHour);
 
                 if (tempImageView != null) {
                     tempImageView.setBackgroundResource(0);
                 }
 
-                tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewClockMinute);
+                tempImageView = holder.linearLayout.findViewById(R.id.imageViewClockMinute);
 
                 if (tempImageView != null) {
                     tempImageView.setBackgroundResource(0);
@@ -1023,13 +933,13 @@ public class WidgetItemAdapter extends BaseAdapter {
 
                 break;
             default:
-                tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewClockHour);
+                tempImageView = holder.linearLayout.findViewById(R.id.imageViewClockHour);
 
                 if (tempImageView != null) {
                     tempImageView.setBackgroundResource(R.drawable.bck_left);
                 }
 
-                tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewClockMinute);
+                tempImageView = holder.linearLayout.findViewById(R.id.imageViewClockMinute);
 
                 if (tempImageView != null) {
                     tempImageView.setBackgroundResource(R.drawable.bck_right);
@@ -1057,7 +967,7 @@ public class WidgetItemAdapter extends BaseAdapter {
                 tempView.setVisibility(View.GONE);
             }
 
-            LinearLayout linearLayout = (LinearLayout) holder.linearLayout.findViewById(R.id.clockWidget);
+            LinearLayout linearLayout = holder.linearLayout.findViewById(R.id.clockWidget);
 
             if (linearLayout != null) {
                 linearLayout.setWeightSum(0.65f);
@@ -1081,7 +991,7 @@ public class WidgetItemAdapter extends BaseAdapter {
                 tempView.setVisibility(View.VISIBLE);
             }
 
-            LinearLayout linearLayout = (LinearLayout) holder.linearLayout.findViewById(R.id.clockWidget);
+            LinearLayout linearLayout = holder.linearLayout.findViewById(R.id.clockWidget);
 
             if (linearLayout != null) {
                 linearLayout.setWeightSum(1.0f);
@@ -1147,7 +1057,7 @@ public class WidgetItemAdapter extends BaseAdapter {
 
             String parseString = result.toString();
 
-            if (!parseString.equals(null) && !parseString.equals("") && !parseString.contains("<html>")) {
+            if (!parseString.equals("") && !parseString.contains("<html>")) {
                 parseString.trim();
 
                 if (parseString.endsWith("\n"))
@@ -1252,10 +1162,10 @@ public class WidgetItemAdapter extends BaseAdapter {
                         Preferences.setLocation(context, appWidgetId, location);
                     }
 
-                    ImageView tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewLoc);
+                    ImageView tempImageView = holder.linearLayout.findViewById(R.id.imageViewLoc);
 
                     if (tempImageView != null) {
-                        tempImageView.setImageBitmap(WidgetUpdateService.getFontBitmap(context, location, systemWeatherColor, font, bold, 12));
+                        tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, location, systemWeatherColor, font, bold, 12));
                     }
 
                     long timestamp = weatherJSON.getLong("dt");
@@ -1267,18 +1177,21 @@ public class WidgetItemAdapter extends BaseAdapter {
                     } catch (JSONException e) {
                     }
                     try {
-                        double currentTemp = main.getDouble("temp") - 273.15;
+                        double currentTemp = 0;
+                        if (main != null) {
+                            currentTemp = main.getDouble("temp") - 273.15;
 
-                        if (tempScale == 1) {
-                            temp = String.valueOf((int) (currentTemp * 1.8 + 32)) + "°";
-                        } else {
-                            temp = String.valueOf((int) currentTemp) + "°";
-                        }
+                            if (tempScale == 1) {
+                                temp = String.valueOf((int) (currentTemp * 1.8 + 32)) + "°";
+                            } else {
+                                temp = String.valueOf((int) currentTemp) + "°";
+                            }
 
-                        tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewTemp);
+                            tempImageView = holder.linearLayout.findViewById(R.id.imageViewTemp);
 
-                        if (tempImageView != null) {
-                            tempImageView.setImageBitmap(WidgetUpdateService.getFontBitmap(context, temp, systemWeatherColor, font, bold, 32));
+                            if (tempImageView != null) {
+                                tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, temp, systemWeatherColor, font, bold, 32));
+                            }
                         }
 
                     } catch (JSONException e) {
@@ -1290,11 +1203,15 @@ public class WidgetItemAdapter extends BaseAdapter {
                     } catch (JSONException e) {
                     }
                     try {
-                        double speed = windJSON.getDouble("speed");
+                        if (windJSON != null) {
+                            double speed = windJSON.getDouble("speed");
+                        }
                     } catch (JSONException e) {
                     }
                     try {
-                        double deg = windJSON.getDouble("deg");
+                        if (windJSON != null) {
+                            double deg = windJSON.getDouble("deg");
+                        }
                     } catch (JSONException e) {
                     }
 
@@ -1320,10 +1237,10 @@ public class WidgetItemAdapter extends BaseAdapter {
                             int resource = R.drawable.tick_weather_04d;
                             WeatherIcon[] imageArr;
 
-                            tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewDesc);
+                            tempImageView = holder.linearLayout.findViewById(R.id.imageViewDesc);
 
                             if (tempImageView != null) {
-                                tempImageView.setImageBitmap(WidgetUpdateService.getFontBitmap(context, weatherDesc, systemWeatherColor, font, bold, 12));
+                                tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, weatherDesc, systemWeatherColor, font, bold, 12));
                             }
 
                             switch (icons) {
@@ -1409,7 +1326,7 @@ public class WidgetItemAdapter extends BaseAdapter {
                                     break;
                             }
 
-                            tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewWeather);
+                            tempImageView = holder.linearLayout.findViewById(R.id.imageViewWeather);
 
                             if (tempImageView != null) {
                                 tempImageView.setImageResource(resource);
@@ -1427,61 +1344,57 @@ public class WidgetItemAdapter extends BaseAdapter {
                                 Calendar civilSunriseCalendarForDate = calc.getCivilSunriseCalendarForDate(calendarForDate);
                                 Calendar civilSunsetCalendarForDate = calc.getCivilSunsetCalendarForDate(calendarForDate);
 
-                                if (calendarForDate.before(civilSunriseCalendarForDate) || calendarForDate.after(civilSunsetCalendarForDate)) {
-                                    bDay = false;
-                                } else {
-                                    bDay = true;
-                                }
+                                bDay = !calendarForDate.before(civilSunriseCalendarForDate) && !calendarForDate.after(civilSunsetCalendarForDate);
                             }
 
-                            for (int j = 0; j < imageArr.length; j++) {
-                                if (iconName.equals(imageArr[j].iconName) || iconNameAlt.equals(imageArr[j].iconName)) {
+                            for (WeatherIcon anImageArr : imageArr) {
+                                if (iconName.equals(anImageArr.iconName) || iconNameAlt.equals(anImageArr.iconName)) {
 
-                                    if (imageArr[j].bDay != bDay) {
-                                        tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewWeather);
+                                    if (anImageArr.bDay != bDay) {
+                                        tempImageView = holder.linearLayout.findViewById(R.id.imageViewWeather);
 
                                         if (tempImageView != null) {
-                                            tempImageView.setImageResource(imageArr[j].altIconId);
+                                            tempImageView.setImageResource(anImageArr.altIconId);
                                         }
                                     } else {
-                                        tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewWeather);
+                                        tempImageView = holder.linearLayout.findViewById(R.id.imageViewWeather);
 
                                         if (tempImageView != null) {
-                                            tempImageView.setImageResource(imageArr[j].iconId);
+                                            tempImageView.setImageResource(anImageArr.iconId);
                                         }
                                     }
                                 }
                             }
 
-                            tempImageView = (ImageView) holder.linearLayout.findViewById(R.id.imageViewLast);
-                            long lastrefresh = Preferences.getLastRefresh(context, appWidgetId);
+                            tempImageView = holder.linearLayout.findViewById(R.id.imageViewLast);
+                            long lastRefresh = Preferences.getLastRefresh(context, appWidgetId);
 
-                            if (lastrefresh > 0) {
+                            if (lastRefresh > 0) {
                                 boolean bShow24Hrs = Preferences.getShow24Hrs(context, appWidgetId);
                                 int iDateFormatItem = Preferences.getDateFormatItem(context, appWidgetId);
-                                Date resultdate = new Date(lastrefresh);
+                                Date resultDate = new Date(lastRefresh);
 
                                 String currentTime;
 
                                 if (bShow24Hrs) {
                                     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                                    currentTime = String.format(sdf.format(resultdate));
+                                    currentTime = String.format(sdf.format(resultDate));
                                 } else {
                                     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-                                    currentTime = String.format(sdf.format(resultdate));
+                                    currentTime = String.format(sdf.format(resultDate));
                                 }
 
                                 String currentDate = "";
                                 String[] mTestArray = context.getResources().getStringArray(R.array.dateFormat);
 
                                 SimpleDateFormat sdf = new SimpleDateFormat(mTestArray[iDateFormatItem]);
-                                currentDate = String.format(sdf.format(resultdate));
+                                currentDate = String.format(sdf.format(resultDate));
 
                                 if (tempImageView != null) {
-                                    tempImageView.setImageBitmap(WidgetUpdateService.getFontBitmap(context, currentDate + ", " + currentTime, systemWeatherColor, font, bold, 12));
+                                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, currentDate + ", " + currentTime, systemWeatherColor, font, bold, 12));
                                 }
 
-                                LinearLayout linearLayout = (LinearLayout) holder.linearLayout.findViewById(R.id.refresh_container);
+                                LinearLayout linearLayout = holder.linearLayout.findViewById(R.id.refresh_container);
 
                                 if (linearLayout != null) {
                                     linearLayout.setVisibility(View.VISIBLE);
@@ -1489,10 +1402,10 @@ public class WidgetItemAdapter extends BaseAdapter {
 
                             } else {
                                 if (tempImageView != null) {
-                                    tempImageView.setImageBitmap(WidgetUpdateService.getFontBitmap(context, context.getResources().getString(R.string.lastrefreshnever), systemWeatherColor, font, bold, 12));
+                                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, context.getResources().getString(R.string.lastrefreshnever), systemWeatherColor, font, bold, 12));
                                 }
 
-                                LinearLayout linearLayout = (LinearLayout) holder.linearLayout.findViewById(R.id.refresh_container);
+                                LinearLayout linearLayout = holder.linearLayout.findViewById(R.id.refresh_container);
 
                                 if (linearLayout != null) {
                                     linearLayout.setVisibility(View.GONE);

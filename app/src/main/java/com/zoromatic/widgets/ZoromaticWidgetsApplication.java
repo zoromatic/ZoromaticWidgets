@@ -38,9 +38,9 @@ public class ZoromaticWidgetsApplication extends Application {
         conf.locale = new Locale(lang.toLowerCase());
         res.updateConfiguration(conf, dm);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !Preferences.getForegroundService(this)) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !Preferences.getForegroundService(this)) {
             Intent allowForegroundServiceIntent = new Intent(this, AllowForegroundServiceActivity.class);
             startActivity(allowForegroundServiceIntent);
-        }
+        }*/
     }
 }

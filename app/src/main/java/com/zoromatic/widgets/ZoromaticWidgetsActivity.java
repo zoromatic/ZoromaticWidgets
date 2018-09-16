@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
@@ -19,7 +18,17 @@ public class ZoromaticWidgetsActivity extends ThemeActivity {
 
         initializeActivity();
 
+        startService(new Intent(this, WidgetUpdateService.class));
+
+        WidgetManager widgetManager = new WidgetManager(this);
+
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, DigitalClockAppWidgetProvider.class));
+
+        widgetManager.updateClockWidgets(this, appWidgetIds, false, false); // do not update weather
+        widgetManager.updatePowerWidgets(this, WidgetIntentDefinitions.POWER_WIDGET_UPDATE_ALL);
+
+        /*AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, DigitalClockAppWidgetProvider.class));
 
         if (appWidgetIds.length > 0) {
@@ -30,7 +39,7 @@ public class ZoromaticWidgetsActivity extends ThemeActivity {
 
         if (appWidgetIds.length > 0) {
             new PowerAppWidgetProvider().updateWidgets(this, appWidgetIds, Intent.ACTION_CONFIGURATION_CHANGED, false);
-        }
+        }*/
 
         //finish();
     }

@@ -143,7 +143,7 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
             Toast.makeText(getApplicationContext(), getResources().getText(R.string.nolocationdefined), Toast.LENGTH_LONG).show();
         } else {
             Intent refreshIntent = new Intent(getApplicationContext(), WidgetUpdateService.class);
-            refreshIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetUpdateService.WEATHER_UPDATE);
+            refreshIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetIntentDefinitions.WEATHER_UPDATE);
             refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
             getApplicationContext().startService(refreshIntent);
 
@@ -554,7 +554,7 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        IntentFilter intentFilter = new IntentFilter(WidgetUpdateService.UPDATE_FORECAST);
+        IntentFilter intentFilter = new IntentFilter(WidgetIntentDefinitions.UPDATE_FORECAST);
 
         mReceiver = new BroadcastReceiver() {
             @Override
