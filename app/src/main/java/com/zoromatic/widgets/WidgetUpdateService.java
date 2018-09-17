@@ -575,11 +575,9 @@ public class WidgetUpdateService extends Service {
             // update clock & weather widgets
             thisWidget = new ComponentName(this, DigitalClockAppWidgetProvider.class);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-            mWidgetManager.updateClockWidgets(this, appWidgetIds, true, false);
+            mWidgetManager.updateClockWidgets(this, appWidgetIds, updateWeather, scheduledUpdate);
 
             // update toggle widgets
-            Intent newIntent;
-
             try {
                 //update power widget
                 mWidgetManager.updatePowerWidgets(this, intentExtra);

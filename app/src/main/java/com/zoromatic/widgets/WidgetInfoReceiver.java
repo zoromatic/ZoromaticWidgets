@@ -27,93 +27,6 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         try {
-            /*String action = intent.getAction();
-
-            if (action == null)
-                return;
-            if ((action.equals(Intent.ACTION_TIME_CHANGED) || action.equals(Intent.ACTION_TIME_TICK)
-                    || action.equals(Intent.ACTION_TIMEZONE_CHANGED) || action.equals(Intent.ACTION_LOCALE_CHANGED)
-                    || action.equals(Intent.ACTION_CONFIGURATION_CHANGED) || action.equals(Intent.ACTION_BOOT_COMPLETED)
-                    || action.equals(WidgetIntentDefinitions.CLOCK_WIDGET_UPDATE) || action.equals(WidgetIntentDefinitions.WEATHER_UPDATE))) {
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, DigitalClockAppWidgetProvider.class));
-
-                if (appWidgetIds.length > 0) {
-                    if (action.equals(WidgetIntentDefinitions.WEATHER_UPDATE))
-                        new DigitalClockAppWidgetProvider().updateWidgets(context, appWidgetIds, true, true);
-                    else
-                        new DigitalClockAppWidgetProvider().updateWidgets(context, appWidgetIds, true, false);
-                }
-            } else {
-
-                if (action.equals(Intent.ACTION_BATTERY_CHANGED)) {
-                    int rawLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-                    int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-                    int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS,
-                            BatteryManager.BATTERY_STATUS_UNKNOWN);
-
-                    int level = -1;
-
-                    if (rawLevel >= 0 && scale > 0) {
-                        level = (rawLevel * 100) / scale;
-                    }
-
-                    if (level == -1) {
-                        Intent batteryIntent = context.registerReceiver(
-                                null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-                        int rawLevel1 = 0;
-
-                        if (batteryIntent != null) {
-                            rawLevel1 = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-                        }
-
-                        int scale1 = 0;
-
-                        if (batteryIntent != null) {
-                            scale1 = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-                        }
-
-                        int status1 = BatteryManager.BATTERY_STATUS_UNKNOWN;
-
-                        if (batteryIntent != null) {
-                            status1 = batteryIntent.getIntExtra(
-                                    BatteryManager.EXTRA_STATUS,
-                                    BatteryManager.BATTERY_STATUS_UNKNOWN);
-                        }
-
-                        int level1 = -1;
-
-                        if (rawLevel1 >= 0 && scale1 > 0) {
-                            level1 = (rawLevel1 * 100) / scale1;
-                        }
-
-                        level = level1;
-                        scale = scale1;
-                        status = status1;
-                    }
-
-                    // prevent frequent updates
-                    if (mBatteryLevel != -1 && mBatteryScale != -1 && mBatteryStatus != BatteryManager.BATTERY_STATUS_UNKNOWN &&
-                            level != -1 && scale != -1 && status != BatteryManager.BATTERY_STATUS_UNKNOWN &&
-                            level == mBatteryLevel && scale == mBatteryScale && status == mBatteryStatus) {
-                        return;
-                    }
-
-                    mBatteryLevel = level;
-                    mBatteryScale = scale;
-                    mBatteryStatus = status;
-
-                    //updateNotificationBatteryStatus(intent);
-                }
-
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, PowerAppWidgetProvider.class));
-
-                if (appWidgetIds.length > 0) {
-                    new PowerAppWidgetProvider().updateWidgets(context, appWidgetIds, action);
-                }
-            }*/
-
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 
             String action = intent.getAction();
@@ -149,12 +62,12 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
                         thisWidget = new ComponentName(context,
                                 DigitalClockAppWidgetProvider.class);
 
-                        if (action.equals(Intent.ACTION_TIMEZONE_CHANGED)
+                        /*if (action.equals(Intent.ACTION_TIMEZONE_CHANGED)
                                 || action.equals(WidgetIntentDefinitions.CLOCK_WIDGET_UPDATE)
                                 || action.equals(Intent.ACTION_CONFIGURATION_CHANGED)) {
 
                             startIntent.putExtra(WidgetInfoReceiver.UPDATE_WEATHER, true);
-                        }
+                        }*/
                     }
 
                     if (action.equals(Intent.ACTION_BATTERY_CHANGED)) {
@@ -321,14 +234,6 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
 
                                 Log.d(LOG_TAG, "WidgetInfoReceiver onReceive startService(refreshIntent) " + thisWidget.getClassName());
                                 context.startService(refreshIntent);
-
-                                /*if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                    DigitalClockAppWidgetProvider.scheduleJob(context, appWidgetId);
-                                } else {
-                                    DigitalClockAppWidgetProvider.setAlarm(context, appWidgetId);
-                                }
-
-                                Log.d(LOG_TAG, "WidgetInfoReceiver onReceive restart alarms / jobs " + thisWidget.getClassName());*/
                             }
                         }
                     }
