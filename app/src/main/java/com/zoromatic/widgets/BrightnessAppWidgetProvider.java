@@ -17,7 +17,7 @@ public class BrightnessAppWidgetProvider extends AppWidgetProvider {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
         Intent startIntent = new Intent(context, WidgetUpdateService.class);
-        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetIntentDefinitions.UPDATE_SINGLE_BRIGHTNESS_WIDGET);
+        startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, WidgetIntentDefinitions.UPDATE_SINGLE_BRIGHTNESS_WIDGET);
 
         context.startService(startIntent);
     }

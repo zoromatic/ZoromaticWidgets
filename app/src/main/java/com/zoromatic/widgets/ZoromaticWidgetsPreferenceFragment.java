@@ -184,7 +184,7 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
                 public boolean onPreferenceClick(Preference p) {
                     Context contextLocal = getActivity();
                     Intent startIntent = new Intent(contextLocal, WidgetUpdateService.class);
-                    startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_CONFIGURATION_CHANGED);
+                    startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, Intent.ACTION_CONFIGURATION_CHANGED);
 
                     contextLocal.startService(startIntent);
 
@@ -354,7 +354,7 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
                     batteryIcons.setSummary(batteryIcons.getEntries()[Preferences.getBatteryIcons(context)]);
 
                     Intent startIntent = new Intent(context, WidgetUpdateService.class);
-                    startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_BATTERY_CHANGED);
+                    startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, Intent.ACTION_BATTERY_CHANGED);
 
                     context.startService(startIntent);
                 }
@@ -377,7 +377,7 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
                     brightnessToggle.setSummary(brightnessToggle.getEntries()[Preferences.getBrightnessOptions(context)]);
 
                     Intent startIntent = new Intent(context, WidgetUpdateService.class);
-                    startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetIntentDefinitions.BRIGHTNESS_CHANGED);
+                    startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, WidgetIntentDefinitions.BRIGHTNESS_CHANGED);
 
                     context.startService(startIntent);
                 }
@@ -394,7 +394,7 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
                     }
 
                     Intent startIntent = new Intent(context, WidgetUpdateService.class);
-                    startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetIntentDefinitions.UPDATE_WIDGETS);
+                    startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, WidgetIntentDefinitions.UPDATE_WIDGETS);
 
                     context.startService(startIntent);
 
@@ -411,7 +411,7 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
                     Preferences.setForegroundService(context, foregroundService.isChecked());
 
                     Intent startIntent = new Intent(context, WidgetUpdateService.class);
-                    startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_CONFIGURATION_CHANGED);
+                    startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, Intent.ACTION_CONFIGURATION_CHANGED);
 
                     context.startService(startIntent);
                 }

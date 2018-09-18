@@ -1697,7 +1697,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
 
                 if (!Double.isNaN(latitude) && !Double.isNaN(longitude)) {
                     //request = new HttpGet(String.format(GET_CITY_URL, latitude, longitude, lang));
-                    request = new HttpGet(String.format(WidgetUpdateService.WEATHER_SERVICE_COORD_URL, latitude, longitude, lang));
+                    request = new HttpGet(String.format(WidgetIntentDefinitions.WEATHER_SERVICE_COORD_URL, latitude, longitude, lang));
 
                 } else if (!TextUtils.isEmpty(cityName)) {
                     cityName = cityName.replaceAll(" ", "%20");

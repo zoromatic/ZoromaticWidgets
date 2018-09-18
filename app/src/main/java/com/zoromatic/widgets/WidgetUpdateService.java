@@ -60,10 +60,10 @@ public class WidgetUpdateService extends Service {
 
     WidgetManager mWidgetManager = null;
 
-   private static IntentFilter mIntentFilter;
+    private static IntentFilter mIntentFilter;
     private WidgetInfoReceiver mWidgetInfo = null;
 
-    public static String WEATHER_SERVICE_COORD_URL = "http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
+    /*public static String WEATHER_SERVICE_COORD_URL = "http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
     public static String WEATHER_SERVICE_ID_URL = "http://api.openweathermap.org/data/2.5/weather?id=%d&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
     public static String WEATHER_FORECAST_COORD_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=%f&lon=%f&cnt=7&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
     public static String WEATHER_FORECAST_ID_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?id=%d&cnt=7&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
@@ -77,7 +77,7 @@ public class WidgetUpdateService extends Service {
 
     private final static String COMMAND_L_ON = "svc data enable\n ";
     private final static String COMMAND_L_OFF = "svc data disable\n ";
-    private final static String COMMAND_SU = "su";
+    private final static String COMMAND_SU = "su";*/
 
     private int mBatteryLevel = -1;
     private int mBatteryScale = -1;
@@ -215,7 +215,7 @@ public class WidgetUpdateService extends Service {
         @Override
         public void onChange(boolean selfChange) {
             Intent brightnessIntent = new Intent(mContext, WidgetUpdateService.class);
-            brightnessIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetIntentDefinitions.BRIGHTNESS_CHANGED);
+            brightnessIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, WidgetIntentDefinitions.BRIGHTNESS_CHANGED);
             mContext.startService(brightnessIntent);
         }
     }
@@ -438,7 +438,7 @@ public class WidgetUpdateService extends Service {
         if (extras == null) {
             Log.d(LOG_TAG, "WidgetUpdateService onStartCommand extras = null");
 
-            intent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_TIME_TICK);
+            intent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, Intent.ACTION_TIME_TICK);
 
             ComponentName thisWidget = new ComponentName(this,
                     DigitalClockAppWidgetProvider.class);
@@ -453,12 +453,12 @@ public class WidgetUpdateService extends Service {
         boolean updateWeather = false;
 
         if (extras != null) {
-            intentExtra = extras.getString(WidgetInfoReceiver.INTENT_EXTRA);
-            updateWeather = extras.getBoolean(WidgetInfoReceiver.UPDATE_WEATHER, false) ||
+            intentExtra = extras.getString(WidgetIntentDefinitions.INTENT_EXTRA);
+            updateWeather = extras.getBoolean(WidgetIntentDefinitions.UPDATE_WEATHER, false) ||
                     (intentExtra != null && intentExtra.equals(WidgetIntentDefinitions.WEATHER_UPDATE));
         }
 
-        boolean scheduledUpdate = intent.getBooleanExtra(WidgetInfoReceiver.SCHEDULED_UPDATE, false);
+        boolean scheduledUpdate = intent.getBooleanExtra(WidgetIntentDefinitions.SCHEDULED_UPDATE, false);
 
         if (intentExtra != null && intentExtra.equals(WidgetIntentDefinitions.BATTERY_NOTIFICATION)) {
             mWidgetManager.updateNotificationBatteryStatus(this, intent);

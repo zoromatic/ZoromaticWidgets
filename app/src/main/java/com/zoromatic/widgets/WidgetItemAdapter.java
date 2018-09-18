@@ -139,11 +139,11 @@ public class WidgetItemAdapter extends BaseAdapter {
         boolean bShowBatteryStatus = Preferences.getShowBatteryStatus(context, appWidgetId);
         boolean bShowSettings = Preferences.getShowSettings(context, appWidgetId);
 
-        int colorOn = WidgetUpdateService.WIDGET_COLOR_ON;
-        int colorOff = WidgetUpdateService.WIDGET_COLOR_OFF;
-        int colorBackground = WidgetUpdateService.WIDGET_COLOR_BACKGROUND;
-        int colorTextOn = WidgetUpdateService.WIDGET_COLOR_TEXT_ON;
-        int colorTextOff = WidgetUpdateService.WIDGET_COLOR_TEXT_OFF;
+        int colorOn = WidgetIntentDefinitions.WIDGET_COLOR_ON;
+        int colorOff = WidgetIntentDefinitions.WIDGET_COLOR_OFF;
+        int colorBackground = WidgetIntentDefinitions.WIDGET_COLOR_BACKGROUND;
+        int colorTextOn = WidgetIntentDefinitions.WIDGET_COLOR_TEXT_ON;
+        int colorTextOff = WidgetIntentDefinitions.WIDGET_COLOR_TEXT_OFF;
 
         if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
             colorOn = Preferences.getColorOn(context, appWidgetId);

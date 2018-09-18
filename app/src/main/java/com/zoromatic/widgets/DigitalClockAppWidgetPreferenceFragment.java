@@ -666,7 +666,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
                         Toast.makeText(context.getApplicationContext(), getResources().getText(R.string.nolocationdefined), Toast.LENGTH_LONG).show();
                     } else {
                         Intent startIntent = new Intent(context, WidgetUpdateService.class);
-                        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetIntentDefinitions.WEATHER_UPDATE);
+                        startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, WidgetIntentDefinitions.WEATHER_UPDATE);
                         startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
 
                         context.startService(startIntent);
@@ -1259,7 +1259,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
                     summary = getResources().getString(R.string.showweatherwidget);
 
                     Intent startIntent = new Intent(context, WidgetUpdateService.class);
-                    startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetIntentDefinitions.WEATHER_UPDATE);
+                    startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, WidgetIntentDefinitions.WEATHER_UPDATE);
                     startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
 
                     context.startService(startIntent);

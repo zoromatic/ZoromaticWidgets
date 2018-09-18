@@ -16,13 +16,10 @@ import android.util.Log;
 public class WidgetInfoReceiver extends BroadcastReceiver {
 
     private static final String LOG_TAG = "WidgetInfoReceiver";
-    public static final String INTENT_EXTRA = "INTENT_EXTRA";
-    public static final String UPDATE_WEATHER = "UPDATE_WEATHER";
-    public static final String SCHEDULED_UPDATE = "SCHEDULED_UPDATE";
 
-    private int mBatteryLevel = -1;
+    /*private int mBatteryLevel = -1;
     private int mBatteryScale = -1;
-    private int mBatteryStatus = BatteryManager.BATTERY_STATUS_UNKNOWN;
+    private int mBatteryStatus = BatteryManager.BATTERY_STATUS_UNKNOWN;*/
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -37,21 +34,21 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
             ComponentName thisWidget = null;
 
             Intent startIntent = new Intent(context, WidgetUpdateService.class);
-            startIntent.putExtra(INTENT_EXTRA, action);
+            startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, action);
 
             if (action != null) {
                 if (action.equals(WidgetIntentDefinitions.WEATHER_UPDATE)) {
                     int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                             AppWidgetManager.INVALID_APPWIDGET_ID);
 
-                    boolean scheduledUpdate = intent.getBooleanExtra(WidgetInfoReceiver.SCHEDULED_UPDATE, false);
+                    boolean scheduledUpdate = intent.getBooleanExtra(WidgetIntentDefinitions.SCHEDULED_UPDATE, false);
 
                     if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
                         return;
                     }
 
                     startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-                    startIntent.putExtra(WidgetInfoReceiver.SCHEDULED_UPDATE, scheduledUpdate);
+                    startIntent.putExtra(WidgetIntentDefinitions.SCHEDULED_UPDATE, scheduledUpdate);
                 } else {
                     if (action.equals(Intent.ACTION_TIME_CHANGED)
                             || action.equals(Intent.ACTION_TIME_TICK)
@@ -228,8 +225,8 @@ public class WidgetInfoReceiver extends BroadcastReceiver {
 
                             if (!weatherSuccess) {
                                 Intent refreshIntent = new Intent(context, WidgetUpdateService.class);
-                                refreshIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, WidgetIntentDefinitions.WEATHER_UPDATE);
-                                refreshIntent.putExtra(WidgetInfoReceiver.SCHEDULED_UPDATE, true);
+                                refreshIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, WidgetIntentDefinitions.WEATHER_UPDATE);
+                                refreshIntent.putExtra(WidgetIntentDefinitions.SCHEDULED_UPDATE, true);
                                 refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
                                 Log.d(LOG_TAG, "WidgetInfoReceiver onReceive startService(refreshIntent) " + thisWidget.getClassName());

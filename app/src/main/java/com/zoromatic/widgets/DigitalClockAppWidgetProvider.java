@@ -30,8 +30,8 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
         Intent startIntent = new Intent(context, WidgetUpdateService.class);
-        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_TIME_CHANGED);
-        startIntent.putExtra(WidgetInfoReceiver.UPDATE_WEATHER, true);
+        startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, Intent.ACTION_TIME_CHANGED);
+        startIntent.putExtra(WidgetIntentDefinitions.UPDATE_WEATHER, true);
         startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 
         context.startService(startIntent);
@@ -71,8 +71,8 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
             }
 
             Intent startIntent = new Intent(context, WidgetUpdateService.class);
-            startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_TIME_CHANGED);
-            startIntent.putExtra(WidgetInfoReceiver.UPDATE_WEATHER, true);
+            startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, Intent.ACTION_TIME_CHANGED);
+            startIntent.putExtra(WidgetIntentDefinitions.UPDATE_WEATHER, true);
             startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 
             context.startService(startIntent);
@@ -240,7 +240,7 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
     private static PendingIntent createWeatherUpdateEvent(Context context, int appWidgetId) {
         Log.d(LOG_TAG, "DigitalClockAppWidgetProvider createWeatherUpdateEvent");
         Intent intent = new Intent(WidgetIntentDefinitions.WEATHER_UPDATE);
-        intent.putExtra(WidgetInfoReceiver.SCHEDULED_UPDATE, true);
+        intent.putExtra(WidgetIntentDefinitions.SCHEDULED_UPDATE, true);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
         return PendingIntent.getBroadcast(context, appWidgetId,

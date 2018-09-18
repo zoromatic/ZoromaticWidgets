@@ -38,6 +38,16 @@ public class ZoromaticWidgetsApplication extends Application {
         conf.locale = new Locale(lang.toLowerCase());
         res.updateConfiguration(conf, dm);
 
+        startService(new Intent(this, WidgetUpdateService.class));
+
+        WidgetManager widgetManager = new WidgetManager(this);
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, DigitalClockAppWidgetProvider.class));
+
+        widgetManager.updateClockWidgets(this, appWidgetIds, false, false); // do not update weather
+        widgetManager.updatePowerWidgets(this, WidgetIntentDefinitions.POWER_WIDGET_UPDATE_ALL);
+
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !Preferences.getForegroundService(this)) {
             Intent allowForegroundServiceIntent = new Intent(this, AllowForegroundServiceActivity.class);
             startActivity(allowForegroundServiceIntent);

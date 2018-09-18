@@ -1,6 +1,11 @@
 package com.zoromatic.widgets;
 
+import android.graphics.Color;
+
 public class WidgetIntentDefinitions {
+    public static final String INTENT_EXTRA = "INTENT_EXTRA";
+    public static final String UPDATE_WEATHER = "UPDATE_WEATHER";
+    public static final String SCHEDULED_UPDATE = "SCHEDULED_UPDATE";
     public static String BLUETOOTH_WIDGET_UPDATE = "com.zoromatic.widgets.BLUETOOTH_WIDGET_UPDATE";
     public static String WIFI_WIDGET_UPDATE = "com.zoromatic.widgets.WIFI_WIDGET_UPDATE";
     public static String MOBILE_DATA_WIDGET_UPDATE = "com.zoromatic.widgets.MOBILE_DATA_WIDGET_UPDATE";
@@ -59,4 +64,11 @@ public class WidgetIntentDefinitions {
     public static String WEATHER_SERVICE_ID_URL = "http://api.openweathermap.org/data/2.5/weather?id=%d&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
     public static String WEATHER_FORECAST_COORD_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=%f&lon=%f&cnt=7&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
     public static String WEATHER_FORECAST_ID_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?id=%d&cnt=7&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
+
+    static int WIDGET_COLOR_ON = Color.rgb(0x35, 0xB6, 0xE5);
+    static int WIDGET_COLOR_OFF = Color.rgb(0xC0, 0xC0, 0xC0);
+    static int WIDGET_COLOR_TRANSITION = Color.rgb(0xFF, 0x8C, 0x00);
+    static int WIDGET_COLOR_BACKGROUND = Color.rgb(0x00, 0x00, 0x00);
+    static int WIDGET_COLOR_TEXT_ON = Color.rgb(0xFF, 0xFF, 0xFF);
+    static int WIDGET_COLOR_TEXT_OFF = Color.rgb(0xFF, 0xFF, 0xFF);
 }

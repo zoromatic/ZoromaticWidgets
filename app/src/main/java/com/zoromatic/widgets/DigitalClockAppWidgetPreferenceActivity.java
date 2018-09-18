@@ -3,15 +3,10 @@ package com.zoromatic.widgets;
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
 @SuppressLint({"SimpleDateFormat", "NewApi"})
 public class DigitalClockAppWidgetPreferenceActivity extends ThemeAppCompatActivity {
@@ -106,7 +101,7 @@ public class DigitalClockAppWidgetPreferenceActivity extends ThemeAppCompatActiv
     public void onBackPressed() {
 
         Intent startIntent = new Intent(this, WidgetUpdateService.class);
-        startIntent.putExtra(WidgetInfoReceiver.INTENT_EXTRA, Intent.ACTION_TIME_CHANGED);
+        startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, Intent.ACTION_TIME_CHANGED);
         startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
         this.startService(startIntent);
 
