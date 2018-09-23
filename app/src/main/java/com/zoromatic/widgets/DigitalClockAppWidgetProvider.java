@@ -127,6 +127,8 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
         final ComponentName componentName = new ComponentName(context, WidgetUpdateJobService.class);
         int result;
 
+        jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
         if (jobScheduler != null) {
             // cancel previous jobs
             List<JobInfo> allPendingJobs = jobScheduler.getAllPendingJobs();

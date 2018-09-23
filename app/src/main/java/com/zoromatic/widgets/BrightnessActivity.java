@@ -45,7 +45,7 @@ public class BrightnessActivity extends ThemeActivity {
     private static final int SEEK_BAR_RANGE = MAXIMUM_BACKLIGHT - mScreenBrightnessDim;
 
     static DataProviderTask mDataProviderTask;
-    static BrightnessActivity mBrightnessActivity;
+    private BrightnessActivity mBrightnessActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,7 +89,7 @@ public class BrightnessActivity extends ThemeActivity {
 
         alertDialogBuilder.setView(brightnessView);
 
-        seekBarBrightness = (SeekBar) brightnessView.findViewById(R.id.seekBarBrightness);
+        seekBarBrightness = brightnessView.findViewById(R.id.seekBarBrightness);
 
         seekBarBrightness
                 .setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
@@ -126,7 +126,7 @@ public class BrightnessActivity extends ThemeActivity {
 
         seekBarBrightness.setProgress(mOldBrightness - mScreenBrightnessDim);
 
-        checkAuto = (CheckBox) brightnessView.findViewById(R.id.checkBoxBrightness);
+        checkAuto = brightnessView.findViewById(R.id.checkBoxBrightness);
 
         checkAuto.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
