@@ -5,6 +5,8 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 public class GpsAppWidgetProvider extends AppWidgetProvider {
@@ -20,6 +22,9 @@ public class GpsAppWidgetProvider extends AppWidgetProvider {
         Intent startIntent = new Intent(context, WidgetUpdateService.class);
         startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, WidgetIntentDefinitions.UPDATE_SINGLE_GPS_WIDGET);
 
-        context.startService(startIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            ContextCompat.startForegroundService(context, startIntent);
+        else
+            context.startService(startIntent);
     }
 };

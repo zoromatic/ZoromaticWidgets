@@ -5,6 +5,8 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 public class PowerAppWidgetProvider extends AppWidgetProvider {
@@ -20,7 +22,10 @@ public class PowerAppWidgetProvider extends AppWidgetProvider {
         Intent startIntent = new Intent(context, WidgetUpdateService.class);
         startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, WidgetIntentDefinitions.POWER_WIDGET_UPDATE_ALL);
 
-        context.startService(startIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            ContextCompat.startForegroundService(context, startIntent);
+        else
+            context.startService(startIntent);
 
         /*WidgetManager mWidgetManager = new WidgetManager(context);
         mWidgetManager.updatePowerWidgets(context, WidgetUpdateService.POWER_WIDGET_UPDATE_ALL);*/
@@ -34,7 +39,10 @@ public class PowerAppWidgetProvider extends AppWidgetProvider {
         Intent startIntent = new Intent(context, WidgetUpdateService.class);
         startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, WidgetIntentDefinitions.POWER_WIDGET_UPDATE_ALL);
 
-        context.startService(startIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            ContextCompat.startForegroundService(context, startIntent);
+        else
+            context.startService(startIntent);
     }
 
     /*public void updateWidgets(Context context, int[] appWidgetIds, String intentAction, boolean startService) {

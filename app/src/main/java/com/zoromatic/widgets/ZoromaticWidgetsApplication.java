@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 
 public class ZoromaticWidgetsApplication extends Application {
@@ -38,7 +39,10 @@ public class ZoromaticWidgetsApplication extends Application {
         conf.locale = new Locale(lang.toLowerCase());
         res.updateConfiguration(conf, dm);
 
-        startService(new Intent(this, WidgetUpdateService.class));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            ContextCompat.startForegroundService(this, new Intent(this, WidgetUpdateService.class));
+        else
+            startService(new Intent(this, WidgetUpdateService.class));
 
         WidgetManager widgetManager = new WidgetManager(this);
 

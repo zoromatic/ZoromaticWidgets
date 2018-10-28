@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
@@ -34,7 +35,10 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
         startIntent.putExtra(WidgetIntentDefinitions.UPDATE_WEATHER, true);
         startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 
-        context.startService(startIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            ContextCompat.startForegroundService(context, startIntent);
+        else
+            context.startService(startIntent);
 
         for (int appWidgetId : appWidgetIds) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -75,7 +79,10 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
             startIntent.putExtra(WidgetIntentDefinitions.UPDATE_WEATHER, true);
             startIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 
-            context.startService(startIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                ContextCompat.startForegroundService(context, startIntent);
+            else
+                context.startService(startIntent);
         }
     }
 

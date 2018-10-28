@@ -4,6 +4,8 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 public class WifiAppWidgetProvider extends AppWidgetProvider {
@@ -18,6 +20,9 @@ public class WifiAppWidgetProvider extends AppWidgetProvider {
         Intent startIntent = new Intent(context, WidgetUpdateService.class);
         startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, WidgetIntentDefinitions.UPDATE_SINGLE_WIFI_WIDGET);
 
-        context.startService(startIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            ContextCompat.startForegroundService(context, startIntent);
+        else
+            context.startService(startIntent);
     }
 };

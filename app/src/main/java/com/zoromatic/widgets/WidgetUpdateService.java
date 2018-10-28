@@ -293,6 +293,10 @@ public class WidgetUpdateService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        /*if (Build.VERSION.SDK_INT >= VERSION_CODES.N) {
+            showNotification(Preferences.getForegroundService(this));
+        }*/
     }
 
     @Override

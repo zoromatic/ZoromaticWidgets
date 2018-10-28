@@ -64,15 +64,21 @@
         <item>Namskin [12:35]</item>
         <item>Raconteur [12:35]</item>
         <item>Longdon [12:35]</item>
-        <item>Nickelodeon [12:35]</item>
         <item>Rialto [12:35]</item>
         <item>Wickhop [12:35]</item>
         <item>Belepotan [12:35]</item>
         <item>Coggers [12:35]</item>
         <item>Devonshire [12:35]</item>
         <item>Android 7 [12:35]</item>
-        <item>Banthers [12:35]</item>
         <item>Cornerstone [12:35]</item>
+        <item>Bauer [12:35]</item>
+        <item>Blazed [12:35]</item>
+        <item>Calypsoka [12:35]</item>
+        <item>Clubland [12:35]</item>
+        <item>Hacked [12:35]</item>
+        <item>Station [12:35]</item>
+        <item>AllStar [12:35]</item>
+        <item>Karate [12:35]</item>
     </string-array>
     <string-array name="fontValues">
         <item>0</item>
@@ -107,6 +113,12 @@
         <item>29</item>
         <item>30</item>
         <item>31</item>
+        <item>32</item>
+        <item>33</item>
+        <item>34</item>
+        <item>35</item>
+        <item>36</item>
+        <item>37</item>
     </string-array>
     <array name="fontPathValues">
         <item>fonts/Roboto.ttf</item>
@@ -132,15 +144,21 @@
         <item>fonts/Namskin.ttf</item>
         <item>fonts/Raconteur.ttf</item>
         <item>fonts/Longdon.ttf</item>
-        <item>fonts/Nickelodeon.ttf</item>
         <item>fonts/Rialto.ttf</item>
         <item>fonts/Wickhop.ttf</item>
         <item>fonts/Belepotan.ttf</item>
         <item>fonts/CoggersTariqa.ttf</item>
         <item>fonts/Devonshire.ttf</item>
         <item>fonts/Android7.ttf</item>
-        <item>fonts/Banthers.ttf</item>
         <item>fonts/Cornerstone.ttf</item>
+        <item>fonts/Bauer.ttf</item>
+        <item>fonts/Blazed.ttf</item>
+        <item>fonts/Calypsoka.ttf</item>
+        <item>fonts/Clubland.ttf</item>
+        <item>fonts/Hacked.ttf</item>
+        <item>fonts/Station.ttf</item>
+        <item>fonts/AllStar.ttf</item>
+        <item>fonts/Karate.ttf</item>
     </array>
     <string-array name="dateFormat">
         <item>dd.MM.yyyy</item>
