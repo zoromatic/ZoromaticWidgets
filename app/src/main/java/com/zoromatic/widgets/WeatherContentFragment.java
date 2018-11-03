@@ -422,6 +422,22 @@ public class WeatherContentFragment extends Fragment {
                             resource = R.drawable.icon8_weather_04d;
                             imageArr = conditions.m_ImageArrIcon8;
                             break;
+                        case 19:
+                            resource = R.drawable.crystal_weather_04d;
+                            imageArr = conditions.m_ImageArrCrystal;
+                            break;
+                        case 20:
+                            resource = R.drawable.deszone_weather_04d;
+                            imageArr = conditions.m_ImageArrDesZone;
+                            break;
+                        case 21:
+                            resource = R.drawable.modern_weather_04d;
+                            imageArr = conditions.m_ImageArrModern;
+                            break;
+                        case 22:
+                            resource = R.drawable.simplistic_weather_04d;
+                            imageArr = conditions.m_ImageArrSimplistic;
+                            break;
                         default:
                             resource = R.drawable.tick_weather_04d;
                             imageArr = conditions.m_ImageArrTick;
@@ -716,6 +732,22 @@ public class WeatherContentFragment extends Fragment {
                     case 18:
                         iconID = R.drawable.icon8_weather_04d;
                         imageArr = conditions.m_ImageArrIcon8;
+                        break;
+                    case 19:
+                        iconID = R.drawable.crystal_weather_04d;
+                        imageArr = conditions.m_ImageArrCrystal;
+                        break;
+                    case 20:
+                        iconID = R.drawable.deszone_weather_04d;
+                        imageArr = conditions.m_ImageArrDesZone;
+                        break;
+                    case 21:
+                        iconID = R.drawable.modern_weather_04d;
+                        imageArr = conditions.m_ImageArrModern;
+                        break;
+                    case 22:
+                        iconID = R.drawable.simplistic_weather_04d;
+                        imageArr = conditions.m_ImageArrSimplistic;
                         break;
                     default:
                         iconID = R.drawable.tick_weather_04d;

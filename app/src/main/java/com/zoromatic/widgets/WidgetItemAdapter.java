@@ -153,7 +153,7 @@ public class WidgetItemAdapter extends BaseAdapter {
             colorTextOff = Preferences.getColorTextOff(context, appWidgetId);
         }
 
-		ImageView tempImageViewBackground = holder.linearLayout.findViewById(R.id.backgroundImage);
+        ImageView tempImageViewBackground = holder.linearLayout.findViewById(R.id.backgroundImage);
 
         if (tempImageViewBackground != null) {
             int iOpacity = Preferences.getPowerOpacity(context, appWidgetId);
@@ -500,7 +500,7 @@ public class WidgetItemAdapter extends BaseAdapter {
                 int status = BatteryManager.BATTERY_STATUS_UNKNOWN;
 
                 Intent batteryIntent = context.registerReceiver(
-                null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+                        null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
                 int rawLevel = 0;
 
                 if (batteryIntent != null) {
@@ -1319,6 +1319,22 @@ public class WidgetItemAdapter extends BaseAdapter {
                                 case 18:
                                     resource = R.drawable.icon8_weather_04d;
                                     imageArr = conditions.m_ImageArrIcon8;
+                                    break;
+                                case 19:
+                                    resource = R.drawable.crystal_weather_04d;
+                                    imageArr = conditions.m_ImageArrCrystal;
+                                    break;
+                                case 20:
+                                    resource = R.drawable.deszone_weather_04d;
+                                    imageArr = conditions.m_ImageArrDesZone;
+                                    break;
+                                case 21:
+                                    resource = R.drawable.modern_weather_04d;
+                                    imageArr = conditions.m_ImageArrModern;
+                                    break;
+                                case 22:
+                                    resource = R.drawable.simplistic_weather_04d;
+                                    imageArr = conditions.m_ImageArrSimplistic;
                                     break;
                                 default:
                                     resource = R.drawable.tick_weather_04d;
