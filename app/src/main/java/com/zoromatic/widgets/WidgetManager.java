@@ -1879,7 +1879,14 @@ public class WidgetManager {
                 Preferences.setLastRefresh(mContext, appWidgetId, System.currentTimeMillis());
 
                 //if (scheduledUpdate)
-                    Preferences.setWeatherSuccess(mContext, appWidgetId, true);
+                Preferences.setWeatherSuccess(mContext, appWidgetId, true);
+
+                // reset automated refresh service / job
+                if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    DigitalClockAppWidgetProvider.scheduleJob(mContext, appWidgetId);
+                } else {
+                    DigitalClockAppWidgetProvider.setAlarm(mContext, appWidgetId);
+                }
             }
 
             long lastRefresh = Preferences.getLastRefresh(mContext, appWidgetId);
