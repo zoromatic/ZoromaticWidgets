@@ -1878,7 +1878,7 @@ public class WidgetManager {
             if (!updateFromCache) {
                 Preferences.setLastRefresh(mContext, appWidgetId, System.currentTimeMillis());
 
-                if (scheduledUpdate)
+                //if (scheduledUpdate)
                     Preferences.setWeatherSuccess(mContext, appWidgetId, true);
             }
 
