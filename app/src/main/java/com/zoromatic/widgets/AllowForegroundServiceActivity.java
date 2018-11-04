@@ -46,7 +46,7 @@ public class AllowForegroundServiceActivity extends ThemeActivity {
         alertDialogBuilder
                 .setTitle(getResources().getString(R.string.title_activity_allow_foreground))
                 .setMessage(getString(R.string.allow_foreground_text))
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.label_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Preferences.setForegroundService(getDialogContext(), true);
@@ -54,7 +54,7 @@ public class AllowForegroundServiceActivity extends ThemeActivity {
                         finish();
                     }
                 })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.label_no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Preferences.setForegroundService(getDialogContext(), false);

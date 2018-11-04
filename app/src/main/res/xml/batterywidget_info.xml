@@ -2,4 +2,4 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="@dimen/cell_size_1"
     android:minHeight="@dimen/cell_size_1"
-    android:initialLayout="@layout/batterywidget"></appwidget-provider>
+    android:initialLayout="@layout/batterywidget" />
