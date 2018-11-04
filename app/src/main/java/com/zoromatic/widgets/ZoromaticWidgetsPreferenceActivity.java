@@ -107,7 +107,7 @@ public class ZoromaticWidgetsPreferenceActivity extends ThemeAppCompatActivity {
                 getMenuInflater().inflate(R.menu.on_off_menu, menu);
 
                 MenuItem switchItem = menu.findItem(R.id.on_off_switch);
-                SwitchCompat switchCompat = (SwitchCompat) MenuItemCompat.getActionView(switchItem);
+                SwitchCompat switchCompat = (SwitchCompat) switchItem.getActionView();
 
                 if (switchCompat != null) {
                     switchCompat.setOnCheckedChangeListener(new OnCheckedChangeListener() {

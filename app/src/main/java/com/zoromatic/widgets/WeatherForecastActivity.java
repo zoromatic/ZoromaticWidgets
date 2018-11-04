@@ -110,7 +110,7 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
         setContentView(R.layout.weatherforecast);
 
         initView();
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initDrawer();
 
@@ -148,9 +148,10 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
             getApplicationContext().startService(refreshIntent);
 
             if (refreshItem != null && rotation != null) {
+                ImageView imageRefresh = (ImageView) refreshItem.getActionView();
 
-                if (MenuItemCompat.getActionView(refreshItem) != null) {
-                    MenuItemCompat.getActionView(refreshItem).startAnimation(rotation);
+                if (imageRefresh != null) {
+                    imageRefresh.startAnimation(rotation);
                 }
             }
         }
@@ -171,11 +172,11 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
     private void initView() {
         String theme = Preferences.getMainTheme(this);
 
-        leftDrawerList = (ListView) findViewById(R.id.left_drawer);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        leftDrawerList = findViewById(R.id.left_drawer);
+        toolbar = findViewById(R.id.toolbar);
+        drawerLayout = findViewById(R.id.drawerLayout);
 
-        List<RowItem> rowItems = new ArrayList<RowItem>();
+        List<RowItem> rowItems = new ArrayList<>();
 
         RowItem item = new RowItem(theme.compareToIgnoreCase("light") == 0 ? R.drawable.ic_refresh_black_48dp : R.drawable.ic_refresh_white_48dp,
                 (String) getResources().getText(R.string.refresh), false);
@@ -289,16 +290,17 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
 
         if (refreshItem != null) {
             final Menu menuFinal = menu;
+            ImageView imageRefresh = (ImageView) refreshItem.getActionView();
 
-            if (MenuItemCompat.getActionView(refreshItem) != null) {
+            if (imageRefresh != null) {
                 TypedValue outValue = new TypedValue();
                 getTheme().resolveAttribute(R.attr.iconRefresh,
                         outValue,
                         true);
                 int refreshIcon = outValue.resourceId;
-                ((ImageView) MenuItemCompat.getActionView(refreshItem)).setImageResource(refreshIcon);
+                imageRefresh.setImageResource(refreshIcon);
 
-                MenuItemCompat.getActionView(refreshItem).setOnClickListener(new OnClickListener() {
+                imageRefresh.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         menuFinal.performIdentifierAction(refreshItem.getItemId(), 0);
@@ -527,9 +529,10 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
         if (mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
 
             if (refreshItem != null) {
+                ImageView imageRefresh = (ImageView) refreshItem.getActionView();
 
-                if (MenuItemCompat.getActionView(refreshItem) != null) {
-                    MenuItemCompat.getActionView(refreshItem).clearAnimation();
+                if (imageRefresh != null) {
+                    imageRefresh.clearAnimation();
                 }
             }
 
