@@ -3,6 +3,7 @@ package com.zoromatic.widgets;
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -37,9 +38,19 @@ public class PowerAppWidgetPreferenceActivity extends ThemeAppCompatActivity {
             finish();
         }
 
+        setActivity();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !Preferences.getForegroundService(this)
+                && !Preferences.getForegroundServiceDontShow(this)) {
+            Intent allowForegroundServiceIntent = new Intent(this, AllowForegroundServiceActivity.class);
+            startActivity(allowForegroundServiceIntent);
+        }
+    }
+
+    private void setActivity() {
         setContentView(R.layout.activity_prefs);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
         }

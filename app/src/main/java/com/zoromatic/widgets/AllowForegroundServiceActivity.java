@@ -2,6 +2,7 @@ package com.zoromatic.widgets;
 
 import android.annotation.TargetApi;
 import android.app.Dialog;
+import android.appwidget.AppWidgetManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -18,15 +19,46 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 public class AllowForegroundServiceActivity extends ThemeActivity {
-
+    int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private static String LOG_TAG = "WriteSettingsActivity";
+    static final String APPWIDGETID = "AppWidgetId";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        displayDialog();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
+            finish();
+
+        if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+            // Find the widget id from the intent.
+            Intent intent = getIntent();
+            Bundle extras = intent.getExtras();
+
+            if (extras != null) {
+                if (extras.get(AppWidgetManager.EXTRA_APPWIDGET_ID) != null) {
+                    mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+                }
+            } else {
+                if (savedInstanceState != null) {
+                    mAppWidgetId = savedInstanceState.getInt(APPWIDGETID);
+                }
+            }
+        }
+
+        if ((mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) || ((mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) &&
+            !Preferences.getForegroundService(this) && !Preferences.getForegroundServiceDontShow(this))) {
+            getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            displayDialog();
+        } else {
+            if (mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                Intent intent = new Intent();
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+                setResult(RESULT_OK, intent);
+            }
+
+            finish();
+        }
     }
 
     private void displayDialog() {
@@ -51,6 +83,13 @@ public class AllowForegroundServiceActivity extends ThemeActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Preferences.setForegroundService(getDialogContext(), true);
                         Preferences.setForegroundServiceDontShowKey(getDialogContext(), checkBox.isChecked());
+
+                        if (mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                            Intent intent = new Intent();
+                            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+                            setResult(RESULT_OK, intent);
+                        }
+
                         finish();
                     }
                 })
@@ -59,6 +98,13 @@ public class AllowForegroundServiceActivity extends ThemeActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Preferences.setForegroundService(getDialogContext(), false);
                         Preferences.setForegroundServiceDontShowKey(getDialogContext(), checkBox.isChecked());
+
+                        if (mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                            Intent intent = new Intent();
+                            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+                            setResult(RESULT_OK, intent);
+                        }
+
                         finish();
                     }
                 })
@@ -126,5 +172,20 @@ public class AllowForegroundServiceActivity extends ThemeActivity {
         super.onResume();
 
         this.setTitle(getResources().getString(R.string.title_activity_allow_foreground));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        savedInstanceState.putInt(APPWIDGETID, mAppWidgetId);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(savedInstanceState);
+
+        mAppWidgetId = savedInstanceState.getInt(APPWIDGETID);
     }
 }

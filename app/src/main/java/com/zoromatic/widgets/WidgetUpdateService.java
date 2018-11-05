@@ -55,29 +55,11 @@ public class WidgetUpdateService extends Service {
     private WidgetLocationListener mLocListener = null;
     private BrightnessObserver mSettingsObserver;
     private RotationObserver mRotationObserver;
-    //private static Camera camera;
-    //private static boolean flashOn = false;
 
     WidgetManager mWidgetManager = null;
 
     private static IntentFilter mIntentFilter;
     private WidgetInfoReceiver mWidgetInfo = null;
-
-    /*public static String WEATHER_SERVICE_COORD_URL = "http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
-    public static String WEATHER_SERVICE_ID_URL = "http://api.openweathermap.org/data/2.5/weather?id=%d&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
-    public static String WEATHER_FORECAST_COORD_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=%f&lon=%f&cnt=7&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
-    public static String WEATHER_FORECAST_ID_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?id=%d&cnt=7&lang=%s&APPID=364a27c67e53df61c49db6e5bdf26aa5";
-
-    static int WIDGET_COLOR_ON = Color.rgb(0x35, 0xB6, 0xE5);
-    static int WIDGET_COLOR_OFF = Color.rgb(0xC0, 0xC0, 0xC0);
-    static int WIDGET_COLOR_TRANSITION = Color.rgb(0xFF, 0x8C, 0x00);
-    static int WIDGET_COLOR_BACKGROUND = Color.rgb(0x00, 0x00, 0x00);
-    static int WIDGET_COLOR_TEXT_ON = Color.rgb(0xFF, 0xFF, 0xFF);
-    static int WIDGET_COLOR_TEXT_OFF = Color.rgb(0xFF, 0xFF, 0xFF);
-
-    private final static String COMMAND_L_ON = "svc data enable\n ";
-    private final static String COMMAND_L_OFF = "svc data disable\n ";
-    private final static String COMMAND_SU = "su";*/
 
     private int mBatteryLevel = -1;
     private int mBatteryScale = -1;
