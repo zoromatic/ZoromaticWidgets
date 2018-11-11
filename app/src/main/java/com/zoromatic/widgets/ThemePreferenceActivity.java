@@ -22,9 +22,9 @@ public class ThemePreferenceActivity extends PreferenceActivity {
     protected Toolbar mToolBar;
 
     protected void onCreate(Bundle savedInstanceState) {
-        setCustomTheme();
-
         super.onCreate(savedInstanceState);
+
+        setCustomTheme();
 
         String lang = Preferences.getLanguageOptions(this);
 
@@ -116,9 +116,9 @@ public class ThemePreferenceActivity extends PreferenceActivity {
 
     @Override
     protected void onResume() {
-        setCustomTheme();
-
         super.onResume();
+
+        setCustomTheme();
     }
 
     public void setCustomTheme() {
