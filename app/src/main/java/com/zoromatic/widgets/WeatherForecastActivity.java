@@ -20,7 +20,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -30,7 +29,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -50,10 +48,10 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     public static final int ACTIVITY_SETTINGS = 0;
     private BroadcastReceiver mReceiver;
-    private Toolbar toolbar;
-    private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle drawerToggle;
-    private ListView leftDrawerList;
+    private Toolbar mToolbar;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private ListView mLeftDrawerList;
 
     public static final String DRAWEROPEN = "draweropen";
     private boolean mDrawerOpen = false;
@@ -66,11 +64,10 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
 
     private ProgressDialogFragment mProgressFragment = null;
 
-    static DataProviderTask mDataProviderTask;
+    static DataProviderTask dataProviderTask;
     public WeatherForecastActivity mWeatherForecastActivity;
-    private MenuItem refreshItem = null;
-    LayoutInflater inflater = null;
-    Animation rotation = null;
+    private MenuItem mRefreshItem = null;
+    Animation mRotation = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,11 +107,11 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
         setContentView(R.layout.weatherforecast);
 
         initView();
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
         initDrawer();
 
-        rotation = AnimationUtils.loadAnimation(this, R.anim.animate_menu);
+        mRotation = AnimationUtils.loadAnimation(this, R.anim.animate_menu);
 
         // Show the ProgressDialogFragment on this thread
         mProgressFragment = new ProgressDialogFragment();
@@ -125,14 +122,14 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
         mProgressFragment.show(getSupportFragmentManager(), "tagProgress");
 
         // Start a new thread that will download all the data
-        mDataProviderTask = new DataProviderTask();
-        mDataProviderTask.setActivity(mWeatherForecastActivity);
-        mDataProviderTask.execute();
+        dataProviderTask = new DataProviderTask();
+        dataProviderTask.setActivity(mWeatherForecastActivity);
+        dataProviderTask.execute();
     }
 
     @SuppressLint("NewApi")
     public void refreshData() {
-        drawerLayout.closeDrawers();
+        mDrawerLayout.closeDrawers();
         mDrawerOpen = false;
 
         float lat = Preferences.getLocationLat(getApplicationContext(), mAppWidgetId);
@@ -147,18 +144,18 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
             refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
             getApplicationContext().startService(refreshIntent);
 
-            if (refreshItem != null && rotation != null) {
-                ImageView imageRefresh = (ImageView) refreshItem.getActionView();
+            if (mRefreshItem != null && mRotation != null) {
+                ImageView imageRefresh = (ImageView) mRefreshItem.getActionView();
 
                 if (imageRefresh != null) {
-                    imageRefresh.startAnimation(rotation);
+                    imageRefresh.startAnimation(mRotation);
                 }
             }
         }
     }
 
     public void openSettings() {
-        drawerLayout.closeDrawers();
+        mDrawerLayout.closeDrawers();
         mDrawerOpen = false;
 
         Intent settingsIntent = new Intent(getApplicationContext(), DigitalClockAppWidgetPreferenceActivity.class);
@@ -172,9 +169,9 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
     private void initView() {
         String theme = Preferences.getMainTheme(this);
 
-        leftDrawerList = findViewById(R.id.left_drawer);
-        toolbar = findViewById(R.id.toolbar);
-        drawerLayout = findViewById(R.id.drawerLayout);
+        mLeftDrawerList = findViewById(R.id.left_drawer);
+        mToolbar = findViewById(R.id.toolbar);
+        mDrawerLayout = findViewById(R.id.drawerLayout);
 
         List<RowItem> rowItems = new ArrayList<>();
 
@@ -186,20 +183,20 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
         rowItems.add(item);
 
         ItemAdapter adapter = new ItemAdapter(this, rowItems);
-        leftDrawerList.setAdapter(adapter);
+        mLeftDrawerList.setAdapter(adapter);
 
-        leftDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        mLeftDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         if (theme.compareToIgnoreCase("light") == 0) {
-            leftDrawerList.setBackgroundColor(getResources().getColor(android.R.color.white));
+            mLeftDrawerList.setBackgroundColor(getResources().getColor(android.R.color.white));
         } else {
-            leftDrawerList.setBackgroundColor(getResources().getColor(android.R.color.black));
+            mLeftDrawerList.setBackgroundColor(getResources().getColor(android.R.color.black));
         }
     }
 
     private void initDrawer() {
 
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close) {
 
             @Override
             public void onDrawerClosed(View drawerView) {
@@ -214,13 +211,13 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
             }
         };
 
-        drawerLayout.setDrawerListener(drawerToggle);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        drawerToggle.syncState();
+        mDrawerToggle.syncState();
     }
 
     // The click listener for ListView in the navigation drawer
@@ -232,8 +229,8 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
     }
 
     private void selectItem(int position) {
-        leftDrawerList.setItemChecked(position, true);
-        drawerLayout.closeDrawers();
+        mLeftDrawerList.setItemChecked(position, true);
+        mDrawerLayout.closeDrawers();
         mDrawerOpen = false;
 
         switch (position) {
@@ -274,10 +271,10 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
         mCurrentItem = savedInstanceState.getInt(KEY_CURRENT_ITEM);
 
         if (mDrawerOpen) {
-            if (drawerLayout != null) {
-                drawerLayout.openDrawer(Gravity.LEFT);
+            if (mDrawerLayout != null) {
+                mDrawerLayout.openDrawer(Gravity.LEFT);
                 mDrawerOpen = true;
-                drawerToggle.syncState();
+                mDrawerToggle.syncState();
             }
         }
     }
@@ -286,11 +283,11 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.weatherforecastmenu, menu);
 
-        refreshItem = menu.findItem(R.id.refresh);
+        mRefreshItem = menu.findItem(R.id.refresh);
 
-        if (refreshItem != null) {
+        if (mRefreshItem != null) {
             final Menu menuFinal = menu;
-            ImageView imageRefresh = (ImageView) refreshItem.getActionView();
+            ImageView imageRefresh = (ImageView) mRefreshItem.getActionView();
 
             if (imageRefresh != null) {
                 TypedValue outValue = new TypedValue();
@@ -303,7 +300,7 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
                 imageRefresh.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        menuFinal.performIdentifierAction(refreshItem.getItemId(), 0);
+                        menuFinal.performIdentifierAction(mRefreshItem.getItemId(), 0);
                     }
                 });
             }
@@ -313,7 +310,7 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (drawerToggle.onOptionsItemSelected(item)) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
 
@@ -348,9 +345,9 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
             mProgressFragment.show(getSupportFragmentManager(), "tagProgress");
 
             // Start a new thread that will download all the data
-            mDataProviderTask = new DataProviderTask();
-            mDataProviderTask.setActivity(mWeatherForecastActivity);
-            mDataProviderTask.execute();
+            dataProviderTask = new DataProviderTask();
+            dataProviderTask.setActivity(mWeatherForecastActivity);
+            dataProviderTask.execute();
         }
     }
 
@@ -527,15 +524,6 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
     @SuppressLint("NewApi")
     void readCachedData(Context context) {
         if (mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-
-            if (refreshItem != null) {
-                ImageView imageRefresh = (ImageView) refreshItem.getActionView();
-
-                if (imageRefresh != null) {
-                    imageRefresh.clearAnimation();
-                }
-            }
-
             if (mTabs != null) {
                 for (ForecastPagerItem tab : mTabs) {
                     WeatherContentFragment fragment = tab.getFragment();
@@ -548,6 +536,14 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
                             swipeLayoutFragment.setRefreshing(false);
                         }
                     }
+                }
+            }
+
+            if (mRefreshItem != null) {
+                ImageView imageRefresh = (ImageView) mRefreshItem.getActionView();
+
+                if (imageRefresh != null) {
+                    imageRefresh.clearAnimation();
                 }
             }
         }
@@ -588,16 +584,16 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mDataProviderTask != null) {
-            mDataProviderTask.cancel(true);
+        if (dataProviderTask != null) {
+            dataProviderTask.cancel(true);
         }
 
         if (!mDrawerOpen) {
             super.onBackPressed();
             finish();
         } else {
-            if (drawerLayout != null) {
-                drawerLayout.closeDrawers();
+            if (mDrawerLayout != null) {
+                mDrawerLayout.closeDrawers();
             }
             mDrawerOpen = false;
         }

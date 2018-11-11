@@ -393,6 +393,13 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
                         Preferences.setLanguageOptions(context, "en");
                     }
 
+                    // Change locale settings in the application
+                    Resources res = context.getResources();
+                    DisplayMetrics dm = res.getDisplayMetrics();
+                    android.content.res.Configuration conf = res.getConfiguration();
+                    conf.locale = new Locale(language.getValue().toLowerCase());
+                    res.updateConfiguration(conf, dm);
+
                     Intent startIntent = new Intent(context, WidgetUpdateService.class);
                     startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, WidgetIntentDefinitions.UPDATE_WIDGETS);
 
