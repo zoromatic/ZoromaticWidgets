@@ -1,5 +1,6 @@
 package com.zoromatic.widgets;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -65,7 +66,7 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
     private ProgressDialogFragment mProgressFragment = null;
 
     static DataProviderTask dataProviderTask;
-    public WeatherForecastActivity mWeatherForecastActivity;
+    public WeakReference<WeatherForecastActivity> mWeatherForecastActivity;
     private MenuItem mRefreshItem = null;
     Animation mRotation = null;
 
@@ -81,7 +82,7 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        mWeatherForecastActivity = this;
+        mWeatherForecastActivity = new WeakReference<>(this);
 
         String lang = Preferences.getLanguageOptions(this);
 
@@ -211,7 +212,7 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
             }
         };
 
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
     }
 
     @Override
@@ -351,11 +352,9 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
         }
     }
 
-    public boolean loadData() {
+    public void loadData() {
         try {
             if (mTabs != null) {
-                //Thread.sleep(3000);
-
                 for (ForecastPagerItem tab : mTabs) {
                     tab.setFragment(null);
                 }
@@ -419,14 +418,12 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
                 dbHelper.close();
             }
 
-            return true;
-        } catch (Exception e) {
-            return false;
+        } catch (Exception ignored) {
         }
 
     }
 
-    public boolean setSliders() {
+    public void setFragments() {
         if (mTabs != null) {
             TypedValue outValue = new TypedValue();
             getTheme().resolveAttribute(R.attr.colorPrimary,
@@ -444,8 +441,8 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
                     true);
             int tabTextColor = getResources().getColor(outValue.resourceId);
 
-            TabLayout mSlidingTabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-            mViewPager = (ViewPager) findViewById(R.id.viewpager);
+            TabLayout mSlidingTabLayout = findViewById(R.id.sliding_tabs);
+            mViewPager = findViewById(R.id.viewpager);
             ForecastFragmentPagerAdapter mFragmentPagerAdapter = new ForecastFragmentPagerAdapter(getSupportFragmentManager());
 
             mViewPager.setAdapter(mFragmentPagerAdapter);
@@ -480,20 +477,19 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
             }
         }
 
-        return true;
     }
 
-    private class DataProviderTask extends AsyncTask<Void, Void, Void> {
+    private static class DataProviderTask extends AsyncTask<Void, Void, Void> {
 
-        WeatherForecastActivity weatherForecastActivity = null;
+        WeakReference<WeatherForecastActivity> mWeatherForecastActivity = null;
 
-        void setActivity(WeatherForecastActivity activity) {
-            weatherForecastActivity = activity;
+        void setActivity(WeakReference<WeatherForecastActivity> activity) {
+            mWeatherForecastActivity = activity;
         }
 
         @SuppressWarnings("unused")
-        WeatherForecastActivity getActivity() {
-            return weatherForecastActivity;
+        WeakReference<WeatherForecastActivity> getActivity() {
+            return mWeatherForecastActivity;
         }
 
         @Override
@@ -505,7 +501,7 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
         protected Void doInBackground(Void... params) {
             Log.i(LOG_TAG, "WeatherForecastActivity - Background thread starting");
 
-            weatherForecastActivity.loadData();
+            mWeatherForecastActivity.get().loadData();
 
             return null;
         }
@@ -513,10 +509,10 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
 
-            weatherForecastActivity.setSliders();
+            mWeatherForecastActivity.get().setFragments();
 
-            if (weatherForecastActivity.mProgressFragment != null) {
-                weatherForecastActivity.mProgressFragment.dismiss();
+            if (mWeatherForecastActivity.get().mProgressFragment != null) {
+                mWeatherForecastActivity.get().mProgressFragment.dismiss();
             }
         }
     }
@@ -602,7 +598,7 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
     static class ForecastPagerItem {
         private CharSequence mTitle;
         private final int mIndicatorColor;
-        private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+        private int mAppWidgetId;
         private long mLocationId;
 
         private WeatherContentFragment mFragment;

@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -143,7 +144,8 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
 
     static HttpTask mHttpTask;
     static DataProviderTask mDataProviderTask;
-    static ConfigureLocationActivity mConfigurationActivity;
+    static WeakReference<ConfigureLocationActivity> mWeakConfigureLocationActivity;
+    ConfigureLocationActivity mConfigureLocationActivity;
 
     static CharSequence[] items = null;
     static JSONArray list = null;
@@ -176,29 +178,22 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
             return;
         }
 
-        mConfigurationActivity = this;
+        mWeakConfigureLocationActivity = new WeakReference<>(this);
+        mConfigureLocationActivity = mWeakConfigureLocationActivity.get();
+
         mDbHelper = new SQLiteDbAdapter(this);
 
         displayActivity();
 
         if (mHttpTask != null) {
-            mHttpTask.setActivity(mConfigurationActivity);
+            mHttpTask.setActivity(mWeakConfigureLocationActivity);
         }
-
-		/*TypedValue outValue = new TypedValue();
-        getTheme().resolveAttribute( R.attr.colorPrimary,
-		                             outValue,
-		                             true );
-		int primaryColor = outValue.resourceId;
-
-		setStatusBarColor( findViewById( R.id.statusBarBackground ),
-		                   getResources().getColor( primaryColor ) );*/
     }
 
     private void displayActivity() {
         setContentView(R.layout.configurelocation);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
@@ -206,7 +201,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
             actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
         }
 
-        mListView = (ListView) findViewById(R.id.listLocations);
+        mListView = findViewById(R.id.listLocations);
 
         //create location in database from old preferences
         if (Preferences.getLocationType(getDialogContext(), mAppWidgetId) == LOCATION_TYPE_CUSTOM) {
@@ -242,8 +237,6 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
             mDbHelper.close();
         }
 
-        //fillData();
-
         // Show the ProgressDialogFragment on this thread
         mProgressFragment = new ProgressDialogFragment();
         Bundle args = new Bundle();
@@ -256,11 +249,6 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                /*Intent i = new Intent(view.getContext(), LocationsEdit.class);
-		        i.putExtra(SQLiteDbAdapter.KEY_ROWID, id);
-		        startActivityForResult(i, ACTIVITY_EDIT);*/
-
-                // make default
                 makeDefault(id);
             }
         });
@@ -277,7 +265,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
                 View tempView = getViewByPosition(position, mListView);
 
                 if (tempView != null) {
-                    CheckBox checkBox = (CheckBox) tempView.findViewById(R.id.checkBoxSelect);
+                    CheckBox checkBox = tempView.findViewById(R.id.checkBoxSelect);
 
                     if (checkBox != null) {
                         checkBox.setChecked(true);
@@ -290,7 +278,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
 
         registerForContextMenu(mListView);
 
-        mCheckCurrent = (CheckBox) findViewById(R.id.checkCurrent);
+        mCheckCurrent = findViewById(R.id.checkCurrent);
 
         mCheckCurrent.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
@@ -347,7 +335,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
 
         // Start a new thread that will download all the data
         mDataProviderTask = new DataProviderTask();
-        mDataProviderTask.setActivity(mConfigurationActivity);
+        mDataProviderTask.setActivity(mWeakConfigureLocationActivity);
         mDataProviderTask.execute();
     }
 
@@ -387,7 +375,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
         if (view == null)
             return;
 
-        TextView text = (TextView) view.findViewById(R.id.label);
+        TextView text = view.findViewById(R.id.label);
         String strLabel = "L";
 
         if (text != null) {
@@ -399,9 +387,9 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
                 strLabel = "L";
         }
 
-        ImageView image = (ImageView) view.findViewById(R.id.iconWeather);
+        ImageView image = view.findViewById(R.id.iconWeather);
+
         if (image != null) {
-            //image.setColorFilter(colorAccent);
             image.setVisibility(mActivityDelete ? View.GONE : View.VISIBLE);
 
             final Resources res = getDialogContext().getResources();
@@ -413,7 +401,8 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
             image.setImageBitmap(letterTile);
         }
 
-        CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBoxSelect);
+        CheckBox checkBox = view.findViewById(R.id.checkBoxSelect);
+
         if (checkBox != null) {
             checkBox.setVisibility(mActivityDelete ? View.VISIBLE : View.GONE);
 
@@ -423,8 +412,8 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
     }
 
     private class CustomSimpleCursorAdapter extends SimpleCursorAdapter {
-        public CustomSimpleCursorAdapter(Context context, int layout, Cursor c,
-                                         String[] from, int[] to) {
+        CustomSimpleCursorAdapter(Context context, int layout, Cursor c,
+                                  String[] from, int[] to) {
             super(context, layout, c, from, to);
             // TODO Auto-generated constructor stub
         }
@@ -441,16 +430,16 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
         }
     }
 
-    private class DataProviderTask extends AsyncTask<Void, Void, Void> {
+    private static class DataProviderTask extends AsyncTask<Void, Void, Void> {
 
-        ConfigureLocationActivity configureLocationActivity = null;
+        WeakReference<ConfigureLocationActivity> mConfigureLocationActivity = null;
 
-        void setActivity(ConfigureLocationActivity activity) {
-            configureLocationActivity = activity;
+        void setActivity(WeakReference<ConfigureLocationActivity> activity) {
+            mConfigureLocationActivity = activity;
         }
 
-        ConfigureLocationActivity getActivity() {
-            return configureLocationActivity;
+        WeakReference<ConfigureLocationActivity> getActivity() {
+            return mConfigureLocationActivity;
         }
 
         @Override
@@ -462,7 +451,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
         protected Void doInBackground(Void... params) {
             Log.i(LOG_TAG, "ConfigureLocationActivity - Background thread starting");
 
-            configureLocationActivity.fillData();
+            mConfigureLocationActivity.get().fillData();
 
             return null;
         }
@@ -470,12 +459,12 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
 
-            if (configureLocationActivity.mProgressFragment != null) {
-                configureLocationActivity.mProgressFragment.dismiss();
+            if (mConfigureLocationActivity.get().mProgressFragment != null) {
+                mConfigureLocationActivity.get().mProgressFragment.dismiss();
             }
 
-            configureLocationActivity.mActivityDelete = false;
-            configureLocationActivity.setListViewItems();
+            mConfigureLocationActivity.get().mActivityDelete = false;
+            mConfigureLocationActivity.get().setListViewItems();
         }
     }
 
@@ -493,7 +482,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
                 final Cursor locationsCursor = mDbHelper.fetchAllLocations();
                 startManagingCursor(locationsCursor);
 
-                if (Preferences.getLocationType(getDialogContext(), mConfigurationActivity.getAppWidgetId()) == LOCATION_TYPE_CUSTOM && locationsCursor != null && locationsCursor.getCount() == 1) {
+                if (Preferences.getLocationType(getDialogContext(), getAppWidgetId()) == LOCATION_TYPE_CUSTOM && locationsCursor != null && locationsCursor.getCount() == 1) {
                     // if only one, make default
                     locationsCursor.moveToFirst();
 
@@ -502,31 +491,31 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
                     String loc = locationsCursor.getString(locationsCursor.getColumnIndexOrThrow(SQLiteDbAdapter.KEY_NAME));
                     long locId = locationsCursor.getLong(locationsCursor.getColumnIndexOrThrow(SQLiteDbAdapter.KEY_LOCATION_ID));
 
-                    mConfigurationActivity.setLat(lat);
-                    mConfigurationActivity.setLon(lon);
-                    mConfigurationActivity.setLoc(loc);
-                    mConfigurationActivity.setLocationID(locId);
-                    mConfigurationActivity.setLocationType(LOCATION_TYPE_CUSTOM);
+                    setLat(lat);
+                    setLon(lon);
+                    setLoc(loc);
+                    setLocationID(locId);
+                    setLocationType(LOCATION_TYPE_CUSTOM);
 
-                    Preferences.setLocationLat(getDialogContext(), mConfigurationActivity.getAppWidgetId(), (float) mConfigurationActivity.getLat());
-                    Preferences.setLocationLon(getDialogContext(), mConfigurationActivity.getAppWidgetId(), (float) mConfigurationActivity.getLon());
-                    Preferences.setLocation(getDialogContext(), mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLoc());
+                    Preferences.setLocationLat(getDialogContext(), getAppWidgetId(), (float) getLat());
+                    Preferences.setLocationLon(getDialogContext(), getAppWidgetId(), (float) getLon());
+                    Preferences.setLocation(getDialogContext(), getAppWidgetId(), getLoc());
 
-                    Preferences.setLocationId(getDialogContext(), mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLocationID());
-                    Preferences.setLocationType(getDialogContext(), mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLocationType());
-                } else if (Preferences.getLocationType(getDialogContext(), mConfigurationActivity.getAppWidgetId()) == LOCATION_TYPE_CUSTOM && locationsCursor != null && locationsCursor.getCount() == 0) {
-                    mConfigurationActivity.setLat(Double.NaN);
-                    mConfigurationActivity.setLon(Double.NaN);
-                    mConfigurationActivity.setLoc("");
-                    mConfigurationActivity.setLocationID(-1);
-                    mConfigurationActivity.setLocationType(LOCATION_TYPE_CUSTOM);
+                    Preferences.setLocationId(getDialogContext(), getAppWidgetId(), getLocationID());
+                    Preferences.setLocationType(getDialogContext(), getAppWidgetId(), getLocationType());
+                } else if (Preferences.getLocationType(getDialogContext(), getAppWidgetId()) == LOCATION_TYPE_CUSTOM && locationsCursor != null && locationsCursor.getCount() == 0) {
+                    setLat(Double.NaN);
+                    setLon(Double.NaN);
+                    setLoc("");
+                    setLocationID(-1);
+                    setLocationType(LOCATION_TYPE_CUSTOM);
 
-                    Preferences.setLocationLat(getDialogContext(), mConfigurationActivity.getAppWidgetId(), (float) mConfigurationActivity.getLat());
-                    Preferences.setLocationLon(getDialogContext(), mConfigurationActivity.getAppWidgetId(), (float) mConfigurationActivity.getLon());
-                    Preferences.setLocation(getDialogContext(), mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLoc());
+                    Preferences.setLocationLat(getDialogContext(), getAppWidgetId(), (float) getLat());
+                    Preferences.setLocationLon(getDialogContext(), getAppWidgetId(), (float) getLon());
+                    Preferences.setLocation(getDialogContext(), getAppWidgetId(), getLoc());
 
-                    Preferences.setLocationId(getDialogContext(), mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLocationID());
-                    Preferences.setLocationType(getDialogContext(), mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLocationType());
+                    Preferences.setLocationId(getDialogContext(), getAppWidgetId(), getLocationID());
+                    Preferences.setLocationType(getDialogContext(), getAppWidgetId(), getLocationType());
                 }
 
                 // Create an array to specify the fields we want to display in the list (only TITLE)
@@ -560,7 +549,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
                             }
 
                             if (locIdTemp >= 0 && locIdTemp == locId) {
-                                name += " [" + (String) getResources().getText(R.string.defaultsummary) + "]";
+                                name += " [" + getResources().getText(R.string.defaultsummary) + "]";
                             }
 
                             int lnLoc = name.length();
@@ -593,15 +582,15 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
             mActivityDelete = false;
             setListViewItems();
         } else {
-            if (Double.isNaN(mConfigurationActivity.getLat()) || Double.isNaN(mConfigurationActivity.getLon()) || mConfigurationActivity.getLoc() == "") {
+            if (Double.isNaN(getLat()) || Double.isNaN(getLon()) || getLoc().equals("")) {
                 setResult(RESULT_CANCELED);
             } else {
-                Preferences.setLocationLat(this, mConfigurationActivity.getAppWidgetId(), (float) mConfigurationActivity.getLat());
-                Preferences.setLocationLon(this, mConfigurationActivity.getAppWidgetId(), (float) mConfigurationActivity.getLon());
-                Preferences.setLocation(this, mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLoc());
+                Preferences.setLocationLat(this, getAppWidgetId(), (float) getLat());
+                Preferences.setLocationLon(this, getAppWidgetId(), (float) getLon());
+                Preferences.setLocation(this, getAppWidgetId(), getLoc());
 
-                Preferences.setLocationId(this, mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLocationID());
-                Preferences.setLocationType(this, mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLocationType());
+                Preferences.setLocationId(this, getAppWidgetId(), getLocationID());
+                Preferences.setLocationType(this, getAppWidgetId(), getLocationType());
 
                 setResult(RESULT_OK);
             }
@@ -682,7 +671,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
                 File parentDirectory = new File(this.getFilesDir().getAbsolutePath());
 
                 if (parentDirectory.exists()) {
-                    File cacheFile = null;
+                    File cacheFile;
 
                     if (locId >= 0) {
                         cacheFile = new File(parentDirectory, "weather_cache_loc_" + locId);
@@ -714,7 +703,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
 
                 // Start a new thread that will download all the data
                 mDataProviderTask = new DataProviderTask();
-                mDataProviderTask.setActivity(mConfigurationActivity);
+                mDataProviderTask.setActivity(mWeakConfigureLocationActivity);
                 mDataProviderTask.execute();
 
                 return true;
@@ -744,7 +733,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
                 View tempView = getViewByPosition(i, mListView);
 
                 if (tempView != null) {
-                    CheckBox checkBox = (CheckBox) tempView.findViewById(R.id.checkBoxSelect);
+                    CheckBox checkBox = tempView.findViewById(R.id.checkBoxSelect);
 
                     if (checkBox != null && checkBox.isChecked()) {
                         int id = (int) cursorAdapter.getItemId(i);
@@ -801,7 +790,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
             }
 
             mDataProviderTask = new DataProviderTask();
-            mDataProviderTask.setActivity(mConfigurationActivity);
+            mDataProviderTask.setActivity(mWeakConfigureLocationActivity);
             mDataProviderTask.execute();
         }
     }
@@ -820,20 +809,20 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
             String loc = location.getString(location.getColumnIndexOrThrow(SQLiteDbAdapter.KEY_NAME));
             long locId = location.getLong(location.getColumnIndexOrThrow(SQLiteDbAdapter.KEY_LOCATION_ID));
 
-            mConfigurationActivity.setLat(lat);
-            mConfigurationActivity.setLon(lon);
-            mConfigurationActivity.setLoc(loc);
-            mConfigurationActivity.setLocationID(locId);
-            mConfigurationActivity.setLocationType(LOCATION_TYPE_CUSTOM);
-            mConfigurationActivity.getCheckCurrent().setChecked(false);
-            mConfigurationActivity.getCheckCurrent().setText(getResources().getText(R.string.locationcurrent));
+            setLat(lat);
+            setLon(lon);
+            setLoc(loc);
+            setLocationID(locId);
+            setLocationType(LOCATION_TYPE_CUSTOM);
+            getCheckCurrent().setChecked(false);
+            getCheckCurrent().setText(getResources().getText(R.string.locationcurrent));
 
-            Preferences.setLocationLat(this, mConfigurationActivity.getAppWidgetId(), (float) mConfigurationActivity.getLat());
-            Preferences.setLocationLon(this, mConfigurationActivity.getAppWidgetId(), (float) mConfigurationActivity.getLon());
-            Preferences.setLocation(this, mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLoc());
+            Preferences.setLocationLat(this, getAppWidgetId(), (float) getLat());
+            Preferences.setLocationLon(this, getAppWidgetId(), (float) getLon());
+            Preferences.setLocation(this, getAppWidgetId(), getLoc());
 
-            Preferences.setLocationId(this, mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLocationID());
-            Preferences.setLocationType(this, mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLocationType());
+            Preferences.setLocationId(this, getAppWidgetId(), getLocationID());
+            Preferences.setLocationType(this, getAppWidgetId(), getLocationType());
         }
 
         stopManagingCursor(location);
@@ -851,42 +840,8 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
 
         // Start a new thread that will download all the data
         mDataProviderTask = new DataProviderTask();
-        mDataProviderTask.setActivity(mConfigurationActivity);
+        mDataProviderTask.setActivity(mWeakConfigureLocationActivity);
         mDataProviderTask.execute();
-    }
-
-    @SuppressLint("InlinedApi")
-    public void setStatusBarColor(View statusBar, int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window w = getWindow();
-            w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //action bar height
-            //int actionBarHeight = getActionBarHeight();
-            //status bar height
-            int statusBarHeight = getStatusBarHeight();
-            statusBar.getLayoutParams().height = /*actionBarHeight + */statusBarHeight;
-            statusBar.setBackgroundColor(color);
-        } else {
-            statusBar.setVisibility(View.GONE);
-        }
-    }
-
-    public int getActionBarHeight() {
-        int actionBarHeight = 0;
-        TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-        return actionBarHeight;
-    }
-
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
     }
 
     private Context getDialogContext() {
@@ -1094,7 +1049,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
         public void onClick(DialogInterface dialog,
                             int whichButton) {
 
-            EditText input = (EditText) ((AlertDialog) dialog).findViewById(R.id.text_id);
+            EditText input = ((AlertDialog) dialog).findViewById(R.id.text_id);
 
             if (input != null) {
                 Editable value = input.getText();
@@ -1111,7 +1066,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
                     items = null;
 
                     mHttpTask = new HttpTask();
-                    mHttpTask.setActivity(mConfigurationActivity);
+                    mHttpTask.setActivity(mWeakConfigureLocationActivity);
                     showProgressDialog(true);
 
                     try {
@@ -1206,16 +1161,22 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
 
             // Start a new thread that will download all the data
             mDataProviderTask = new DataProviderTask();
-            mDataProviderTask.setActivity(mConfigurationActivity);
+            mDataProviderTask.setActivity(mWeakConfigureLocationActivity);
             mDataProviderTask.execute();
 
         } else {
             if (requestCode == ACTIVITY_LOCATION) {
                 LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                List<String> providers = locationManager.getProviders(new Criteria(), true);
+                List<String> providers;
 
-                if (!providers.isEmpty()) {
-                    getLocation();
+                if (locationManager != null) {
+                    providers = locationManager.getProviders(new Criteria(), true);
+
+                    if (!providers.isEmpty()) {
+                        getLocation();
+                    } else {
+                        showProgressDialog(false);
+                    }
                 } else {
                     showProgressDialog(false);
                 }
@@ -1228,10 +1189,16 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
                         showProgressDialog(true);
 
                         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                        List<String> providers = locationManager.getProviders(new Criteria(), true);
+                        List<String> providers;
 
-                        if (!providers.isEmpty()) {
-                            getLocation();
+                        if (locationManager != null) {
+                            providers = locationManager.getProviders(new Criteria(), true);
+
+                            if (!providers.isEmpty()) {
+                                getLocation();
+                            } else {
+                                showLocationDisabledAlertDialog();
+                            }
                         } else {
                             showLocationDisabledAlertDialog();
                         }
@@ -1267,10 +1234,16 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
         showProgressDialog(true);
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        List<String> providers = locationManager.getProviders(new Criteria(), true);
+        List<String> providers;
 
-        if (!providers.isEmpty()) {
-            getLocation();
+        if (locationManager != null) {
+            providers = locationManager.getProviders(new Criteria(), true);
+
+            if (!providers.isEmpty()) {
+                getLocation();
+            } else {
+                showLocationDisabledAlertDialog();
+            }
         } else {
             showLocationDisabledAlertDialog();
         }
@@ -1352,7 +1325,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
         items = null;
 
         mHttpTask = new HttpTask();
-        mHttpTask.setActivity(mConfigurationActivity);
+        mHttpTask.setActivity(mWeakConfigureLocationActivity);
         showProgressDialog(true);
 
         try {
@@ -1367,7 +1340,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
 
         showProgressDialog(false);
 
-        if (parseString.equals(null) || parseString.equals("") || parseString.contains("<html>") || parseString.contains("failed to connect")) {
+        if (parseString.equals("") || parseString.contains("<html>") || parseString.contains("failed to connect")) {
             Toast.makeText(getDialogContext(), getResources().getText(R.string.locationnotfound), Toast.LENGTH_LONG).show();
             return false;
         }
@@ -1383,7 +1356,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
                 return false;
             }
 
-            ArrayList<String> locations = new ArrayList<String>();
+            ArrayList<String> locations = new ArrayList<>();
 
             for (int i = 0; i < list.length(); i++) {
                 JSONObject cityJSON = list.getJSONObject(i);
@@ -1456,7 +1429,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
         JSONTokener parser = new JSONTokener(parseString);
         try {
             JSONObject query = (JSONObject) parser.nextValue();
-            JSONObject weatherJSON = null;
+            JSONObject weatherJSON;
 
             if (query.has("list")) {
 
@@ -1492,23 +1465,23 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
                 e.printStackTrace();
             }
 
-            mConfigurationActivity.setLat(lat);
-            mConfigurationActivity.setLon(lon);
-            mConfigurationActivity.setLocationID(-1);
-            mConfigurationActivity.setLoc(location);
-            mConfigurationActivity.setLocationType(LOCATION_TYPE_CURRENT);
+            setLat(lat);
+            setLon(lon);
+            setLocationID(-1);
+            setLoc(location);
+            setLocationType(LOCATION_TYPE_CURRENT);
 
-            Preferences.setLocationLat(this, mConfigurationActivity.getAppWidgetId(), (float) mConfigurationActivity.getLat());
-            Preferences.setLocationLon(this, mConfigurationActivity.getAppWidgetId(), (float) mConfigurationActivity.getLon());
-            Preferences.setLocation(this, mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLoc());
+            Preferences.setLocationLat(this, getAppWidgetId(), (float) getLat());
+            Preferences.setLocationLon(this, getAppWidgetId(), (float) getLon());
+            Preferences.setLocation(this, getAppWidgetId(), getLoc());
 
-            mConfigurationActivity.getCheckCurrent().setChecked(true);
+            getCheckCurrent().setChecked(true);
             CharSequence loc = getResources().getText(R.string.locationcurrent);
-            loc = loc + " [" + Preferences.getLocation(this, mConfigurationActivity.getAppWidgetId()) + "]";
-            mConfigurationActivity.getCheckCurrent().setText(loc);
+            loc = loc + " [" + Preferences.getLocation(this, getAppWidgetId()) + "]";
+            getCheckCurrent().setText(loc);
 
-            Preferences.setLocationId(this, mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLocationID());
-            Preferences.setLocationType(this, mConfigurationActivity.getAppWidgetId(), mConfigurationActivity.getLocationType());
+            Preferences.setLocationId(this, getAppWidgetId(), getLocationID());
+            Preferences.setLocationType(this, getAppWidgetId(), getLocationType());
 
             // Show the ProgressDialogFragment on this thread
             mProgressFragment = new ProgressDialogFragment();
@@ -1520,7 +1493,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
 
             // Start a new thread that will download all the data
             mDataProviderTask = new DataProviderTask();
-            mDataProviderTask.setActivity(mConfigurationActivity);
+            mDataProviderTask.setActivity(mWeakConfigureLocationActivity);
             mDataProviderTask.execute();
 
             return true;
@@ -1538,10 +1511,10 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
     }
 
     private boolean parseCustomLocation(int item) {
-        int cityId = -1;
-        String name = "";
-        double lat = Double.NaN;
-        double lon = Double.NaN;
+        int cityId;
+        String name;
+        double lat;
+        double lon;
 
         if (list == null || list.length() < item)
             return false;
@@ -1551,23 +1524,9 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
 
             cityId = cityJSON.getInt("id");
             name = cityJSON.getString("name");
-            String country = "";
 
-            JSONObject sys = null;
-            try {
-                sys = cityJSON.getJSONObject("sys");
-            } catch (JSONException e) {
-                return false;
-            }
-            try {
-                country = sys.getString("country");
-            } catch (JSONException e) {
-                return false;
-            }
+            JSONObject coord;
 
-            JSONObject coord = null;
-            lat = Double.NaN;
-            lon = Double.NaN;
             try {
                 coord = cityJSON.getJSONObject("coord");
             } catch (JSONException e) {
@@ -1610,8 +1569,6 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
 
         mDbHelper.close();
 
-        //fillData();
-
         // Show the ProgressDialogFragment on this thread
         mProgressFragment = new ProgressDialogFragment();
         Bundle args = new Bundle();
@@ -1622,7 +1579,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
 
         // Start a new thread that will download all the data
         mDataProviderTask = new DataProviderTask();
-        mDataProviderTask.setActivity(mConfigurationActivity);
+        mDataProviderTask.setActivity(mWeakConfigureLocationActivity);
         mDataProviderTask.execute();
 
         return true;
@@ -1649,7 +1606,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
 
     public static class HttpTask extends AsyncTask<HttpTaskInfo, Void, OpenQuery> {
 
-        ConfigureLocationActivity locationActivity = null;
+        WeakReference<ConfigureLocationActivity> mLocationActivity = null;
         ProgressDialogFragment mProgressFragment;
         int mProgress = 0;
 
@@ -1657,12 +1614,12 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
             mProgressFragment = fragment;
         }
 
-        void setActivity(ConfigureLocationActivity activity) {
-            locationActivity = activity;
+        void setActivity(WeakReference<ConfigureLocationActivity> activity) {
+            mLocationActivity = activity;
         }
 
-        ConfigureLocationActivity getActivity() {
-            return locationActivity;
+        WeakReference<ConfigureLocationActivity> getActivity() {
+            return mLocationActivity;
         }
 
         @Override
@@ -1677,7 +1634,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
             double latitude = info[0].latitude;
             double longitude = info[0].longitude;
 
-            String lang = Preferences.getLanguageOptions(locationActivity.getDialogContext());
+            String lang = Preferences.getLanguageOptions(mLocationActivity.get().getDialogContext());
 
             if (lang.equals("")) {
                 String langDef = Locale.getDefault().getLanguage();
@@ -1691,12 +1648,11 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
             OpenQuery openResult = null;
 
             try {
-                Reader responseReader = null;
+                Reader responseReader;
                 HttpClient client = new DefaultHttpClient();
-                HttpGet request = null;
+                HttpGet request;
 
                 if (!Double.isNaN(latitude) && !Double.isNaN(longitude)) {
-                    //request = new HttpGet(String.format(GET_CITY_URL, latitude, longitude, lang));
                     request = new HttpGet(String.format(WidgetIntentDefinitions.WEATHER_SERVICE_COORD_URL, latitude, longitude, lang));
 
                 } else if (!TextUtils.isEmpty(cityName)) {
@@ -1735,27 +1691,27 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
         @Override
         protected void onPostExecute(OpenQuery found) {
 
-            if (locationActivity == null || locationActivity.isFinishing()) {
+            if (mLocationActivity == null || mLocationActivity.get().isFinishing()) {
                 if (mProgressFragment != null)
                     mProgressFragment.taskFinished();
 
                 return;
             }
 
-            locationActivity.showProgressDialog(false);
+            mLocationActivity.get().showProgressDialog(false);
 
             if (found != null) {
-                locationActivity.parseString = found.httpResult;
-                locationActivity.selectLocation(found.current);
+                mLocationActivity.get().parseString = found.httpResult;
+                mLocationActivity.get().selectLocation(found.current);
             } else {
-                locationActivity.setLat(Double.NaN);
-                locationActivity.setLon(Double.NaN);
-                locationActivity.setLocationID(-1);
+                mLocationActivity.get().setLat(Double.NaN);
+                mLocationActivity.get().setLon(Double.NaN);
+                mLocationActivity.get().setLocationID(-1);
                 //mLocation = "";
 
-                locationActivity.runOnUiThread(new Runnable() {
+                mLocationActivity.get().runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(locationActivity.getDialogContext(), locationActivity.getResources().getText(R.string.locationnotfound), Toast.LENGTH_LONG).show();
+                        Toast.makeText(mLocationActivity.get().getDialogContext(), mLocationActivity.get().getResources().getText(R.string.locationnotfound), Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -1765,7 +1721,7 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
         }
     }
 
-    public class HttpTaskInfo {
+    class HttpTaskInfo {
         String cityName = "";
         double latitude = Double.NaN;
         double longitude = Double.NaN;
@@ -1773,10 +1729,10 @@ public class ConfigureLocationActivity extends ThemeAppCompatActivity {
     }
 
     private static class OpenQuery {
-        String httpResult = null;
-        boolean current = true;
+        String httpResult;
+        boolean current;
 
-        public OpenQuery(String query, boolean emptyCity) {
+        OpenQuery(String query, boolean emptyCity) {
             httpResult = query;
             current = emptyCity;
         }
