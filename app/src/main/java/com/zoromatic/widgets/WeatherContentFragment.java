@@ -99,7 +99,7 @@ public class WeatherContentFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.weatherforecast_page, container, false);
 
-        swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
+        swipeLayout = view.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -275,7 +275,7 @@ public class WeatherContentFragment extends Fragment {
             SpannableString spStrLoc = new SpannableString(location);
             spStrLoc.setSpan(new StyleSpan(Typeface.BOLD), 0, lnLoc, 0);
 
-            TextView text = (TextView) view.findViewById(R.id.textViewLocToday);
+            TextView text = view.findViewById(R.id.textViewLocToday);
             text.setText(spStrLoc);
 
             long timestamp = weatherJSON.getLong("dt");
@@ -290,7 +290,7 @@ public class WeatherContentFragment extends Fragment {
 
             try {
                 double currentTemp = (main != null ? main.getDouble("temp") - 273.15 : 0);
-                text = (TextView) view.findViewById(R.id.textViewTempToday);
+                text = view.findViewById(R.id.textViewTempToday);
 
                 if (tempScale == 1) {
                     text.setText(String.valueOf((int) (currentTemp * 1.8 + 32)) + "°");
@@ -334,15 +334,15 @@ public class WeatherContentFragment extends Fragment {
                     String iconName = weather.getString("icon");
                     String iconNameAlt = iconName + "d";
 
-                    text = (TextView) view.findViewById(R.id.textViewDescToday);
+                    text = view.findViewById(R.id.textViewDescToday);
                     text.setText(weatherDesc);
 
-                    ImageView image = (ImageView) view.findViewById(R.id.imageViewWeatherToday);
+                    ImageView image = view.findViewById(R.id.imageViewWeatherToday);
 
                     WeatherConditions conditions = new WeatherConditions();
 
                     int icons = Preferences.getWeatherIcons(context, appWidgetId);
-                    int resource = R.drawable.tick_weather_04d;
+                    int resource;
                     WeatherIcon[] imageArr;
 
                     switch (icons) {
@@ -653,7 +653,7 @@ public class WeatherContentFragment extends Fragment {
                 WeatherConditions conditions = new WeatherConditions();
 
                 int icons = Preferences.getWeatherIcons(context, appWidgetId);
-                int iconID = R.drawable.tick_weather_04d;
+                int iconID;
                 WeatherIcon[] imageArr;
 
                 switch (icons) {
@@ -757,7 +757,6 @@ public class WeatherContentFragment extends Fragment {
 
                 String sTempHigh = "";
                 String sTempLow = "";
-                String weatherMain = "";
                 String weatherDesc = "";
                 String date;
                 String day;
@@ -779,8 +778,8 @@ public class WeatherContentFragment extends Fragment {
                     double minTemp = (tempJSON != null ? tempJSON.getDouble("min") - 273.15 : 0);
                     double maxTemp = (tempJSON != null ? tempJSON.getDouble("max") - 273.15 : 0);
 
-                    TextView textLow = (TextView) view.findViewById(R.id.textViewWeatherTodayLow);
-                    TextView textHigh = (TextView) view.findViewById(R.id.textViewWeatherTodayHigh);
+                    TextView textLow = view.findViewById(R.id.textViewWeatherTodayLow);
+                    TextView textHigh = view.findViewById(R.id.textViewWeatherTodayHigh);
 
                     if (tempScale == 1) {
                         textLow.setText(getString(R.string.temp_low) + String.valueOf((int) (minTemp * 1.8 + 32)) + "°");
@@ -818,7 +817,7 @@ public class WeatherContentFragment extends Fragment {
 
                     JSONObject weather = weathers.getJSONObject(0);
                     int weatherId = weather.getInt("id");
-                    weatherMain = weather.getString("main");
+
                     weatherDesc = weather.getString("description");
                     weatherDesc = weatherDesc.substring(0, 1).toUpperCase() + weatherDesc.substring(1);
                     String iconName = weather.getString("icon");
@@ -836,44 +835,44 @@ public class WeatherContentFragment extends Fragment {
 
                 switch (i) {
                     case 1:
-                        textDay = (TextView) view.findViewById(R.id.textViewDay1);
-                        textDate = (TextView) view.findViewById(R.id.textViewDate1);
-                        textTempHigh = (TextView) view.findViewById(R.id.textViewTempHigh1);
-                        textTempLow = (TextView) view.findViewById(R.id.textViewTempLow1);
-                        textDesc = (TextView) view.findViewById(R.id.textViewDesc1);
-                        image = (ImageView) view.findViewById(R.id.imageViewWeather1);
+                        textDay = view.findViewById(R.id.textViewDay1);
+                        textDate = view.findViewById(R.id.textViewDate1);
+                        textTempHigh = view.findViewById(R.id.textViewTempHigh1);
+                        textTempLow = view.findViewById(R.id.textViewTempLow1);
+                        textDesc = view.findViewById(R.id.textViewDesc1);
+                        image = view.findViewById(R.id.imageViewWeather1);
                         break;
                     case 2:
-                        textDay = (TextView) view.findViewById(R.id.textViewDay2);
-                        textDate = (TextView) view.findViewById(R.id.textViewDate2);
-                        textTempHigh = (TextView) view.findViewById(R.id.textViewTempHigh2);
-                        textTempLow = (TextView) view.findViewById(R.id.textViewTempLow2);
-                        textDesc = (TextView) view.findViewById(R.id.textViewDesc2);
-                        image = (ImageView) view.findViewById(R.id.imageViewWeather2);
+                        textDay = view.findViewById(R.id.textViewDay2);
+                        textDate = view.findViewById(R.id.textViewDate2);
+                        textTempHigh = view.findViewById(R.id.textViewTempHigh2);
+                        textTempLow = view.findViewById(R.id.textViewTempLow2);
+                        textDesc = view.findViewById(R.id.textViewDesc2);
+                        image = view.findViewById(R.id.imageViewWeather2);
                         break;
                     case 3:
-                        textDay = (TextView) view.findViewById(R.id.textViewDay3);
-                        textDate = (TextView) view.findViewById(R.id.textViewDate3);
-                        textTempHigh = (TextView) view.findViewById(R.id.textViewTempHigh3);
-                        textTempLow = (TextView) view.findViewById(R.id.textViewTempLow3);
-                        textDesc = (TextView) view.findViewById(R.id.textViewDesc3);
-                        image = (ImageView) view.findViewById(R.id.imageViewWeather3);
+                        textDay = view.findViewById(R.id.textViewDay3);
+                        textDate = view.findViewById(R.id.textViewDate3);
+                        textTempHigh = view.findViewById(R.id.textViewTempHigh3);
+                        textTempLow = view.findViewById(R.id.textViewTempLow3);
+                        textDesc = view.findViewById(R.id.textViewDesc3);
+                        image = view.findViewById(R.id.imageViewWeather3);
                         break;
                     case 4:
-                        textDay = (TextView) view.findViewById(R.id.textViewDay4);
-                        textDate = (TextView) view.findViewById(R.id.textViewDate4);
-                        textTempHigh = (TextView) view.findViewById(R.id.textViewTempHigh4);
-                        textTempLow = (TextView) view.findViewById(R.id.textViewTempLow4);
-                        textDesc = (TextView) view.findViewById(R.id.textViewDesc4);
-                        image = (ImageView) view.findViewById(R.id.imageViewWeather4);
+                        textDay = view.findViewById(R.id.textViewDay4);
+                        textDate = view.findViewById(R.id.textViewDate4);
+                        textTempHigh = view.findViewById(R.id.textViewTempHigh4);
+                        textTempLow = view.findViewById(R.id.textViewTempLow4);
+                        textDesc = view.findViewById(R.id.textViewDesc4);
+                        image = view.findViewById(R.id.imageViewWeather4);
                         break;
                     case 5:
-                        textDay = (TextView) view.findViewById(R.id.textViewDay5);
-                        textDate = (TextView) view.findViewById(R.id.textViewDate5);
-                        textTempHigh = (TextView) view.findViewById(R.id.textViewTempHigh5);
-                        textTempLow = (TextView) view.findViewById(R.id.textViewTempLow5);
-                        textDesc = (TextView) view.findViewById(R.id.textViewDesc5);
-                        image = (ImageView) view.findViewById(R.id.imageViewWeather5);
+                        textDay = view.findViewById(R.id.textViewDay5);
+                        textDate = view.findViewById(R.id.textViewDate5);
+                        textTempHigh = view.findViewById(R.id.textViewTempHigh5);
+                        textTempLow = view.findViewById(R.id.textViewTempLow5);
+                        textDesc = view.findViewById(R.id.textViewDesc5);
+                        image = view.findViewById(R.id.imageViewWeather5);
                         break;
                     default:
                         break;
