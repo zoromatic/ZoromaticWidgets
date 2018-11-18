@@ -35,6 +35,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -58,8 +59,10 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
     private boolean mDrawerOpen = false;
 
     private ViewPager mViewPager;
+    ForecastFragmentPagerAdapter mFragmentPagerAdapter;
+    TabLayout mSlidingTabLayout;
 
-    private List<ForecastPagerItem> mTabs = new ArrayList<>();
+    //private List<ForecastPagerItem> mTabs = new ArrayList<>();
     private int mCurrentItem = 0;
     private static final String KEY_CURRENT_ITEM = "key_current_item";
 
@@ -111,6 +114,8 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         initDrawer();
+
+        setFragments();
 
         mRotation = AnimationUtils.loadAnimation(this, R.anim.animate_menu);
 
@@ -354,68 +359,64 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
 
     public void loadData() {
         try {
-            if (mTabs != null) {
-                for (ForecastPagerItem tab : mTabs) {
-                    tab.setFragment(null);
-                }
+            TypedValue outValue = new TypedValue();
+            getTheme().resolveAttribute(R.attr.tabTextColor, outValue, true);
+            int textColor = outValue.resourceId;
+            int colorIndicator = getResources().getColor(textColor);
 
-                mTabs.clear();
+            int locationType = Preferences.getLocationType(getApplicationContext(), mAppWidgetId);
 
-                TypedValue outValue = new TypedValue();
-                getTheme().resolveAttribute(R.attr.tabTextColor, outValue, true);
-                int textColor = outValue.resourceId;
-                int colorIndicator = getResources().getColor(textColor);
+            if (locationType == ConfigureLocationActivity.LOCATION_TYPE_CURRENT) {
+                mFragmentPagerAdapter.addPagerItem("Current [" + Preferences.getLocation(getApplicationContext(), mAppWidgetId) + "]", colorIndicator, mAppWidgetId, -1);
+            }
 
-                int locationType = Preferences.getLocationType(getApplicationContext(), mAppWidgetId);
+            long locIdTemp = -1;
 
-                if (locationType == ConfigureLocationActivity.LOCATION_TYPE_CURRENT) {
-                    mTabs.add(new ForecastPagerItem("Current [" + Preferences.getLocation(getApplicationContext(), mAppWidgetId) + "]", colorIndicator, mAppWidgetId, -1));
-                }
+            if (locationType == ConfigureLocationActivity.LOCATION_TYPE_CUSTOM) {
+                locIdTemp = Preferences.getLocationId(getApplicationContext(), mAppWidgetId);
+            }
 
-                long locIdTemp = -1;
+            SQLiteDbAdapter dbHelper = new SQLiteDbAdapter(getApplicationContext());
+            dbHelper.open();
+            Cursor locationsCursor = dbHelper.fetchAllLocations();
 
-                if (locationType == ConfigureLocationActivity.LOCATION_TYPE_CUSTOM) {
-                    locIdTemp = Preferences.getLocationId(getApplicationContext(), mAppWidgetId);
-                }
+            if (locationsCursor != null && locationsCursor.getCount() > 0) {
 
-                SQLiteDbAdapter dbHelper = new SQLiteDbAdapter(getApplicationContext());
-                dbHelper.open();
-                Cursor locationsCursor = dbHelper.fetchAllLocations();
+                // insert default location
+                locationsCursor.moveToFirst();
 
-                if (locationsCursor != null && locationsCursor.getCount() > 0) {
+                do {
+                    String title = locationsCursor.getString(locationsCursor.getColumnIndex(SQLiteDbAdapter.KEY_NAME));
+                    long locId = locationsCursor.getLong(locationsCursor.getColumnIndex(SQLiteDbAdapter.KEY_LOCATION_ID));
 
-                    // insert default location
-                    locationsCursor.moveToFirst();
-
-                    do {
-                        String title = locationsCursor.getString(locationsCursor.getColumnIndex(SQLiteDbAdapter.KEY_NAME));
-                        long locId = locationsCursor.getLong(locationsCursor.getColumnIndex(SQLiteDbAdapter.KEY_LOCATION_ID));
-
-                        if (locIdTemp >= 0 && locId == locIdTemp) {
-                            mTabs.add(new ForecastPagerItem(title, colorIndicator, mAppWidgetId, locId));
-                        }
-
-                        locationsCursor.moveToNext();
+                    if (locIdTemp >= 0 && locId == locIdTemp) {
+                        mFragmentPagerAdapter.addPagerItem(title, colorIndicator, mAppWidgetId, locId);
                     }
-                    while (!locationsCursor.isAfterLast());
 
-                    // insert other locations
-                    locationsCursor.moveToFirst();
-
-                    do {
-                        String title = locationsCursor.getString(locationsCursor.getColumnIndex(SQLiteDbAdapter.KEY_NAME));
-                        long locId = locationsCursor.getLong(locationsCursor.getColumnIndex(SQLiteDbAdapter.KEY_LOCATION_ID));
-
-                        if (locIdTemp < 0 || locId != locIdTemp) {
-                            mTabs.add(new ForecastPagerItem(title, colorIndicator, mAppWidgetId, locId));
-                        }
-
-                        locationsCursor.moveToNext();
-                    }
-                    while (!locationsCursor.isAfterLast());
+                    locationsCursor.moveToNext();
                 }
+                while (!locationsCursor.isAfterLast());
 
-                dbHelper.close();
+                // insert other locations
+                locationsCursor.moveToFirst();
+
+                do {
+                    String title = locationsCursor.getString(locationsCursor.getColumnIndex(SQLiteDbAdapter.KEY_NAME));
+                    long locId = locationsCursor.getLong(locationsCursor.getColumnIndex(SQLiteDbAdapter.KEY_LOCATION_ID));
+
+                    if (locIdTemp < 0 || locId != locIdTemp) {
+                        mFragmentPagerAdapter.addPagerItem(title, colorIndicator, mAppWidgetId, locId);
+                    }
+
+                    locationsCursor.moveToNext();
+                }
+                while (!locationsCursor.isAfterLast());
+            }
+
+            dbHelper.close();
+
+            if (mViewPager != null && mViewPager.getChildCount() > 0) {
+                mViewPager.setCurrentItem(Math.min(mCurrentItem, mFragmentPagerAdapter.getCount() - 1));
             }
 
         } catch (Exception ignored) {
@@ -424,59 +425,55 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
     }
 
     public void setFragments() {
-        if (mTabs != null) {
-            TypedValue outValue = new TypedValue();
-            getTheme().resolveAttribute(R.attr.colorPrimary,
-                    outValue,
-                    true);
-            int primaryColor = getResources().getColor(outValue.resourceId);
+        TypedValue outValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorPrimary,
+                outValue,
+                true);
+        int primaryColor = getResources().getColor(outValue.resourceId);
 
-            getTheme().resolveAttribute(R.attr.colorPrimaryDark,
-                    outValue,
-                    true);
-            int primaryColorDark = getResources().getColor(outValue.resourceId);
+        getTheme().resolveAttribute(R.attr.colorPrimaryDark,
+                outValue,
+                true);
+        int primaryColorDark = getResources().getColor(outValue.resourceId);
 
-            getTheme().resolveAttribute(R.attr.tabTextColor,
-                    outValue,
-                    true);
-            int tabTextColor = getResources().getColor(outValue.resourceId);
+        getTheme().resolveAttribute(R.attr.tabTextColor,
+                outValue,
+                true);
+        int tabTextColor = getResources().getColor(outValue.resourceId);
 
-            TabLayout mSlidingTabLayout = findViewById(R.id.sliding_tabs);
-            mViewPager = findViewById(R.id.viewpager);
-            ForecastFragmentPagerAdapter mFragmentPagerAdapter = new ForecastFragmentPagerAdapter(getSupportFragmentManager());
+        mSlidingTabLayout = findViewById(R.id.sliding_tabs);
+        mViewPager = findViewById(R.id.viewpager);
+        mFragmentPagerAdapter = new ForecastFragmentPagerAdapter(getSupportFragmentManager());
+        mFragmentPagerAdapter.resetPagerItems();
 
+        if (mViewPager != null) {
             mViewPager.setAdapter(mFragmentPagerAdapter);
 
             final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                     .getDisplayMetrics());
             mViewPager.setPageMargin(pageMargin);
-
-            if (mSlidingTabLayout != null) {
-                mSlidingTabLayout.setBackgroundColor(primaryColor);
-                mSlidingTabLayout.setSelectedTabIndicatorColor(tabTextColor);
-
-                int colorScheme = Preferences.getMainColorScheme(this);
-
-                switch (colorScheme) {
-                    case 0: // black
-                        mSlidingTabLayout.setTabTextColors(ContextCompat.getColor(this, R.color.sysWhite), tabTextColor);
-                        break;
-                    case 1: // white
-                        mSlidingTabLayout.setTabTextColors(ContextCompat.getColor(this, R.color.sysBlack), tabTextColor);
-                        break;
-                    default:
-                        mSlidingTabLayout.setTabTextColors(primaryColorDark, tabTextColor);
-                        break;
-                }
-
-                mSlidingTabLayout.setupWithViewPager(mViewPager);
-            }
-
-            if (mViewPager != null && mViewPager.getChildCount() > 0) {
-                mViewPager.setCurrentItem(Math.min(mCurrentItem, mTabs.size() - 1));
-            }
         }
 
+        if (mSlidingTabLayout != null) {
+            mSlidingTabLayout.setBackgroundColor(primaryColor);
+            mSlidingTabLayout.setSelectedTabIndicatorColor(tabTextColor);
+
+            int colorScheme = Preferences.getMainColorScheme(this);
+
+            switch (colorScheme) {
+                case 0: // black
+                    mSlidingTabLayout.setTabTextColors(ContextCompat.getColor(this, R.color.sysWhite), tabTextColor);
+                    break;
+                case 1: // white
+                    mSlidingTabLayout.setTabTextColors(ContextCompat.getColor(this, R.color.sysBlack), tabTextColor);
+                    break;
+                default:
+                    mSlidingTabLayout.setTabTextColors(primaryColorDark, tabTextColor);
+                    break;
+            }
+
+            mSlidingTabLayout.setupWithViewPager(mViewPager);
+        }
     }
 
     private static class DataProviderTask extends AsyncTask<Void, Void, Void> {
@@ -509,7 +506,7 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
 
-            mWeatherForecastActivity.get().setFragments();
+            //mWeatherForecastActivity.get().setFragments();
 
             if (mWeatherForecastActivity.get().mProgressFragment != null) {
                 mWeatherForecastActivity.get().mProgressFragment.dismiss();
@@ -520,9 +517,9 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
     @SuppressLint("NewApi")
     void readCachedData(Context context) {
         if (mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-            if (mTabs != null) {
-                for (ForecastPagerItem tab : mTabs) {
-                    WeatherContentFragment fragment = tab.getFragment();
+            if (mFragmentPagerAdapter != null) {
+                for (int i = 0; i < mFragmentPagerAdapter.getCount(); i++) {
+                    WeatherContentFragment fragment = (WeatherContentFragment) mFragmentPagerAdapter.getFragment(i);
 
                     if (fragment != null && fragment.getView() != null) {
                         fragment.readCachedData(context, mAppWidgetId);
@@ -636,6 +633,7 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
     }
 
     class ForecastFragmentPagerAdapter extends FragmentStatePagerAdapter {
+        private List<ForecastPagerItem> mPagerItems = new ArrayList<>();
 
         ForecastFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -643,17 +641,42 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
 
         @Override
         public Fragment getItem(int i) {
-            return mTabs.get(i).createFragment();
+            return mPagerItems.get(i).createFragment();
         }
 
         @Override
         public int getCount() {
-            return mTabs.size();
+            return mPagerItems.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return mTabs.get(position).getTitle();
+            return mPagerItems.get(position).getTitle();
+        }
+
+        Fragment getFragment(int position) {
+            return mPagerItems.get(position).getFragment();
+        }
+
+        void resetPagerItems() {
+            for (ForecastPagerItem item : mPagerItems) {
+                item.setFragment(null);
+            }
+
+            mPagerItems.clear();
+        }
+
+        void addPagerItem(CharSequence title, int colorIndicator, int appWidgetId, long locId) {
+            mPagerItems.add(new ForecastPagerItem(title, colorIndicator, appWidgetId, locId));
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            WeatherContentFragment fragment = (WeatherContentFragment) super.instantiateItem(container, position);
+            mPagerItems.get(position).setFragment(fragment);
+
+            return fragment;
         }
     }
 }
