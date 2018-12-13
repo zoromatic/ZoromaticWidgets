@@ -499,6 +499,7 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
             Log.i(LOG_TAG, "WeatherForecastActivity - Background thread starting");
 
             mWeatherForecastActivity.get().loadData();
+            mWeatherForecastActivity.get().readCachedData(mWeatherForecastActivity.get());
 
             return null;
         }
