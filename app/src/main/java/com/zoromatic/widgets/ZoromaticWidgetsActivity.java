@@ -27,6 +27,7 @@ public class ZoromaticWidgetsActivity extends ThemeActivity {
 
         widgetManager.updateClockWidgets(this, appWidgetIds, false, false); // do not update weather
         widgetManager.updatePowerWidgets(this, WidgetIntentDefinitions.POWER_WIDGET_UPDATE_ALL);
+        widgetManager.updateNotificationBatteryStatus(this, new Intent(Intent.ACTION_BATTERY_CHANGED));
 
         /*AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, DigitalClockAppWidgetProvider.class));

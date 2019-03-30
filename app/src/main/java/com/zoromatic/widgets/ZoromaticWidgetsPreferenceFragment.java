@@ -354,7 +354,7 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
                     batteryIcons.setSummary(batteryIcons.getEntries()[Preferences.getBatteryIcons(context)]);
 
                     Intent startIntent = new Intent(context, WidgetUpdateService.class);
-                    startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, Intent.ACTION_BATTERY_CHANGED);
+                    startIntent.putExtra(WidgetIntentDefinitions.INTENT_EXTRA, WidgetIntentDefinitions.BATTERY_NOTIFICATION);
 
                     context.startService(startIntent);
                 }

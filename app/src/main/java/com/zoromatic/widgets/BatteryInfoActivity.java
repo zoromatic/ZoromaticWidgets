@@ -95,7 +95,7 @@ public class BatteryInfoActivity extends ThemeAppCompatActivity {
         Intent batteryIntent = getApplicationContext().registerReceiver(
                 null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
-        int rawlevel = batteryIntent.getIntExtra(
+        int rawLevel = batteryIntent.getIntExtra(
                 BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE,
                 -1);
@@ -126,8 +126,8 @@ public class BatteryInfoActivity extends ThemeAppCompatActivity {
         int percentIcon = batteryIntent.getIntExtra(
                 BatteryManager.EXTRA_ICON_SMALL, -1);
 
-        if (rawlevel >= 0 && scale > 0) {
-            level = (rawlevel * 100) / scale;
+        if (rawLevel >= 0 && scale > 0) {
+            level = (rawLevel * 100) / scale;
         }
 
         switch (status) {

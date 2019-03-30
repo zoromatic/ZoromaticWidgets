@@ -339,6 +339,8 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
         super.onActivityResult(requestCode, resultCode, intent);
 
         if (requestCode == ACTIVITY_SETTINGS) {
+            setFragments();
+
             // Show the ProgressDialogFragment on this thread
             if (mProgressFragment != null) {
                 mProgressFragment.dismiss();
@@ -381,7 +383,6 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
             Cursor locationsCursor = dbHelper.fetchAllLocations();
 
             if (locationsCursor != null && locationsCursor.getCount() > 0) {
-
                 // insert default location
                 locationsCursor.moveToFirst();
 

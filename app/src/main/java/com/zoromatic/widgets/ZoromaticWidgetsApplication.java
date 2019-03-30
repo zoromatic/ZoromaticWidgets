@@ -51,6 +51,7 @@ public class ZoromaticWidgetsApplication extends Application {
 
         widgetManager.updateClockWidgets(this, appWidgetIds, false, false); // do not update weather
         widgetManager.updatePowerWidgets(this, WidgetIntentDefinitions.POWER_WIDGET_UPDATE_ALL);
+        widgetManager.updateNotificationBatteryStatus(this, new Intent(Intent.ACTION_BATTERY_CHANGED));
 
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !Preferences.getForegroundService(this)) {
             Intent allowForegroundServiceIntent = new Intent(this, AllowForegroundServiceActivity.class);

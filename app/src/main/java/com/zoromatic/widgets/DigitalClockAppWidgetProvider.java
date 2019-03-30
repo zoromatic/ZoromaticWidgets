@@ -62,6 +62,7 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
 
         if (action != null && (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) ||
                 action.equals(AppWidgetManager.ACTION_APPWIDGET_ENABLED) ||
+                action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED) ||
                 action.equals("com.motorola.blur.home.ACTION_SET_WIDGET_SIZE") ||
                 action.equals("mobi.intuitit.android.hpp.ACTION_READY"))) {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
@@ -70,7 +71,7 @@ public class DigitalClockAppWidgetProvider extends AppWidgetProvider {
 
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
-            if (appWidgetIds.length <= 0) {
+            if (appWidgetIds.length <= 0 && !action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
                 return;
             }
 

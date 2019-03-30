@@ -22,7 +22,6 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
@@ -690,6 +689,8 @@ public class WidgetUpdateService extends Service {
                 Notification notification = notificationBuilder.build();
 
                 startForeground(101, notification);
+            } else {
+                stopForeground(true);
             }
         } else {
             stopForeground(true);
