@@ -16,7 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-public class WriteSettingsActivity extends ThemeActivity {
+public class WriteSettingsActivity extends ThemeAppCompatActivity {
 
     private static String LOG_TAG = "WriteSettingsActivity";
 

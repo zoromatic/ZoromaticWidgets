@@ -1,5 +1,6 @@
 package com.zoromatic.widgets;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,6 @@ import android.widget.AdapterView.OnItemLongClickListener;
 public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
 
     private static String LOG_TAG = "ConfigureWidgetsActivity";
-    private Toolbar toolbar;
     ListView mListView;
     List<WidgetRowItem> widgetRowItems;
     private static final int WIDGET_SETTINGS = 0;
@@ -46,32 +46,23 @@ public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
     public boolean mActivityDelete = false;
 
     static DataProviderTask mDataProviderTask;
-    static ConfigureWidgetsActivity mConfigureWidgetsActivity;
+    public WeakReference<ConfigureWidgetsActivity> mConfigureWidgetsActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mConfigureWidgetsActivity = this;
+        mConfigureWidgetsActivity = new WeakReference<>(this);
 
         setContentView(R.layout.configurewidget);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
         }
-
-        /*TypedValue outValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimary,
-                outValue,
-                true);
-        int primaryColor = outValue.resourceId;
-
-        setStatusBarColor(findViewById(R.id.statusBarBackground),
-                getResources().getColor(primaryColor));*/
 
         // Show the ProgressDialog on this thread
         mProgressFragment = new ProgressDialogFragment();
@@ -81,7 +72,7 @@ public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
         mProgressFragment.setArguments(args);
         mProgressFragment.show(getSupportFragmentManager(), "tagProgress");
 
-        mListView = (ListView) findViewById(R.id.listWidgets);
+        mListView = findViewById(R.id.listWidgets);
 
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -128,7 +119,7 @@ public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
                 View tempView = getViewByPosition(position, mListView);
 
                 if (tempView != null) {
-                    CheckBox checkBox = (CheckBox) tempView.findViewById(R.id.checkBoxSelect);
+                    CheckBox checkBox = tempView.findViewById(R.id.checkBoxSelect);
 
                     if (checkBox != null) {
                         checkBox.setChecked(true);
@@ -183,16 +174,16 @@ public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
         return result;
     }
 
-    private class DataProviderTask extends AsyncTask<Void, Void, Void> {
+    private static class DataProviderTask extends AsyncTask<Void, Void, Void> {
 
-        ConfigureWidgetsActivity configureWidgetsActivity = null;
+        WeakReference<ConfigureWidgetsActivity> configureWidgetsActivity = null;
 
-        void setActivity(ConfigureWidgetsActivity activity) {
+        void setActivity(WeakReference<ConfigureWidgetsActivity> activity) {
             configureWidgetsActivity = activity;
         }
 
         @SuppressWarnings("unused")
-        ConfigureWidgetsActivity getActivity() {
+        WeakReference<ConfigureWidgetsActivity> getActivity() {
             return configureWidgetsActivity;
         }
 
@@ -204,19 +195,19 @@ public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
         protected Void doInBackground(Void... params) {
             Log.i(LOG_TAG, "ConfigureWidgetsActivity - Background thread starting");
 
-            configureWidgetsActivity.fillData();
+            configureWidgetsActivity.get().fillData();
 
             return null;
         }
 
         protected void onPostExecute(Void result) {
 
-            if (configureWidgetsActivity.mProgressFragment != null) {
-                configureWidgetsActivity.mProgressFragment.dismiss();
+            if (configureWidgetsActivity.get().mProgressFragment != null) {
+                configureWidgetsActivity.get().mProgressFragment.dismiss();
             }
 
-            configureWidgetsActivity.mActivityDelete = false;
-            configureWidgetsActivity.setListViewItems();
+            configureWidgetsActivity.get().mActivityDelete = false;
+            configureWidgetsActivity.get().setListViewItems();
         }
     }
 
@@ -244,7 +235,7 @@ public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                widgetRowItems = new ArrayList<WidgetRowItem>();
+                widgetRowItems = new ArrayList<>();
                 WidgetRowItem item = null;
 
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getDialogContext());
@@ -324,7 +315,7 @@ public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
 
         String className = widgetRowItem.getClassName();
 
-        ImageView image = (ImageView) view.findViewById(R.id.iconWidget);
+        ImageView image = view.findViewById(R.id.iconWidget);
         if (image != null) {
             image.setVisibility(mActivityDelete ? View.GONE : View.VISIBLE);
 
@@ -337,7 +328,7 @@ public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
             image.setImageBitmap(letterTile);
         }
 
-        CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBoxSelect);
+        CheckBox checkBox = view.findViewById(R.id.checkBoxSelect);
         if (checkBox != null) {
             checkBox.setVisibility(mActivityDelete ? View.VISIBLE : View.GONE);
 
@@ -392,7 +383,7 @@ public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
                 View tempView = getViewByPosition(i, mListView);
 
                 if (tempView != null) {
-                    CheckBox checkBox = (CheckBox) tempView.findViewById(R.id.checkBoxSelect);
+                    CheckBox checkBox = tempView.findViewById(R.id.checkBoxSelect);
 
                     if (checkBox != null && checkBox.isChecked()) {
                         bChecked = true;
@@ -419,7 +410,7 @@ public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
                 View tempView = getViewByPosition(i, mListView);
 
                 if (tempView != null) {
-                    CheckBox checkBox = (CheckBox) tempView.findViewById(R.id.checkBoxSelect);
+                    CheckBox checkBox = tempView.findViewById(R.id.checkBoxSelect);
 
                     if (checkBox != null && checkBox.isChecked()) {
                         WidgetRowItem widgetRowItem = widgetRowItems.get(i);
@@ -471,153 +462,4 @@ public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
             return true;
         }
     };
-
-    private Context getDialogContext() {
-        final Context context;
-        String theme = Preferences.getMainTheme(this);
-        int colorScheme = Preferences.getMainColorScheme(this);
-
-        if (theme.compareToIgnoreCase("light") == 0) {
-            switch (colorScheme) {
-                case 0:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightBlack);
-                    break;
-                case 1:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightWhite);
-                    break;
-                case 2:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightRed);
-                    break;
-                case 3:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightPink);
-                    break;
-                case 4:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightPurple);
-                    break;
-                case 5:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightDeepPurple);
-                    break;
-                case 6:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightIndigo);
-                    break;
-                case 7:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightBlue);
-                    break;
-                case 8:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightLightBlue);
-                    break;
-                case 9:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightCyan);
-                    break;
-                case 10:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightTeal);
-                    break;
-                case 11:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightGreen);
-                    break;
-                case 12:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightLightGreen);
-                    break;
-                case 13:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightLime);
-                    break;
-                case 14:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightYellow);
-                    break;
-                case 15:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightAmber);
-                    break;
-                case 16:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightOrange);
-                    break;
-                case 17:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightDeepOrange);
-                    break;
-                case 18:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightBrown);
-                    break;
-                case 19:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightGrey);
-                    break;
-                case 20:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightBlueGrey);
-                    break;
-                default:
-                    context = new ContextThemeWrapper(this, R.style.ThemeLightBlack);
-                    break;
-            }
-
-        } else {
-            switch (colorScheme) {
-                case 0:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkBlack);
-                    break;
-                case 1:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkWhite);
-                    break;
-                case 2:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkRed);
-                    break;
-                case 3:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkPink);
-                    break;
-                case 4:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkPurple);
-                    break;
-                case 5:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkDeepPurple);
-                    break;
-                case 6:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkIndigo);
-                    break;
-                case 7:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkBlue);
-                    break;
-                case 8:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkLightBlue);
-                    break;
-                case 9:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkCyan);
-                    break;
-                case 10:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkTeal);
-                    break;
-                case 11:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkGreen);
-                    break;
-                case 12:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkLightGreen);
-                    break;
-                case 13:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkLime);
-                    break;
-                case 14:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkYellow);
-                    break;
-                case 15:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkAmber);
-                    break;
-                case 16:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkOrange);
-                    break;
-                case 17:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkDeepOrange);
-                    break;
-                case 18:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkBrown);
-                    break;
-                case 19:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkGrey);
-                    break;
-                case 20:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkBlueGrey);
-                    break;
-                default:
-                    context = new ContextThemeWrapper(this, R.style.ThemeDarkBlack);
-                    break;
-            }
-        }
-
-        return context;
-    }
 }

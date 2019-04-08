@@ -26,14 +26,14 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-public class BrightnessActivity extends ThemeActivity {
+import java.lang.ref.WeakReference;
+
+public class BrightnessActivity extends ThemeAppCompatActivity {
 
     private static String LOG_TAG = "BrightnessActivity";
 
     private int brightnessValue;
-    private boolean isAuto;
     private SeekBar seekBarBrightness;
-    private CheckBox checkAuto;
     //private Button buttonSave;
     //private Button buttonCancel;
 
@@ -45,7 +45,7 @@ public class BrightnessActivity extends ThemeActivity {
     private static final int SEEK_BAR_RANGE = MAXIMUM_BACKLIGHT - mScreenBrightnessDim;
 
     static DataProviderTask mDataProviderTask;
-    private BrightnessActivity mBrightnessActivity;
+    public WeakReference<BrightnessActivity> mBrightnessActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,7 +54,7 @@ public class BrightnessActivity extends ThemeActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (isMarshmallowSixPointZero()) {
                 if (Settings.System.canWrite(this)) {
-                    mBrightnessActivity = this;
+                    mBrightnessActivity = new WeakReference<>(this);
 
                     getWindow().setBackgroundDrawable(new ColorDrawable(0));
                     displayDialog();
@@ -65,13 +65,13 @@ public class BrightnessActivity extends ThemeActivity {
                     finish();
                 }
             } else {
-                mBrightnessActivity = this;
+                mBrightnessActivity = new WeakReference<>(this);
 
                 getWindow().setBackgroundDrawable(new ColorDrawable(0));
                 displayDialog();
             }
         } else {
-            mBrightnessActivity = this;
+            mBrightnessActivity = new WeakReference<>(this);
 
             getWindow().setBackgroundDrawable(new ColorDrawable(0));
             displayDialog();
@@ -126,7 +126,7 @@ public class BrightnessActivity extends ThemeActivity {
 
         seekBarBrightness.setProgress(mOldBrightness - mScreenBrightnessDim);
 
-        checkAuto = brightnessView.findViewById(R.id.checkBoxBrightness);
+        CheckBox checkAuto = brightnessView.findViewById(R.id.checkBoxBrightness);
 
         checkAuto.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
@@ -156,7 +156,7 @@ public class BrightnessActivity extends ThemeActivity {
 
         checkAuto.setChecked(mOldAutomatic != 0);
 
-        isAuto = isAutoBrightness(getContentResolver());
+        boolean isAuto = isAutoBrightness(getContentResolver());
 
         if (isAuto) {
             // stopAutoBrightness();
@@ -222,14 +222,14 @@ public class BrightnessActivity extends ThemeActivity {
 
     private class DataProviderTask extends AsyncTask<Void, Void, Void> {
 
-        BrightnessActivity brightnessActivity = null;
+        WeakReference<BrightnessActivity> brightnessActivity = null;
 
-        void setActivity(BrightnessActivity activity) {
+        void setActivity(WeakReference<BrightnessActivity> activity) {
             brightnessActivity = activity;
         }
 
         @SuppressWarnings("unused")
-        BrightnessActivity getActivity() {
+        WeakReference<BrightnessActivity> getActivity() {
             return brightnessActivity;
         }
 
@@ -241,7 +241,7 @@ public class BrightnessActivity extends ThemeActivity {
         protected Void doInBackground(Void... params) {
             Log.i(LOG_TAG, "BrightnessActivity - Background thread starting");
 
-            brightnessActivity.saveBrightness(getContentResolver(), brightnessActivity.getBrightnessValue());
+            brightnessActivity.get().saveBrightness(getContentResolver(), brightnessActivity.get().getBrightnessValue());
 
             return null;
         }

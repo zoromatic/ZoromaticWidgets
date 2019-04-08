@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-public class ZoromaticWidgetsActivity extends ThemeActivity {
+public class ZoromaticWidgetsActivity extends ThemeAppCompatActivity {
 
     static final String LOG_TAG = "ZoromaticWidgetsActivity";
 

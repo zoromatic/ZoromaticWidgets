@@ -18,7 +18,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-public class AllowForegroundServiceActivity extends ThemeActivity {
+public class AllowForegroundServiceActivity extends ThemeAppCompatActivity {
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private static String LOG_TAG = "WriteSettingsActivity";
     static final String APPWIDGETID = "AppWidgetId";
