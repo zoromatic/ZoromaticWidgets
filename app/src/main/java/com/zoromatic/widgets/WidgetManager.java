@@ -3406,6 +3406,7 @@ public class WidgetManager {
         if (notificationManager != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
                 && !notificationManager.isNotificationPolicyAccessGranted()) {
             Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             mContext.startActivity(intent);
 
             return;
@@ -3813,7 +3814,7 @@ public class WidgetManager {
                     updateViews.setOnClickPendingIntent(R.id.mobileWidget,
                             pendingIntent);
                 } else {
-                    Process p;
+                    /*Process p;
                     // Perform su to get root privileges
                     p = Runtime.getRuntime().exec("su");
 
@@ -3833,7 +3834,7 @@ public class WidgetManager {
                                 PendingIntent.FLAG_UPDATE_CURRENT);
                         updateViews.setOnClickPendingIntent(R.id.mobileWidget,
                                 pendingIntent);
-                    } else {
+                    } else {*/
                         Intent intentData = new Intent(Intent.ACTION_MAIN);
                         intentData.setComponent(new ComponentName("com.android.settings",
                                 "com.android.settings.Settings$DataUsageSummaryActivity"));
@@ -3843,7 +3844,7 @@ public class WidgetManager {
                                 intentData, PendingIntent.FLAG_UPDATE_CURRENT);
                         updateViews.setOnClickPendingIntent(R.id.mobileWidget,
                                 pendingIntent);
-                    }
+                    //}
                 }
             } catch (Exception e) {
                 Log.e(LOG_TAG, "", e);

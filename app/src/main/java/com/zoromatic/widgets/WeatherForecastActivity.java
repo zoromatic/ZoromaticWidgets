@@ -420,7 +420,8 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
                 mViewPager.setCurrentItem(Math.min(mCurrentItem, mFragmentPagerAdapter.getCount() - 1));
             }
 
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            Log.w(LOG_TAG, "Exception: ", e);
         }
 
     }
@@ -499,8 +500,13 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
         protected Void doInBackground(Void... params) {
             Log.i(LOG_TAG, "WeatherForecastActivity - Background thread starting");
 
-            mWeatherForecastActivity.get().loadData();
-            mWeatherForecastActivity.get().readCachedData(mWeatherForecastActivity.get());
+            mWeatherForecastActivity.get().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mWeatherForecastActivity.get().loadData();
+                    mWeatherForecastActivity.get().readCachedData(mWeatherForecastActivity.get());
+                }
+            });
 
             return null;
         }

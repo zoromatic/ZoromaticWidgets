@@ -41,8 +41,9 @@ public class LocationsEdit extends Activity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                setResult(RESULT_OK);
-                finish();
+                //setResult(RESULT_OK);
+                //finish();
+                mTitleText.setText("GOOD BYE");
             }
 
         });
