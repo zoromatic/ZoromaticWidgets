@@ -44,7 +44,7 @@ import android.util.Log;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @SuppressLint("SimpleDateFormat")
-@SuppressWarnings({"rawtypes", "unchecked", "deprecation"})
+@SuppressWarnings({"rawtypes", "deprecation"})
 public class WidgetUpdateService extends Service {
     private static String LOG_TAG = "WidgetUpdateService";
 
@@ -209,16 +209,12 @@ public class WidgetUpdateService extends Service {
         public void onGpsStatusChanged(int event) {
             switch (event) {
                 case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-
-                    break;
+                    //break;
                 case GpsStatus.GPS_EVENT_FIRST_FIX:
-
-                    break;
+                    //break;
                 case GpsStatus.GPS_EVENT_STARTED:
-
-                    break;
+                    //break;
                 case GpsStatus.GPS_EVENT_STOPPED:
-
                     break;
             }
         }
@@ -233,13 +229,7 @@ public class WidgetUpdateService extends Service {
         @Override
         public void onProviderDisabled(String provider) {
             try {
-                int currentApiVersion = android.os.Build.VERSION.SDK_INT;
-
-                if (currentApiVersion < 9) {
-                    sendBroadcast(new Intent(WidgetIntentDefinitions.LOCATION_GPS_ENABLED_CHANGED));
-                } else {
-                    sendBroadcast(new Intent(WidgetIntentDefinitions.LOCATION_PROVIDERS_CHANGED));
-                }
+                sendBroadcast(new Intent(WidgetIntentDefinitions.LOCATION_PROVIDERS_CHANGED));
             } catch (Exception e) {
                 Log.e(LOG_TAG, "", e);
             }
@@ -248,13 +238,7 @@ public class WidgetUpdateService extends Service {
         @Override
         public void onProviderEnabled(String provider) {
             try {
-                int currentApiVersion = android.os.Build.VERSION.SDK_INT;
-
-                if (currentApiVersion < 9) {
-                    sendBroadcast(new Intent(WidgetIntentDefinitions.LOCATION_GPS_ENABLED_CHANGED));
-                } else {
-                    sendBroadcast(new Intent(WidgetIntentDefinitions.LOCATION_PROVIDERS_CHANGED));
-                }
+                sendBroadcast(new Intent(WidgetIntentDefinitions.LOCATION_PROVIDERS_CHANGED));
 
             } catch (Exception e) {
                 Log.e(LOG_TAG, "", e);
@@ -372,13 +356,20 @@ public class WidgetUpdateService extends Service {
 
                     try {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                            /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                                     ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                 Intent permissionsIntent = new Intent(this, SetPermissionsActivity.class);
                                 permissionsIntent.putExtra(SetPermissionsActivity.PERMISSIONS_TYPE, SetPermissionsActivity.PERMISSIONS_REQUEST_LOCATION);
                                 permissionsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(permissionsIntent);
                             } else {
+                                locManager.addGpsStatusListener(mGpsListener);
+                                locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                                        GPS_UPDATE_TIME_INTERVAL, GPS_UPDATE_DISTANCE_INTERVAL,
+                                        mLocListener);
+                            }*/
+                            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                                 locManager.addGpsStatusListener(mGpsListener);
                                 locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                                         GPS_UPDATE_TIME_INTERVAL, GPS_UPDATE_DISTANCE_INTERVAL,
@@ -580,7 +571,7 @@ public class WidgetUpdateService extends Service {
                     || intentExtra.equals(WidgetIntentDefinitions.CLOCK_WIDGET_UPDATE)
                     || intentExtra.equals(WidgetIntentDefinitions.WEATHER_UPDATE))) {
 
-                int appWidgetIds[] = extras.getIntArray(AppWidgetManager.EXTRA_APPWIDGET_IDS);
+                int[] appWidgetIds = extras.getIntArray(AppWidgetManager.EXTRA_APPWIDGET_IDS);
                 int appWidgetIdSingle = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
 
                 //RemoteViews updateViews;
