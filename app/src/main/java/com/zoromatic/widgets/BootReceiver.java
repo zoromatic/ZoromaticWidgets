@@ -3,9 +3,8 @@ package com.zoromatic.widgets;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.support.v4.content.ContextCompat;
-import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
 
 public class BootReceiver extends BroadcastReceiver {
     @Override
