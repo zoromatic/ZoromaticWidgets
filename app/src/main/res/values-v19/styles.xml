@@ -3,12 +3,10 @@
 
     <style name="AlertDialogDark" parent="Theme.AppCompat.Dialog">
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="AlertDialogLight" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="ThemeLight" parent="ThemeLightBasic">
