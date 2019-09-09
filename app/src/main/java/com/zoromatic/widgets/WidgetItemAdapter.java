@@ -614,7 +614,7 @@ public class WidgetItemAdapter extends BaseAdapter {
         boolean dateBold = Preferences.getDateBoldText(context, appWidgetId);
         boolean showWeather = Preferences.getShowWeather(context, appWidgetId);
 
-        String currentHour, currentMinute;
+        /*String currentHour, currentMinute;
 
         SimpleDateFormat sdfMinute = new SimpleDateFormat("mm");
         currentMinute = String.format(sdfMinute.format(new Date()));
@@ -625,6 +625,15 @@ public class WidgetItemAdapter extends BaseAdapter {
         } else {
             SimpleDateFormat sdfHour = new SimpleDateFormat("hh");
             currentHour = String.format(sdfHour.format(new Date()));
+        }*/
+        String currentTime;
+
+        if (bShow24Hrs) {
+            SimpleDateFormat sdfHour = new SimpleDateFormat("HH : mm");
+            currentTime = String.format(sdfHour.format(new Date()));
+        } else {
+            SimpleDateFormat sdfHour = new SimpleDateFormat("hh : mm");
+            currentTime = String.format(sdfHour.format(new Date()));
         }
 
         View tempView = holder.linearLayout.findViewById(R.id.loadingWidget);
@@ -810,7 +819,7 @@ public class WidgetItemAdapter extends BaseAdapter {
             dateFont = mFontArray[iDateFontItem];
         }
 
-        ImageView tempImageView = holder.linearLayout.findViewById(R.id.imageViewClockHour);
+        /*ImageView tempImageView = holder.linearLayout.findViewById(R.id.imageViewClockHour);
 
         if (tempImageView != null) {
             tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, currentHour, systemClockColor, font, bold, 96));
@@ -826,6 +835,11 @@ public class WidgetItemAdapter extends BaseAdapter {
 
         if (tempImageView != null) {
             tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, ":", systemClockColor, font, bold, 96));
+        }*/
+        ImageView tempImageView = holder.linearLayout.findViewById(R.id.imageViewTime);
+
+        if (tempImageView != null) {
+            tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, currentTime, systemClockColor, font, bold, 96));
         }
 
         String currentDate = "";
@@ -877,7 +891,7 @@ public class WidgetItemAdapter extends BaseAdapter {
             tempImageViewBackground.setColorFilter(systemWidgetColor);
         }
 
-        tempView = holder.linearLayout.findViewById(R.id.imageViewClockSpace);
+        /*tempView = holder.linearLayout.findViewById(R.id.imageViewClockSpace);
 
         if (tempView != null) {
             tempView.setVisibility(View.INVISIBLE);
@@ -944,6 +958,41 @@ public class WidgetItemAdapter extends BaseAdapter {
                 if (tempImageView != null) {
                     tempImageView.setBackgroundResource(R.drawable.bck_right);
                 }
+                break;
+        }*/
+
+        switch (iClockSkinItem) {
+            case 0:
+                tempImageView = holder.linearLayout.findViewById(R.id.imageViewTime);
+
+                if (tempImageView != null) {
+                    tempImageView.setBackgroundColor(Color.BLACK);
+                }
+
+                break;
+            case 1:
+                tempImageView = holder.linearLayout.findViewById(R.id.imageViewTime);
+
+                if (tempImageView != null) {
+                    tempImageView.setBackgroundColor(Color.WHITE);
+                }
+
+                break;
+            case 2:
+                tempImageView = holder.linearLayout.findViewById(R.id.imageViewTime);
+
+                if (tempImageView != null) {
+                    tempImageView.setBackgroundColor(Color.TRANSPARENT);
+                }
+
+                break;
+            default:
+                tempImageView = holder.linearLayout.findViewById(R.id.imageViewTime);
+
+                if (tempImageView != null) {
+                    tempImageView.setBackgroundColor(Color.BLACK);
+                }
+
                 break;
         }
 

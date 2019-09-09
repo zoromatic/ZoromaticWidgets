@@ -591,7 +591,7 @@ public class WidgetManager {
         }
 
         // start clock&alarms application when clicked on clock's hours
-        {
+        /*{
             Intent alarmClockIntent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
 
             // Verify clock implementation
@@ -633,7 +633,7 @@ public class WidgetManager {
                 updateViews.setOnClickPendingIntent(R.id.imageViewClockHour,
                         pendingIntentClock);
             }
-        }
+        }*/
 
         // start weather forecast activity when clicked on weather icon
         Intent weatherForecastIntent = new Intent(mContext, WeatherForecastActivity.class);
@@ -675,7 +675,7 @@ public class WidgetManager {
         boolean dateBold = Preferences.getDateBoldText(mContext, appWidgetId);
         boolean showWeather = Preferences.getShowWeather(mContext, appWidgetId);
 
-        String currentHour, currentMinute;
+        /*String currentHour, currentMinute;
 
         SimpleDateFormat sdfMinute = new SimpleDateFormat("mm");
         currentMinute = sdfMinute.format(new Date());
@@ -686,6 +686,16 @@ public class WidgetManager {
         } else {
             SimpleDateFormat sdfHour = new SimpleDateFormat("hh");
             currentHour = sdfHour.format(new Date());
+        }*/
+
+        String currentTime;
+
+        if (bShow24Hrs) {
+            SimpleDateFormat sdfHour = new SimpleDateFormat("HH : mm");
+            currentTime = sdfHour.format(new Date());
+        } else {
+            SimpleDateFormat sdfHour = new SimpleDateFormat("hh : mm");
+            currentTime = sdfHour.format(new Date());
         }
 
         if (bShowBattery || bShowDate) {
@@ -855,9 +865,10 @@ public class WidgetManager {
         if (mFontArray.length > iDateFontItem)
             dateFont = mFontArray[iDateFontItem];
 
-        updateViews.setImageViewBitmap(R.id.imageViewClockHour, getFontBitmap(mContext, currentHour, systemClockColor, font, bold, 96));
+        /*updateViews.setImageViewBitmap(R.id.imageViewClockHour, getFontBitmap(mContext, currentHour, systemClockColor, font, bold, 96));
         updateViews.setImageViewBitmap(R.id.imageViewClockMinute, getFontBitmap(mContext, currentMinute, systemClockColor, font, bold, 96));
-        updateViews.setImageViewBitmap(R.id.imageViewClockSpace, getFontBitmap(mContext, ":", systemClockColor, font, bold, 96));
+        updateViews.setImageViewBitmap(R.id.imageViewClockSpace, getFontBitmap(mContext, ":", systemClockColor, font, bold, 96));*/
+        updateViews.setImageViewBitmap(R.id.imageViewTime, getFontBitmap(mContext, currentTime, systemClockColor, font, bold, 256));
 
         String currentDate = "";
         String[] mTestArray = mContext.getResources().getStringArray(R.array.dateFormat);
@@ -905,9 +916,9 @@ public class WidgetManager {
         updateViews.setInt(R.id.backgroundImage, "setAlpha", iOpacity * 255 / 100);
         updateViews.setInt(R.id.backgroundImage, "setColorFilter", systemWidgetColor);
 
-        updateViews.setViewVisibility(R.id.imageViewClockSpace, View.INVISIBLE);
+        //updateViews.setViewVisibility(R.id.imageViewClockSpace, View.INVISIBLE);
 
-        switch (iClockSkinItem) {
+        /*switch (iClockSkinItem) {
             case 0:
                 updateViews.setInt(R.id.imageViewClockHour, "setBackgroundResource", R.drawable.bck_left);
                 updateViews.setInt(R.id.imageViewClockMinute, "setBackgroundResource", R.drawable.bck_right);
@@ -924,6 +935,20 @@ public class WidgetManager {
             default:
                 updateViews.setInt(R.id.imageViewClockHour, "setBackgroundResource", R.drawable.bck_left);
                 updateViews.setInt(R.id.imageViewClockMinute, "setBackgroundResource", R.drawable.bck_right);
+                break;
+        }*/
+        switch (iClockSkinItem) {
+            case 0:
+                updateViews.setInt(R.id.imageViewTime, "setBackgroundColor", Color.BLACK);
+                break;
+            case 1:
+                updateViews.setInt(R.id.imageViewTime, "setBackgroundColor", Color.WHITE);
+                break;
+            case 2:
+                updateViews.setInt(R.id.imageViewTime, "setBackgroundColor", Color.TRANSPARENT);
+                break;
+            default:
+                updateViews.setInt(R.id.imageViewTime, "setBackgroundColor", Color.BLACK);
                 break;
         }
 

@@ -63,7 +63,17 @@
                 android:textSize="14sp"
                 android:visibility="invisible" />
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/imageViewTime"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/tempempty"
+                android:contentDescription="@string/weatherdesc"
+                android:layout_margin="10dp"
+                android:textSize="96sp" />
+
+            <!--<LinearLayout
                 android:id="@+id/timeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -102,7 +112,7 @@
                     android:contentDescription="@string/weatherdesc"
                     android:background="@drawable/bck_right"
                     android:textSize="96sp" />
-            </LinearLayout>
+            </LinearLayout>-->
 
         </LinearLayout>
 
