@@ -532,9 +532,9 @@
             <ImageView
                 android:id="@+id/imageViewBatteryStatusCharge"
                 android:layout_width="fill_parent"
-                android:layout_height="15sp"
+                android:layout_height="24sp"
                 android:contentDescription="@string/batterydesc"
-                android:gravity="center"
+                android:gravity="center|fill_vertical"
                 android:scaleType="fitCenter"
                 android:visibility="visible" />
 
