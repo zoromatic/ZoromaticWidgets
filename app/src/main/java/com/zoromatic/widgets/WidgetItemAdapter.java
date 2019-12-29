@@ -173,11 +173,13 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowBluetooth) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.bluetooth_on);
+                //BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.bluetooth_on);
                 ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewBluetooth);
 
-                if (bitmapDrawable != null && tempImageView != null) {
-                    tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                if (/*bitmapDrawable != null && */tempImageView != null) {
+                    //tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, context.getString(R.string.icon_bluetooth),
+                            colorOn, "fonts/MaterialIcons.ttf", true, 96));
                 }
 
                 TextView tempTextView = tempViewWidget.findViewById(R.id.textViewBluetooth);
@@ -203,11 +205,13 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowGps) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.gps_on);
+                //BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.gps_on);
                 ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewGps);
 
-                if (bitmapDrawable != null && tempImageView != null) {
-                    tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                if (/*bitmapDrawable != null && */tempImageView != null) {
+                    //tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, context.getString(R.string.icon_gps),
+                            colorOn, "fonts/MaterialIcons.ttf", true, 96));
                 }
 
                 TextView tempTextView = tempViewWidget.findViewById(R.id.textViewGps);
@@ -232,11 +236,13 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowMobile) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.data_on);
+                //BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.data_on);
                 ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewMobile);
 
-                if (bitmapDrawable != null && tempImageView != null) {
-                    tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                if (/*bitmapDrawable != null && */tempImageView != null) {
+                    //tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, context.getString(R.string.icon_data),
+                            colorOn, "fonts/MaterialIcons.ttf", true, 96));
                 }
 
                 TextView tempTextView = tempViewWidget.findViewById(R.id.textViewMobile);
@@ -261,11 +267,13 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowRinger) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.ringer_normal);
+                //BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.ringer_normal);
                 ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewRinger);
 
-                if (bitmapDrawable != null && tempImageView != null) {
-                    tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                if (/*bitmapDrawable != null && */tempImageView != null) {
+                    //tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, context.getString(R.string.icon_ringer_normal),
+                            colorOn, "fonts/MaterialIcons.ttf", true, 96));
                 }
 
                 TextView tempTextView = tempViewWidget.findViewById(R.id.textViewRinger);
@@ -290,11 +298,13 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowWifi) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.wifi_on);
+                //BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.wifi_on);
                 ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewWiFi);
 
-                if (bitmapDrawable != null && tempImageView != null) {
-                    tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                if (/*bitmapDrawable != null && */tempImageView != null) {
+                    //tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, context.getString(R.string.icon_wifi),
+                            colorOn, "fonts/MaterialIcons.ttf", true, 96));
                 }
 
                 TextView tempTextView = tempViewWidget.findViewById(R.id.textViewWiFi);
@@ -319,11 +329,13 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowAirplane) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.airplane_on);
+                //BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.airplane_on);
                 ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewAirplane);
 
-                if (bitmapDrawable != null && tempImageView != null) {
-                    tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                if (/*bitmapDrawable != null && */tempImageView != null) {
+                    //tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, context.getString(R.string.icon_airplane),
+                            colorOn, "fonts/MaterialIcons.ttf", true, 96));
                 }
 
                 TextView tempTextView = tempViewWidget.findViewById(R.id.textViewAirplane);
@@ -348,11 +360,13 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowBrightness) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.brightness_on);
+                //BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.brightness_on);
                 ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewBrightness);
 
-                if (bitmapDrawable != null && tempImageView != null) {
-                    tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                if (/*bitmapDrawable != null && */tempImageView != null) {
+                    //tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, context.getString(R.string.icon_brightness),
+                            colorOn, "fonts/MaterialIcons.ttf", true, 96));
                 }
 
                 TextView tempTextView = tempViewWidget.findViewById(R.id.textViewBrightness);
@@ -377,11 +391,13 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowNfc) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.nfc_on);
+                //BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.nfc_on);
                 ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewNfc);
 
-                if (bitmapDrawable != null && tempImageView != null) {
-                    tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                if (/*bitmapDrawable != null && */tempImageView != null) {
+                    //tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, context.getString(R.string.icon_nfc),
+                            colorOn, "fonts/MaterialIcons.ttf", true, 96));
                 }
 
                 TextView tempTextView = tempViewWidget.findViewById(R.id.textViewNfc);
@@ -406,11 +422,13 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowSync) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.sync_on);
+                //BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.sync_on);
                 ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewSync);
 
-                if (bitmapDrawable != null && tempImageView != null) {
-                    tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                if (/*bitmapDrawable != null && */tempImageView != null) {
+                    //tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, context.getString(R.string.icon_sync),
+                            colorOn, "fonts/MaterialIcons.ttf", true, 96));
                 }
 
                 TextView tempTextView = tempViewWidget.findViewById(R.id.textViewSync);
@@ -435,11 +453,13 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowOrientation) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.orientation_on);
+                //BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.orientation_on);
                 ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewOrientation);
 
-                if (bitmapDrawable != null && tempImageView != null) {
-                    tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                if (/*bitmapDrawable != null && */tempImageView != null) {
+                    //tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, context.getString(R.string.icon_orientation),
+                            colorOn, "fonts/MaterialIcons.ttf", true, 96));
                 }
 
                 TextView tempTextView = tempViewWidget.findViewById(R.id.textViewOrientation);
@@ -464,11 +484,13 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowTorch) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.flashlight_on);
+                //BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOn, R.drawable.flashlight_on);
                 ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewTorch);
 
-                if (bitmapDrawable != null && tempImageView != null) {
-                    tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                if (/*bitmapDrawable != null && */tempImageView != null) {
+                    //tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, context.getString(R.string.icon_flashlight),
+                            colorOn, "fonts/MaterialIcons.ttf", true, 96));
                 }
 
                 TextView tempTextView = tempViewWidget.findViewById(R.id.textViewTorch);
@@ -575,11 +597,13 @@ public class WidgetItemAdapter extends BaseAdapter {
             if (bShowSettings) {
                 tempViewWidget.setVisibility(View.VISIBLE);
 
-                BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOff, R.drawable.settings_on);
+                //BitmapDrawable bitmapDrawable = WidgetManager.setIconColor(context, colorOff, R.drawable.settings_on);
                 ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewSettings);
 
-                if (bitmapDrawable != null && tempImageView != null) {
-                    tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                if (/*bitmapDrawable != null && */tempImageView != null) {
+                    //tempImageView.setImageBitmap(bitmapDrawable.getBitmap());
+                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, context.getString(R.string.icon_settings),
+                            colorOn, "fonts/MaterialIcons.ttf", true, 96));
                 }
 
                 TextView tempTextView = tempViewWidget.findViewById(R.id.textViewSettings);

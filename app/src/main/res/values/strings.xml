@@ -402,4 +402,21 @@
     <string name="label_yes">Yes</string>
     <string name="label_no">No</string>
 
+    <string name="icon_airplane">&#xe195;</string>
+    <string name="icon_bluetooth">&#xe1a7;</string>
+    <string name="icon_brightness_auto">&#xe1ab;</string>
+    <string name="icon_brightness_mid">&#xe1ae;</string>
+    <string name="icon_brightness">&#xe1ac;</string>
+    <string name="icon_data">&#xe1c8;</string>
+    <string name="icon_flashlight">&#xe42e;</string>
+    <string name="icon_gps">&#xe1b3;</string>
+    <string name="icon_nfc">&#xe1bb;</string>
+    <string name="icon_orientation">&#xe1c1;</string>
+    <string name="icon_ringer_normal">&#xe050;</string>
+    <string name="icon_ringer_silent">&#xe04f;</string>
+    <string name="icon_ringer_vibrate">&#xe62d;</string>
+    <string name="icon_settings">&#xe8b8;</string>
+    <string name="icon_sync">&#xe627;</string>
+    <string name="icon_wifi">&#xe63e;</string>
+
 </resources>
