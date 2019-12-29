@@ -17,8 +17,7 @@
         android:layout_weight=".7"
         android:adjustViewBounds="true"
         android:contentDescription="@string/airplanedesc"
-        android:scaleType="fitCenter"
-        android:src="@drawable/airplane_on" />
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/textViewAirplane"

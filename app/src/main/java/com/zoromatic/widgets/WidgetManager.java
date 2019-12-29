@@ -285,11 +285,6 @@ public class WidgetManager {
             colorTextOff = Preferences.getColorTextOff(mContext, appWidgetId);
         }
 
-        //BitmapDrawable bitmapDrawable = setIconColor(mContext, colorOff, R.drawable.settings_on);
-
-        //if (bitmapDrawable != null)
-        //    updateViews.setImageViewBitmap(R.id.imageViewSettings, bitmapDrawable.getBitmap());
-
         updateViews.setImageViewBitmap(R.id.imageViewSettings, getFontBitmap(mContext, mContext.getString(R.string.icon_settings),
                 colorOff, "fonts/MaterialIcons.ttf", true, 144));
 
@@ -2394,11 +2389,6 @@ public class WidgetManager {
 
         Boolean airplaneMode = getAirplaneMode();
 
-        //BitmapDrawable bitmapDrawable = setIconColor(mContext, airplaneMode ? colorOn : colorOff, R.drawable.airplane_on);
-
-        //if (bitmapDrawable != null)
-        //    updateViews.setImageViewBitmap(R.id.imageViewAirplane, bitmapDrawable.getBitmap());
-
         updateViews.setImageViewBitmap(R.id.imageViewAirplane, getFontBitmap(mContext, mContext.getString(R.string.icon_airplane),
                 airplaneMode ? colorOn : colorOff, "fonts/MaterialIcons.ttf", true, 144));
 
@@ -2492,22 +2482,12 @@ public class WidgetManager {
         Boolean bluetoothState = getBluetoothState();
 
         if (bluetoothState != null) {
-            //BitmapDrawable bitmapDrawable = setIconColor(mContext, bluetoothState ? colorOn : colorOff, R.drawable.bluetooth_on);
-
-            //if (bitmapDrawable != null)
-            //    updateViews.setImageViewBitmap(R.id.imageViewBluetooth, bitmapDrawable.getBitmap());
-
             updateViews.setImageViewBitmap(R.id.imageViewBluetooth, getFontBitmap(mContext, mContext.getString(R.string.icon_bluetooth),
                     bluetoothState ? colorOn : colorOff, "fonts/MaterialIcons.ttf", true, 144));
 
             updateViews.setTextColor(R.id.textViewBluetooth, bluetoothState ? colorTextOn : colorTextOff);
             updateViews.setInt(R.id.imageViewBluetoothInd, "setColorFilter", bluetoothState ? colorOn : colorOff);
         } else {
-            //BitmapDrawable bitmapDrawable = setIconColor(mContext, colorTransition, R.drawable.bluetooth_on);
-
-            //if (bitmapDrawable != null)
-            //    updateViews.setImageViewBitmap(R.id.imageViewBluetooth, bitmapDrawable.getBitmap());
-
             updateViews.setImageViewBitmap(R.id.imageViewBluetooth, getFontBitmap(mContext, mContext.getString(R.string.icon_bluetooth),
                     colorTransition, "fonts/MaterialIcons.ttf", true, 144));
 
@@ -2631,22 +2611,12 @@ public class WidgetManager {
         Boolean torchState = getFlashOn();
 
         if (torchState != null) {
-            //BitmapDrawable bitmapDrawable = setIconColor(mContext, torchState ? colorOn : colorOff, R.drawable.flashlight_on);
-
-            //if (bitmapDrawable != null)
-            //    updateViews.setImageViewBitmap(R.id.imageViewTorch, bitmapDrawable.getBitmap());
-
             updateViews.setImageViewBitmap(R.id.imageViewTorch, getFontBitmap(mContext, mContext.getString(R.string.icon_flashlight),
                     torchState ? colorOn : colorOff, "fonts/MaterialIcons.ttf", true, 144));
 
             updateViews.setTextColor(R.id.textViewTorch, torchState ? colorTextOn : colorTextOff);
             updateViews.setInt(R.id.imageViewTorchInd, "setColorFilter", torchState ? colorOn : colorOff);
         } else {
-            //BitmapDrawable bitmapDrawable = setIconColor(mContext, colorTransition, R.drawable.flashlight_on);
-
-            //if (bitmapDrawable != null)
-            //    updateViews.setImageViewBitmap(R.id.imageViewTorch, bitmapDrawable.getBitmap());
-
             updateViews.setImageViewBitmap(R.id.imageViewTorch, getFontBitmap(mContext, mContext.getString(R.string.icon_flashlight),
                     colorTransition, "fonts/MaterialIcons.ttf", true, 144));
 
@@ -2737,11 +2707,6 @@ public class WidgetManager {
         Boolean wifiState = getWifiState();
 
         if (wifiState != null) {
-            //BitmapDrawable bitmapDrawable = setIconColor(mContext, wifiState ? colorOn : colorOff, R.drawable.wifi_on);
-
-            //if (bitmapDrawable != null)
-            //    updateViews.setImageViewBitmap(R.id.imageViewWiFi, bitmapDrawable.getBitmap());
-
             updateViews.setImageViewBitmap(R.id.imageViewWiFi, getFontBitmap(mContext, mContext.getString(R.string.icon_wifi),
                     wifiState ? colorOn : colorOff, "fonts/MaterialIcons.ttf", true, 144));
 
@@ -2767,11 +2732,6 @@ public class WidgetManager {
             }
 
         } else {
-            //BitmapDrawable bitmapDrawable = setIconColor(mContext, colorTransition, R.drawable.wifi_on);
-
-            //if (bitmapDrawable != null)
-            //    updateViews.setImageViewBitmap(R.id.imageViewWiFi, bitmapDrawable.getBitmap());
-
             updateViews.setImageViewBitmap(R.id.imageViewWiFi, getFontBitmap(mContext, mContext.getString(R.string.icon_wifi),
                     colorTransition, "fonts/MaterialIcons.ttf", true, 144));
 
@@ -2834,22 +2794,12 @@ public class WidgetManager {
         Boolean syncStatus = getSyncStatus();
 
         if (syncStatus != null) {
-            //BitmapDrawable bitmapDrawable = setIconColor(mContext, syncStatus ? colorOn : colorOff, R.drawable.sync_on);
-
-            //if (bitmapDrawable != null)
-            //    updateViews.setImageViewBitmap(R.id.imageViewSync, bitmapDrawable.getBitmap());
-
             updateViews.setImageViewBitmap(R.id.imageViewSync, getFontBitmap(mContext, mContext.getString(R.string.icon_sync),
                     syncStatus ? colorOn : colorOff, "fonts/MaterialIcons.ttf", true, 144));
 
             updateViews.setTextColor(R.id.textViewSync, syncStatus ? colorTextOn : colorTextOff);
             updateViews.setInt(R.id.imageViewSyncInd, "setColorFilter", syncStatus ? colorOn : colorOff);
         } else {
-            //BitmapDrawable bitmapDrawable = setIconColor(mContext, colorTransition, R.drawable.sync_on);
-
-            //if (bitmapDrawable != null)
-            //    updateViews.setImageViewBitmap(R.id.imageViewSync, bitmapDrawable.getBitmap());
-
             updateViews.setImageViewBitmap(R.id.imageViewSync, getFontBitmap(mContext, mContext.getString(R.string.icon_sync),
                     colorTransition, "fonts/MaterialIcons.ttf", true, 144));
 
@@ -2915,22 +2865,12 @@ public class WidgetManager {
         Boolean orientation = getOrientation();
 
         if (orientation != null) {
-            //BitmapDrawable bitmapDrawable = setIconColor(mContext, orientation ? colorOn : colorOff, R.drawable.orientation_on);
-
-            //if (bitmapDrawable != null)
-            //    updateViews.setImageViewBitmap(R.id.imageViewOrientation, bitmapDrawable.getBitmap());
-
             updateViews.setImageViewBitmap(R.id.imageViewOrientation, getFontBitmap(mContext, mContext.getString(R.string.icon_orientation),
                     orientation ? colorOn : colorOff, "fonts/MaterialIcons.ttf", true, 144));
 
             updateViews.setTextColor(R.id.textViewOrientation, orientation ? colorTextOn : colorTextOff);
             updateViews.setInt(R.id.imageViewOrientationInd, "setColorFilter", orientation ? colorOn : colorOff);
         } else {
-            //BitmapDrawable bitmapDrawable = setIconColor(mContext, colorTransition, R.drawable.orientation_on);
-
-            //if (bitmapDrawable != null)
-            //    updateViews.setImageViewBitmap(R.id.imageViewOrientation, bitmapDrawable.getBitmap());
-
             updateViews.setImageViewBitmap(R.id.imageViewOrientation, getFontBitmap(mContext, mContext.getString(R.string.icon_orientation),
                     colorTransition, "fonts/MaterialIcons.ttf", true, 144));
 
@@ -3012,22 +2952,12 @@ public class WidgetManager {
         Boolean nfcState = getNfcState();
 
         if (nfcState != null) {
-            //BitmapDrawable bitmapDrawable = setIconColor(mContext, nfcState ? colorOn : colorOff, R.drawable.nfc_on);
-
-            //if (bitmapDrawable != null)
-            //    updateViews.setImageViewBitmap(R.id.imageViewNfc, bitmapDrawable.getBitmap());
-
             updateViews.setImageViewBitmap(R.id.imageViewNfc, getFontBitmap(mContext, mContext.getString(R.string.icon_nfc),
                     nfcState ? colorOn : colorOff, "fonts/MaterialIcons.ttf", true, 144));
 
             updateViews.setTextColor(R.id.textViewNfc, nfcState ? colorTextOn : colorTextOff);
             updateViews.setInt(R.id.imageViewNfcInd, "setColorFilter", nfcState ? colorOn : colorOff);
         } else {
-            //BitmapDrawable bitmapDrawable = setIconColor(mContext, colorTransition, R.drawable.nfc_on);
-
-            //if (bitmapDrawable != null)
-            //    updateViews.setImageViewBitmap(R.id.imageViewNfc, bitmapDrawable.getBitmap());
-
             updateViews.setImageViewBitmap(R.id.imageViewNfc, getFontBitmap(mContext, mContext.getString(R.string.icon_nfc),
                     colorTransition, "fonts/MaterialIcons.ttf", true, 144));
 
@@ -3307,22 +3237,12 @@ public class WidgetManager {
         Boolean mobileState = getMobileState();
 
         if (mobileState != null) {
-            //BitmapDrawable bitmapDrawable = setIconColor(mContext, mobileState ? colorOn : colorOff, R.drawable.data_on);
-
-            //if (bitmapDrawable != null)
-            //    updateViews.setImageViewBitmap(R.id.imageViewMobile, bitmapDrawable.getBitmap());
-
             updateViews.setImageViewBitmap(R.id.imageViewMobile, getFontBitmap(mContext, mContext.getString(R.string.icon_data),
                     mobileState ? colorOn : colorOff, "fonts/MaterialIcons.ttf", true, 144));
 
             updateViews.setTextColor(R.id.textViewMobile, mobileState ? colorTextOn : colorTextOff);
             updateViews.setInt(R.id.imageViewMobileInd, "setColorFilter", mobileState ? colorOn : colorOff);
         } else {
-            //BitmapDrawable bitmapDrawable = setIconColor(mContext, colorTransition, R.drawable.data_on);
-
-            //if (bitmapDrawable != null)
-            //    updateViews.setImageViewBitmap(R.id.imageViewMobile, bitmapDrawable.getBitmap());
-
             updateViews.setImageViewBitmap(R.id.imageViewMobile, getFontBitmap(mContext, mContext.getString(R.string.icon_data),
                     colorTransition, "fonts/MaterialIcons.ttf", true, 144));
 
@@ -3436,22 +3356,12 @@ public class WidgetManager {
         Boolean gpsState = getGpsState();
 
         if (gpsState != null) {
-            //BitmapDrawable bitmapDrawable = setIconColor(mContext, gpsState ? colorOn : colorOff, R.drawable.gps_on);
-
-            //if (bitmapDrawable != null)
-            //    updateViews.setImageViewBitmap(R.id.imageViewGps, bitmapDrawable.getBitmap());
-
             updateViews.setImageViewBitmap(R.id.imageViewGps, getFontBitmap(mContext, mContext.getString(R.string.icon_gps),
                     gpsState ? colorOn : colorOff, "fonts/MaterialIcons.ttf", true, 144));
 
             updateViews.setTextColor(R.id.textViewGps, gpsState ? colorTextOn : colorTextOff);
             updateViews.setInt(R.id.imageViewGpsInd, "setColorFilter", gpsState ? colorOn : colorOff);
         } else {
-            //BitmapDrawable bitmapDrawable = setIconColor(mContext, colorTransition, R.drawable.gps_on);
-
-            //if (bitmapDrawable != null)
-            //    updateViews.setImageViewBitmap(R.id.imageViewGps, bitmapDrawable.getBitmap());
-
             updateViews.setImageViewBitmap(R.id.imageViewGps, getFontBitmap(mContext, mContext.getString(R.string.icon_gps),
                     colorTransition, "fonts/MaterialIcons.ttf", true, 144));
 
@@ -3582,7 +3492,6 @@ public class WidgetManager {
 
         updateViews.setTextViewText(R.id.textViewRinger, mContext.getResources().getText(R.string.ringer));
 
-        int resource;
         int color = colorOn;
         int textColor = colorTextOn;
         String text = "";
@@ -3591,33 +3500,24 @@ public class WidgetManager {
 
         switch (ringerState) {
             case AudioManager.RINGER_MODE_SILENT:
-                resource = R.drawable.ringer_silent;
                 color = colorOff;
                 textColor = colorTextOff;
                 text = mContext.getString(R.string.icon_ringer_silent);
                 break;
 
             case AudioManager.RINGER_MODE_VIBRATE:
-                resource = R.drawable.ringer_vibrate;
                 text = mContext.getString(R.string.icon_ringer_vibrate);
                 break;
 
             case AudioManager.RINGER_MODE_NORMAL:
-                resource = R.drawable.ringer_normal;
                 text = mContext.getString(R.string.icon_ringer_normal);
                 break;
 
             default:
-                resource = R.drawable.ringer_normal;
                 color = colorTransition;
                 text = mContext.getString(R.string.icon_ringer_normal);
                 break;
         }
-
-        //BitmapDrawable bitmapDrawable = setIconColor(mContext, color, resource);
-
-        //if (bitmapDrawable != null)
-        //    updateViews.setImageViewBitmap(R.id.imageViewRinger, bitmapDrawable.getBitmap());
 
         updateViews.setImageViewBitmap(R.id.imageViewRinger, getFontBitmap(mContext, text,
                 color, "fonts/MaterialIcons.ttf", true, 144));
@@ -3733,34 +3633,24 @@ public class WidgetManager {
 
         updateViews.setTextViewText(R.id.textViewBrightness, mContext.getResources().getText(R.string.brightness));
 
-        int resource;
         int brightness = getBrightness();
         boolean off = false;
         String text = "";
 
         if (isAutoBrightness()) {
-            resource = R.drawable.brightness_auto;
             text = mContext.getString(R.string.icon_brightness_auto);
         } else {
             if (brightness < 50) {
-                resource = R.drawable.brightness_on; // set gray background
                 off = true;
                 text = mContext.getString(R.string.icon_brightness);
             } else {
                 if (brightness < 150) {
-                    resource = R.drawable.brightness_mid;
                     text = mContext.getString(R.string.icon_brightness_mid);
                 } else {
-                    resource = R.drawable.brightness_on;
                     text = mContext.getString(R.string.icon_brightness);
                 }
             }
         }
-
-        //BitmapDrawable bitmapDrawable = setIconColor(mContext, off ? colorOff : colorOn, resource);
-
-        //if (bitmapDrawable != null)
-        //    updateViews.setImageViewBitmap(R.id.imageViewBrightness, bitmapDrawable.getBitmap());
 
         updateViews.setImageViewBitmap(R.id.imageViewBrightness, getFontBitmap(mContext, text,
                 off ? colorOff : colorOn, "fonts/MaterialIcons.ttf", true, 144));
@@ -3769,12 +3659,8 @@ public class WidgetManager {
         updateViews.setInt(R.id.imageViewBrightnessInd, "setColorFilter", off ? colorOff : colorOn);
     }
 
-    public void updateClockWidgets(Context context, int[] appWidgetIds,/* boolean startService, */boolean updateWeather, boolean scheduledUpdate) {
-        /*if (startService)
-            context.startService(new Intent(context, WidgetUpdateService.class));*/
-
+    public void updateClockWidgets(Context context, int[] appWidgetIds, boolean updateWeather, boolean scheduledUpdate) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        //int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, DigitalClockAppWidgetProvider.class));*/
 
         RemoteViews remoteViews;
 
@@ -3813,13 +3699,6 @@ public class WidgetManager {
         Log.d(LOG_TAG, "WidgetUpdateService buildUpdate");
 
         // Build an update that holds the updated widget contents
-        /*Bundle extras = intent.getExtras();
-
-        if (extras == null)
-            return null;
-
-        String intentExtra = extras.getString(WidgetInfoReceiver.INTENT_EXTRA);*/
-
         if (intentExtra == null)
             return null;
 

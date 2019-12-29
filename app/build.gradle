@@ -18,8 +18,8 @@ android {
         applicationId "com.zoromatic.widgets"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 24
-        versionName "2.2.0"
+        versionCode 25
+        versionName "2.3.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

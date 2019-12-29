@@ -17,8 +17,7 @@
         android:layout_weight=".7"
         android:adjustViewBounds="true"
         android:contentDescription="@string/syncdesc"
-        android:scaleType="fitCenter"
-        android:src="@drawable/sync_on" />
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/textViewSync"

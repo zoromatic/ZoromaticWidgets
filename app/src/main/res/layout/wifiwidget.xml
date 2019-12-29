@@ -17,8 +17,7 @@
         android:layout_weight=".7"
         android:adjustViewBounds="true"
         android:contentDescription="@string/wifidesc"
-        android:scaleType="fitCenter"
-        android:src="@drawable/wifi_on" />
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/textViewWiFi"
