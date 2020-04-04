@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:widgets="http://schemas.android.com/apk/res/com.zoromatic.widgets"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <!-- <PreferenceCategory android:title="@string/main_settings"
-        android:key="mainsettings_" > -->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
         android:title="@string/theme_colors"
@@ -66,7 +62,5 @@
         android:icon="?attr/iconAbout"
         android:summary="@string/about_app"
         android:title="@string/app_name" />
-
-    <!-- </PreferenceCategory> -->
 
 </PreferenceScreen>

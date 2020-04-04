@@ -1,5 +1,5 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:widgets="http://schemas.android.com/apk/res/com.zoromatic.widgets">
+    xmlns:widgets="http://schemas.android.com/apk/res-auto">
 
     <com.zoromatic.widgets.ImageListPreference
         android:defaultValue="0"

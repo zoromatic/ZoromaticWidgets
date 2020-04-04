@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:widgets="http://schemas.android.com/apk/res/com.zoromatic.widgets"
+    xmlns:widgets="http://schemas.android.com/apk/res-auto"
     android:key="com.zoromatic.widgets.Preferences">
 
-    <!--<Preference
-        android:title="@string/main_theme_colors"
-        android:summary="@string/config_main_theme_colors"
-        android:key="@string/category_theme"/>-->
-
-    <!-- <PreferenceCategory android:title="@string/lookandfeel" > -->
     <com.margaritov.preference.colorpicker.ColorPickerPreference
         android:defaultValue="0xFF000000"
         android:summary="@string/select_widget_background"
@@ -24,14 +18,6 @@
         android:defaultValue="100"
         android:text=" %"
         android:max="100" />
-
-    <!-- <PreferenceScreen android:title="@string/clocklayout"
-        android:summary="@string/clocklayoutdesc"
-        android:key="clocksettings_">
-
-        <com.zoromatic.widgets.ToolbarPreference
-            android:key="clocksettings_"
-            android:title="@string/clocklayout" /> -->
 
     <PreferenceCategory
         android:title="@string/clocklayout"
@@ -73,15 +59,6 @@
             android:summary="@string/selectclockskin"
             android:title="@string/clockskin" />
     </PreferenceCategory>
-    <!-- </PreferenceScreen> -->
-
-    <!-- <PreferenceScreen android:title="@string/datelayout"
-        android:summary="@string/datelayoutdesc"
-        android:key="datesettings_">
-
-        <com.zoromatic.widgets.ToolbarPreference
-            android:key="datesettings_"
-            android:title="@string/datelayout" /> -->
 
     <PreferenceCategory
         android:title="@string/datelayout"
@@ -117,15 +94,6 @@
             android:summary="@string/datenormaltext"
             android:title="@string/dateboldtext" />
     </PreferenceCategory>
-    <!-- </PreferenceScreen>  -->
-
-    <!-- <PreferenceScreen android:title="@string/weatherlayout"
-        android:summary="@string/weatherlayoutdesc"
-        android:key="weatherlayout_">
-
-        <com.zoromatic.widgets.ToolbarPreference
-            android:key="weatherlayout_"
-            android:title="@string/weatherlayout" /> -->
 
     <PreferenceCategory
         android:title="@string/weatherlayout"
@@ -162,16 +130,6 @@
             android:title="@string/weathericons"
             widgets:entryImages="@array/weatherIconsImageValues" />
 
-        <!-- <com.zoromatic.widgets.ImageListPreference
-            android:defaultValue="0"
-            android:key="forecasttheme_"
-            android:entries="@array/themeArray"
-            android:entryValues="@array/themeValues"
-            android:summary="@string/selectforecasttheme"
-            android:title="@string/forecasttheme" /> -->
-
     </PreferenceCategory>
-    <!-- </PreferenceScreen> -->
-    <!-- </PreferenceCategory> -->
 
 </PreferenceScreen>

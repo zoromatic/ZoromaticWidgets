@@ -204,6 +204,7 @@
     <string name="category_notification">notification</string>
     <string name="delete_widget">Delete Widget</string>
     <string name="deletewidgetwarning">This action will only disable widgets. You will probably have to remove them manually from home screen. Would you like to continue?</string>
+    <string name="category_foreground">foreground</string>
 
     <string name="asb_switch_on">ON</string>
     <string name="asb_switch_off">OFF</string>

@@ -53,6 +53,8 @@ public class ZoromaticWidgetsPreferenceActivity extends ThemeAppCompatActivity {
                         actionBar.setTitle(R.string.app_prefs);
                     } else if (action.equals(getString(R.string.category_theme))) {
                         actionBar.setTitle(R.string.theme_colors);
+                    } else if (action.equals(getString(R.string.category_foreground))) {
+                        actionBar.setTitle(R.string.foreground_service);
                     } else if (action.equals(getString(R.string.category_notification))) {
                         actionBar.setTitle(R.string.batterynotification);
                     } else {
@@ -80,6 +82,8 @@ public class ZoromaticWidgetsPreferenceActivity extends ThemeAppCompatActivity {
                         actionBar.setTitle(R.string.app_prefs);
                     } else if (action.equals(getString(R.string.category_theme))) {
                         actionBar.setTitle(R.string.theme_colors);
+                    } else if (action.equals(getString(R.string.category_foreground))) {
+                        actionBar.setTitle(R.string.foreground_service);
                     } else if (action.equals(getString(R.string.category_notification))) {
                         actionBar.setTitle(R.string.batterynotification);
                     } else {

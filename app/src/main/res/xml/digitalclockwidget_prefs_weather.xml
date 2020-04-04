@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:widgets="http://schemas.android.com/apk/res/com.zoromatic.widgets"
     android:key="com.zoromatic.widgets.Preferences">
 
-    <!-- <PreferenceCategory android:title="@string/weathersettings" > -->
     <com.zoromatic.widgets.ImageListPreference
         android:defaultValue="0"
         android:entries="@array/tempScaleArray"
@@ -18,7 +16,7 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.zoromatic.widgets"
-            android:targetClass="com.zoromatic.widgets.ConfigureLocationActivity"></intent>
+            android:targetClass="com.zoromatic.widgets.ConfigureLocationActivity" />
     </PreferenceScreen>
 
     <com.zoromatic.widgets.ImageListPreference
@@ -38,7 +36,7 @@
     <PreferenceScreen
         android:title="@string/refreshnow"
         android:key="refreshnow_"
-        android:summary="@string/lastrefreshnever"></PreferenceScreen>
+        android:summary="@string/lastrefreshnever" />
 
     <PreferenceScreen
         android:title="@string/weatherprovider"
@@ -47,6 +45,5 @@
             android:action="android.intent.action.VIEW"
             android:data="http://www.openweathermap.org" />
     </PreferenceScreen>
-    <!-- </PreferenceCategory> -->
 
 </PreferenceScreen>
