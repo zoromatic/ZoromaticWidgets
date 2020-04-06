@@ -1,7 +1,7 @@
 <h3>Zoromatic Widgets</h3>
 
-Version 2.1<br>
-Copyright 2013-2017<br>
+Version 2.3<br>
+Copyright 2013-2020<br>
 <b>zoromaticsoftware.blogspot.com</b><br><br>
 Privacy Policy:<br>
 <b>zoromaticsoftware.blogspot.rs/p/zoromaticwidgets-privacy-policy.html</b><br><br>
@@ -21,4 +21,5 @@ Icon sets by:<br>
 <b>www.freeiconsweb.com/preview?id=171</b><br>
 <b>www.flaticon.com/packs/weather-set-2</b><br>
 <b>icons8.com/icon/pack/weather/office</b><br>
+<b>www.dovora.com/resources/weather-icons</b><br>
 <br>
