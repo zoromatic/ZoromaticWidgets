@@ -178,6 +178,11 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
             addPreferencesFromResource(R.xml.digitalclockwidget_prefs);
         }
 
+        Preference themePreference = (Preference) findPreference(getString(R.string.category_theme));
+
+        if (themePreference != null)
+            themePreference.setSummary("");
+
         ListPreference mainTheme = (ListPreference) findPreference(Preferences.PREF_MAIN_THEME);
 
         if (mainTheme != null) {

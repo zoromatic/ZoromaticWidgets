@@ -229,8 +229,8 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
     }
 
     @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         if (savedInstanceState != null) {
             mAboutOpen = savedInstanceState.getBoolean(ABOUT);

@@ -14,4 +14,9 @@
         android:icon="?attr/iconPalette"
         android:key="@string/category_look">
     </Preference>
+    <Preference
+        android:title="@string/theme_colors"
+        android:icon="?attr/iconPalette"
+        android:summary="@string/configurethemeandcolors"
+        android:key="@string/category_theme" />
 </PreferenceScreen>
