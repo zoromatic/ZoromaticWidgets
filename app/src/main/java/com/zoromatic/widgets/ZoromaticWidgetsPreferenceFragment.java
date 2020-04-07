@@ -27,7 +27,7 @@ import android.widget.Toast;
 public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
     public static final int RESULT_OK = -1;
     public boolean mAboutOpen = false;
-    public static final String ABOUT = "about";
+    public static final String ABOUT_OPEN = "about_open";
     public static final int REQUEST_THEME = 0;
 
     Context context = null;
@@ -60,10 +60,10 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
             conf.locale = new Locale(lang.toLowerCase());
             res.updateConfiguration(conf, dm);
 
-            setPreferences();
+            //setPreferences();
 
             if (paramBundle != null) {
-                mAboutOpen = paramBundle.getBoolean(ABOUT);
+                mAboutOpen = paramBundle.getBoolean(ABOUT_OPEN);
 
                 if (mAboutOpen) {
                     Context contextLocal = (Context) getActivity();
@@ -145,7 +145,7 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
             soundToggle.setSummary(soundToggle.getEntries()[Preferences.getSoundOptions(context)]);
         }
 
-        ListPreference brightnessToggle = (ListPreference) findPreference(Preferences.PREF_BRIGHTNESS_OPTIONS_KEY);
+        ListPreference brightnessToggle = (ListPreference) findPreference(Preferences.PREF_BRIGHTNESS_OPTIONS);
 
         if (brightnessToggle != null) {
             brightnessToggle.setValueIndex(Preferences.getBrightnessOptions(context));
@@ -201,7 +201,6 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
 
         if (about != null) {
             about.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-
                 @Override
                 public boolean onPreferenceClick(Preference p) {
                     Context contextLocal = (Context) getActivity();
@@ -224,8 +223,8 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putBoolean(ABOUT_OPEN, mAboutOpen);
 
-        savedInstanceState.putBoolean(ABOUT, mAboutOpen);
     }
 
     @Override
@@ -233,19 +232,19 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
         super.onActivityCreated(savedInstanceState);
 
         if (savedInstanceState != null) {
-            mAboutOpen = savedInstanceState.getBoolean(ABOUT);
+            mAboutOpen = savedInstanceState.getBoolean(ABOUT_OPEN);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        setPreferences();
+        return view;
     }
 
     @Override
     public void onDestroyView() {
-
         super.onDestroyView();
     }
 
@@ -355,8 +354,8 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
                 }
             }
 
-            if (key.equals(Preferences.PREF_BRIGHTNESS_OPTIONS_KEY)) {
-                ListPreference brightnessToggle = (ListPreference) findPreference(Preferences.PREF_BRIGHTNESS_OPTIONS_KEY);
+            if (key.equals(Preferences.PREF_BRIGHTNESS_OPTIONS)) {
+                ListPreference brightnessToggle = (ListPreference) findPreference(Preferences.PREF_BRIGHTNESS_OPTIONS);
 
                 if (brightnessToggle != null) {
                     Preferences.setBrightnessOptions(context, brightnessToggle.findIndexOfValue(brightnessToggle.getValue()));

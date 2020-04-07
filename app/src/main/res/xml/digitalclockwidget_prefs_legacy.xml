@@ -11,7 +11,7 @@
     </Preference>
     <Preference
         android:title="@string/lookandfeel"
-        android:icon="?attr/iconPalette"
+        android:icon="?attr/iconLook"
         android:key="@string/category_look">
     </Preference>
     <Preference

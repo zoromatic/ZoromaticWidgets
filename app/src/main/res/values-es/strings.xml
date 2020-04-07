@@ -124,9 +124,9 @@
     <string name="nolocationdefined">La ubicación no está definida.</string>
     <string name="restartingservice">Reinicio de servicio de widgets.</string>
     <string name="generalsettings">Configuración general</string>
-    <string name="lookandfeel">El aspecto</string>
+    <string name="lookandfeel">El aspecto de widget</string>
     <string name="selecttheme">Seleccione tema de aplicación</string>
-    <string name="apptheme">Tema Principal</string>
+    <string name="apptheme">Tema principal</string>
     <string name="searching">Buscando&#8230;</string>
     <string name="searchinglocations">Buscando ubicaciones</string>
     <string name="locationssettingsdisabled">Proveedores de ubicación son discapacitados. ¿Quieres abrir la configuración de ubicación para permitirles?</string>
@@ -195,14 +195,14 @@
     <string name="widgets_settings">Widgets de la pantalla principal</string>
     <string name="configurehomescreenwidgets">Configurar widgets de la pantalla principal</string>
     <string name="available_widgets">Widgets disponibles</string>
-    <string name="theme_colors">Tema y Colores</string>
+    <string name="theme_colors">Tema y colores principalеs</string>
     <string name="configurethemeandcolors">Configure tema y los colores</string>
     <string name="category_theme">tema</string>
     <string name="batterysummaryon">Mostrar en la barra de estado</string>
     <string name="batterysummaryoff">No mostrar en la barra de estado</string>
     <string name="defaultsummary">Por defecto</string>
     <string name="category_notification">notification</string>
-    <string name="delete_widget">Eliminar Widget</string>
+    <string name="delete_widget">Eliminar widget</string>
     <string name="deletewidgetwarning">Esta acción sólo se desactivará widgets. Usted probablemente tendrá que quitar manualmente desde la pantalla de inicio. ¿Te gustaría continuar?</string>
     <string name="category_foreground">foreground</string>
 

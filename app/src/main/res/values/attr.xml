@@ -14,6 +14,7 @@
     <attr name="iconAdd" format="reference" />
     <attr name="iconGeneralSettings" format="reference" />
     <attr name="iconPalette" format="reference" />
+    <attr name="iconLook" format="reference" />
     <attr name="iconWeather" format="reference" />
     <attr name="iconBattery" format="reference" />
     <attr name="iconBrightness" format="reference" />

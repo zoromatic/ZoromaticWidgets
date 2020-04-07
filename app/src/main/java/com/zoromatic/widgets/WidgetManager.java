@@ -866,7 +866,7 @@ public class WidgetManager {
         /*updateViews.setImageViewBitmap(R.id.imageViewClockHour, getFontBitmap(mContext, currentHour, systemClockColor, font, bold, 96));
         updateViews.setImageViewBitmap(R.id.imageViewClockMinute, getFontBitmap(mContext, currentMinute, systemClockColor, font, bold, 96));
         updateViews.setImageViewBitmap(R.id.imageViewClockSpace, getFontBitmap(mContext, ":", systemClockColor, font, bold, 96));*/
-        updateViews.setImageViewBitmap(R.id.imageViewTime, getFontBitmap(mContext, currentTime, systemClockColor, font, bold, 128));
+        updateViews.setImageViewBitmap(R.id.imageViewTime, getFontBitmap(mContext, currentTime, systemClockColor, font, bold, 192));
 
         String currentDate = "";
         String[] mTestArray = mContext.getResources().getStringArray(R.array.dateFormat);

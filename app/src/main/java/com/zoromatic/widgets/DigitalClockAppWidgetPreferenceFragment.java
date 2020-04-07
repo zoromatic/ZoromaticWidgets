@@ -77,14 +77,7 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
             android.content.res.Configuration conf = res.getConfiguration();
             conf.locale = new Locale(lang.toLowerCase());
             res.updateConfiguration(conf, dm);
-
-            setPreferences();
         }
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     /*
@@ -831,25 +824,23 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-
         super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-
-        super.onViewStateRestored(savedInstanceState);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        setPreferences();
+        return view;
     }
 
     @Override
     public void onDestroyView() {
-
         super.onDestroyView();
     }
 

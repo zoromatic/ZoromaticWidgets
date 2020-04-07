@@ -124,7 +124,7 @@
     <string name="nolocationdefined">No location defined.</string>
     <string name="restartingservice">Restarting widgets service.</string>
     <string name="generalsettings">General Settings</string>
-    <string name="lookandfeel">Look and Feel</string>
+    <string name="lookandfeel">Widget Look and Feel</string>
     <string name="selecttheme">Select application theme</string>
     <string name="apptheme">Main Theme</string>
     <string name="searching">Searching&#8230;</string>
@@ -195,7 +195,7 @@
     <string name="widgets_settings">Home Screen Widgets</string>
     <string name="configurehomescreenwidgets">Configure home screen widgets</string>
     <string name="available_widgets">Available Widgets</string>
-    <string name="theme_colors">Theme and Colors</string>
+    <string name="theme_colors">Main Theme and Colors</string>
     <string name="configurethemeandcolors">Configure theme and colors</string>
     <string name="category_theme">theme</string>
     <string name="batterysummaryon">Show in status bar</string>

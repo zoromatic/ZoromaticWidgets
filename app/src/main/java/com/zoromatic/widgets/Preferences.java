@@ -91,7 +91,7 @@ public class Preferences {
     public static final String PREF_THRESHOLD_BATTERY2_KEY = "thresholdbattery2_";
     public static final String PREF_THRESHOLD_BATTERY3_KEY = "thresholdbattery3_";
     public static final String PREF_THRESHOLD_BATTERY4_KEY = "thresholdbattery4_";
-    public static final String PREF_BRIGHTNESS_OPTIONS_KEY = "brightnessoptions_";
+    public static final String PREF_BRIGHTNESS_OPTIONS = "brightnessoptions_";
     public static final String PREF_FOREGROUND_SERVICE_KEY = "foregroundservice_";
     public static final String PREF_FOREGROUND_SERVICE_DONT_SHOW_KEY = "servicedontshow_";
 
@@ -435,7 +435,7 @@ public class Preferences {
 
     public static int getBrightnessOptions(Context context) {
         return getPreferences(context)
-                .getInt(PREF_BRIGHTNESS_OPTIONS_KEY + 0, 0);
+                .getInt(PREF_BRIGHTNESS_OPTIONS + 0, 0);
     }
 
     public static boolean getForegroundService(Context context) {
@@ -872,7 +872,7 @@ public class Preferences {
 
     public static void setBrightnessOptions(Context context, int value) {
         getPreferences(context).edit()
-                .putInt(PREF_BRIGHTNESS_OPTIONS_KEY + 0, value).apply();
+                .putInt(PREF_BRIGHTNESS_OPTIONS + 0, value).apply();
     }
 
     public static void setForegroundService(Context context, boolean value) {

@@ -124,7 +124,7 @@
     <string name="nolocationdefined">Местоположение не определено.</string>
     <string name="restartingservice">Обновление сервиса.</string>
     <string name="generalsettings">Общие настройки</string>
-    <string name="lookandfeel">Взгляд</string>
+    <string name="lookandfeel">Взгляд виджета</string>
     <string name="selecttheme">Выберите тему применения</string>
     <string name="apptheme">Основная тема</string>
     <string name="searching">Поиск&#8230;</string>
@@ -195,7 +195,7 @@
     <string name="widgets_settings">Виджеты главного экрана</string>
     <string name="configurehomescreenwidgets">Настройка виджетов главного экрана</string>
     <string name="available_widgets">Доступные виджеты</string>
-    <string name="theme_colors">Тема и цвета</string>
+    <string name="theme_colors">Главная тема и цвета</string>
     <string name="configurethemeandcolors">Настройка темы и цветов</string>
     <string name="category_theme">тема</string>
     <string name="batterysummaryon">Показать в строке состояния</string>

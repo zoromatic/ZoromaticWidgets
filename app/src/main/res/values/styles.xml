@@ -176,7 +176,8 @@
         <item name="iconWidgets">@drawable/ic_now_widgets_white_48dp</item>
         <item name="iconRestart">@drawable/ic_replay_white_48dp</item>
         <item name="iconSound">@drawable/ic_volume_up_white_48dp</item>
-        <item name="iconForeground">@drawable/ic_settings_white_48dp</item>
+        <item name="iconForeground">@drawable/baseline_flip_to_front_white_48</item>
+        <item name="iconLook">@drawable/baseline_photo_library_white_48</item>
         <item name="android:alertDialogStyle">@style/AlertDialogStyleDark</item>
         <item name="android:checkboxStyle">@style/MaterialCheckBox</item>
         <item name="android:radioButtonStyle">@style/MaterialRadioButton</item>
@@ -214,7 +215,8 @@
         <item name="iconWidgets">@drawable/ic_now_widgets_black_48dp</item>
         <item name="iconRestart">@drawable/ic_replay_black_48dp</item>
         <item name="iconSound">@drawable/ic_volume_up_black_48dp</item>
-        <item name="iconForeground">@drawable/ic_settings_black_48dp</item>
+        <item name="iconForeground">@drawable/baseline_flip_to_front_black_48</item>
+        <item name="iconLook">@drawable/baseline_photo_library_black_48</item>
         <item name="android:alertDialogStyle">@style/AlertDialogStyleLight</item>
         <item name="android:checkboxStyle">@style/MaterialCheckBox</item>
         <item name="android:radioButtonStyle">@style/MaterialRadioButton</item>
