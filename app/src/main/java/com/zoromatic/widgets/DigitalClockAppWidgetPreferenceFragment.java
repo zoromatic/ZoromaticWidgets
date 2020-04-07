@@ -811,8 +811,19 @@ public class DigitalClockAppWidgetPreferenceFragment extends PreferenceFragment 
                     settingsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
 
                     startActivityForResult(settingsIntent, WeatherForecastActivity.ACTIVITY_SETTINGS);
-
                 } else {
+                    if (getActivity().getParent() != null) {
+                        if (getActivity().getParent().getParent() != null) {
+                            Intent intentGrandParent = getActivity().getParent().getParent().getIntent();
+                            getActivity().getParent().getParent().finish();
+                            getActivity().getParent().getParent().startActivity(intentGrandParent);
+                        }
+
+                        Intent intentParent = getActivity().getParent().getIntent();
+                        getActivity().getParent().finish();
+                        getActivity().getParent().startActivity(intentParent);
+                    }
+
                     Intent intent = getActivity().getIntent();
                     getActivity().finish();
                     getActivity().startActivity(intent);

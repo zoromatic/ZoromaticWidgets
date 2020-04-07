@@ -12,6 +12,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
@@ -28,6 +29,7 @@ public class PowerAppWidgetPreferenceFragment extends PreferenceFragment impleme
     public static final int RESULT_CANCELED = 0;
     public static final int RESULT_OK = -1;
     public static final int RESULT_FIRST_USER = 1;
+    private static final int REQUEST_THEME = 1;
 
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     Context context = null;
@@ -79,6 +81,8 @@ public class PowerAppWidgetPreferenceFragment extends PreferenceFragment impleme
                     addPreferencesFromResource(R.xml.powerwidget_prefs_general);
                 } else if (category.equals(getString(R.string.category_look))) {
                     addPreferencesFromResource(R.xml.powerwidget_prefs_look);
+                } else if (category.equals(getString(R.string.category_theme))) {
+                    addPreferencesFromResource(R.xml.zoromaticwidgets_prefs_theme);
                 } else {
                     addPreferencesFromResource(R.xml.powerwidget_prefs_legacy);
                 }
@@ -87,6 +91,32 @@ public class PowerAppWidgetPreferenceFragment extends PreferenceFragment impleme
             }
         } else {
             addPreferencesFromResource(R.xml.powerwidget_prefs_legacy);
+        }
+
+        Preference themePreference = (Preference) findPreference(getString(R.string.category_theme));
+
+        if (themePreference != null)
+            themePreference.setSummary("");
+
+        ListPreference mainTheme = (ListPreference) findPreference(Preferences.PREF_MAIN_THEME);
+
+        if (mainTheme != null) {
+
+            String theme = Preferences.getMainTheme(context);
+
+            if (theme.equals("") || mainTheme.findIndexOfValue(theme) < 0) {
+                theme = "dark";
+            }
+
+            mainTheme.setValueIndex(mainTheme.findIndexOfValue(theme));
+            mainTheme.setSummary(mainTheme.getEntries()[mainTheme.findIndexOfValue(theme)]);
+        }
+
+        ListPreference mainColorScheme = (ListPreference) findPreference(Preferences.PREF_MAIN_COLOR_SCHEME);
+
+        if (mainColorScheme != null) {
+            mainColorScheme.setValueIndex(Preferences.getMainColorScheme(context));
+            mainColorScheme.setSummary(mainColorScheme.getEntries()[Preferences.getMainColorScheme(context)]);
         }
 
         CheckBoxPreference bluetooth = (CheckBoxPreference) findPreference(Preferences.PREF_SHOW_BLUETOOTH_KEY);
@@ -409,6 +439,11 @@ public class PowerAppWidgetPreferenceFragment extends PreferenceFragment impleme
                 if (resultCode == RESULT_OK) {
                 }
                 break;
+            case REQUEST_THEME:
+                Intent intent = getActivity().getIntent();
+                getActivity().finish();
+                getActivity().startActivity(intent);
+                break;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -451,6 +486,10 @@ public class PowerAppWidgetPreferenceFragment extends PreferenceFragment impleme
                 settingsIntent.setAction(key);
                 settingsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
                 startActivity(settingsIntent);
+            } else if (key.equalsIgnoreCase(getResources().getString(R.string.category_theme))) {
+                Intent settingsIntent = new Intent(context, ZoromaticWidgetsPreferenceActivity.class);
+                settingsIntent.setAction(key);
+                startActivityForResult(settingsIntent, REQUEST_THEME);
             }
         }
 
@@ -458,8 +497,40 @@ public class PowerAppWidgetPreferenceFragment extends PreferenceFragment impleme
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-                                          String key) {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(Preferences.PREF_MAIN_THEME)) {
+            ListPreference mainTheme = (ListPreference) findPreference(Preferences.PREF_MAIN_THEME);
+
+            if (mainTheme != null) {
+                String value = mainTheme.getValue();
+
+                if (value.equals("") || mainTheme.findIndexOfValue(value) < 0) {
+                    value = "dark";
+                }
+
+                Preferences.setMainTheme(context, value);
+
+                mainTheme.setValueIndex(mainTheme.findIndexOfValue(value));
+                mainTheme.setSummary(mainTheme.getEntries()[mainTheme.findIndexOfValue(value)]);
+
+                Intent intent = getActivity().getIntent();
+                getActivity().finish();
+                getActivity().startActivity(intent);
+            }
+        }
+
+        if (key.equals(Preferences.PREF_MAIN_COLOR_SCHEME)) {
+            ListPreference mainColorScheme = (ListPreference) findPreference(Preferences.PREF_MAIN_COLOR_SCHEME);
+
+            if (mainColorScheme != null) {
+                Preferences.setMainColorScheme(context, mainColorScheme.findIndexOfValue(mainColorScheme.getValue()));
+                mainColorScheme.setSummary(mainColorScheme.getEntries()[Preferences.getMainColorScheme(context)]);
+
+                Intent intent = getActivity().getIntent();
+                getActivity().finish();
+                getActivity().startActivity(intent);
+            }
+        }
 
         if (key.equals(Preferences.PREF_SHOW_BLUETOOTH_KEY)) {
             CheckBoxPreference bluetooth = (CheckBoxPreference) findPreference(Preferences.PREF_SHOW_BLUETOOTH_KEY);

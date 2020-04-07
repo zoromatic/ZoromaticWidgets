@@ -205,6 +205,7 @@
     <string name="delete_widget">Удалить виджет</string>
     <string name="deletewidgetwarning">Это действие будет только отключить виджеты. Вы, вероятно, придется удалить их вручную из главного экрана. Желаете ли вы продолжить?</string>
     <string name="category_foreground">foreground</string>
+    <string name="category_widgetssettings">widgetssettings</string>
 
     <string name="asb_switch_on">Включен</string>
     <string name="asb_switch_off">Выключен</string>

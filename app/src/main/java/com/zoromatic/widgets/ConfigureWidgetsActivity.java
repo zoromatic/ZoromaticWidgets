@@ -63,6 +63,9 @@ public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
         }
 
         // Show the ProgressDialog on this thread
+        if (mProgressFragment != null) {
+            mProgressFragment.dismiss();
+        }
         mProgressFragment = new ProgressDialogFragment();
         Bundle args = new Bundle();
         args.putString("title", (String) getResources().getText(R.string.working));
@@ -214,8 +217,12 @@ public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == WIDGET_SETTINGS) {
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
+
             // Show the ProgressDialog on this thread
-            mProgressFragment = new ProgressDialogFragment();
+            /*mProgressFragment = new ProgressDialogFragment();
             Bundle args = new Bundle();
             args.putString("title", (String) getResources().getText(R.string.working));
             args.putString("message", (String) getResources().getText(R.string.retrieving));
@@ -225,7 +232,7 @@ public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
             // Start a new thread that will download all the data
             mDataProviderTask = new DataProviderTask();
             mDataProviderTask.setActivity(mConfigureWidgetsActivity);
-            mDataProviderTask.execute();
+            mDataProviderTask.execute();*/
         }
     }
 
@@ -265,7 +272,6 @@ public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
                     }
                 }
 
-
                 WidgetItemAdapter adapter = new WidgetItemAdapter(getDialogContext(), widgetRowItems, mActivityDelete);
                 mListView.setAdapter(adapter);
             }
@@ -285,7 +291,6 @@ public class ConfigureWidgetsActivity extends ThemeAppCompatActivity {
     }
 
     private void setListViewItems() {
-
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

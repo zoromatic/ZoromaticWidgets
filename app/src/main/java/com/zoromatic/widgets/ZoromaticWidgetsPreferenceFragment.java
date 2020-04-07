@@ -29,6 +29,7 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
     public boolean mAboutOpen = false;
     public static final String ABOUT_OPEN = "about_open";
     public static final int REQUEST_THEME = 0;
+    public static final int REQUEST_WIDGETS = 1;
 
     Context context = null;
 
@@ -270,6 +271,10 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
                 Intent settingsIntent = new Intent(context, ZoromaticWidgetsPreferenceActivity.class);
                 settingsIntent.setAction(key);
                 startActivity(settingsIntent);
+            } else if (key.equalsIgnoreCase(getResources().getString(R.string.category_widgetssettings))) {
+                Intent settingsIntent = new Intent(context, ConfigureWidgetsActivity.class);
+                settingsIntent.setAction(key);
+                startActivityForResult(settingsIntent, REQUEST_WIDGETS);
             }
         }
 
@@ -280,11 +285,10 @@ public class ZoromaticWidgetsPreferenceFragment extends PreferenceFragment imple
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_THEME:
-                //if (resultCode == RESULT_OK){
+            case REQUEST_WIDGETS:
                 Intent intent = getActivity().getIntent();
                 getActivity().finish();
                 getActivity().startActivity(intent);
-                //}
                 break;
         }
 

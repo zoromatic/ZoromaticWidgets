@@ -120,6 +120,10 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
         mRotation = AnimationUtils.loadAnimation(this, R.anim.animate_menu);
 
         // Show the ProgressDialogFragment on this thread
+        if (mProgressFragment != null) {
+            mProgressFragment.dismiss();
+        }
+        
         mProgressFragment = new ProgressDialogFragment();
         Bundle args = new Bundle();
         args.putString("title", (String) getResources().getText(R.string.working));
@@ -339,10 +343,14 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
         super.onActivityResult(requestCode, resultCode, intent);
 
         if (requestCode == ACTIVITY_SETTINGS) {
-            setFragments();
+            Intent restartIntent = getIntent();
+            finish();
+            startActivity(restartIntent);
+
+            //setFragments();
 
             // Show the ProgressDialogFragment on this thread
-            if (mProgressFragment != null) {
+            /*if (mProgressFragment != null) {
                 mProgressFragment.dismiss();
             }
             mProgressFragment = new ProgressDialogFragment();
@@ -355,7 +363,7 @@ public class WeatherForecastActivity extends ThemeAppCompatActivity {
             // Start a new thread that will download all the data
             dataProviderTask = new DataProviderTask();
             dataProviderTask.setActivity(mWeatherForecastActivity);
-            dataProviderTask.execute();
+            dataProviderTask.execute();*/
         }
     }
 

@@ -7,4 +7,9 @@
         android:title="@string/lookandfeel"
         android:icon="?attr/iconLook"
         android:key="@string/category_look" />
+    <Preference
+        android:title="@string/theme_colors"
+        android:icon="?attr/iconPalette"
+        android:summary="@string/configurethemeandcolors"
+        android:key="@string/category_theme" />
 </PreferenceScreen>

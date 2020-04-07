@@ -28,13 +28,13 @@
 
     <PreferenceScreen
         android:title="@string/widgets_settings"
-        android:key="widgetssettings_"
+        android:key="@string/category_widgetssettings"
         android:icon="?attr/iconWidgets"
         android:summary="@string/configurehomescreenwidgets">
-        <intent
+        <!--<intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.zoromatic.widgets"
-            android:targetClass="com.zoromatic.widgets.ConfigureWidgetsActivity" />
+            android:targetClass="com.zoromatic.widgets.ConfigureWidgetsActivity" />-->
     </PreferenceScreen>
 
     <Preference

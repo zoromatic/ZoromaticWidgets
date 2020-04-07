@@ -205,6 +205,7 @@
     <string name="delete_widget">Eliminar widget</string>
     <string name="deletewidgetwarning">Esta acción sólo se desactivará widgets. Usted probablemente tendrá que quitar manualmente desde la pantalla de inicio. ¿Te gustaría continuar?</string>
     <string name="category_foreground">foreground</string>
+    <string name="category_widgetssettings">widgetssettings</string>
 
     <string name="asb_switch_on">ON</string>
     <string name="asb_switch_off">OFF</string>
