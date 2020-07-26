@@ -25,6 +25,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.SurfaceTexture;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -330,6 +331,10 @@ public class WidgetManager {
                 Intent intentData = new Intent(Intent.ACTION_MAIN);
                 intentData.setComponent(new ComponentName("com.android.settings",
                         "com.android.settings.Settings$DataUsageSummaryActivity"));
+
+                if (intentData.resolveActivityInfo(mContext.getPackageManager(), 0) == null)
+                    intentData = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
+
                 intentData.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
                 pendingIntent = PendingIntent.getActivity(mContext, 0,
@@ -2532,6 +2537,7 @@ public class WidgetManager {
                         Camera.Parameters param = camera.getParameters();
                         param.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
                         camera.setParameters(param);
+                        camera.setPreviewTexture(new SurfaceTexture(0));
                         sleep(300);
                         camera.startPreview();
                         flashOn = true;
@@ -3812,6 +3818,10 @@ public class WidgetManager {
                         Intent intentData = new Intent(Intent.ACTION_MAIN);
                         intentData.setComponent(new ComponentName("com.android.settings",
                                 "com.android.settings.Settings$DataUsageSummaryActivity"));
+
+                        if (intentData.resolveActivityInfo(mContext.getPackageManager(), 0) == null)
+                            intentData = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
+
                         intentData.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
                         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
@@ -3826,6 +3836,10 @@ public class WidgetManager {
                 Intent intentData = new Intent(Intent.ACTION_MAIN);
                 intentData.setComponent(new ComponentName("com.android.settings",
                         "com.android.settings.Settings$DataUsageSummaryActivity"));
+
+                if (intentData.resolveActivityInfo(mContext.getPackageManager(), 0) == null)
+                    intentData = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
+
                 intentData.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,

@@ -8,8 +8,16 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
+
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class ZoromaticWidgetsApplication extends Application {
     private static final String LOG_TAG = "ZoromaticWidgets";
@@ -57,5 +65,18 @@ public class ZoromaticWidgetsApplication extends Application {
             Intent allowForegroundServiceIntent = new Intent(this, AllowForegroundServiceActivity.class);
             startActivity(allowForegroundServiceIntent);
         }*/
+
+        FirebaseMessaging.getInstance().subscribeToTopic("test")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "Subscription successful";
+                        if (!task.isSuccessful()) {
+                            msg = "Subscription failed";
+                        }
+                        Log.d(LOG_TAG, msg);
+                    }
+                });
+
     }
 }
