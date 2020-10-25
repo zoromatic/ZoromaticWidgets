@@ -79,6 +79,11 @@
         <item>Station [12:35]</item>
         <item>AllStar [12:35]</item>
         <item>Karate [12:35]</item>
+        <item>Gang of Three [12:35]</item>
+        <item>Good Times [12:35]</item>
+        <item>Playbill [12:35]</item>
+        <item>Remnant [12:35]</item>
+        <item>Green Fuz [12:35]</item>
     </string-array>
     <string-array name="fontValues">
         <item>0</item>
@@ -119,6 +124,11 @@
         <item>35</item>
         <item>36</item>
         <item>37</item>
+        <item>38</item>
+        <item>39</item>
+        <item>40</item>
+        <item>41</item>
+        <item>42</item>
     </string-array>
     <array name="fontPathValues">
         <item>fonts/Roboto.ttf</item>
@@ -159,6 +169,11 @@
         <item>fonts/Station.ttf</item>
         <item>fonts/AllStar.ttf</item>
         <item>fonts/Karate.ttf</item>
+        <item>fonts/GangOfThree.ttf</item>
+        <item>fonts/GoodTimes.ttf</item>
+        <item>fonts/Playbill.ttf</item>
+        <item>fonts/Remnant.ttf</item>
+        <item>fonts/GreenFuz.ttf</item>
     </array>
     <string-array name="dateFormat">
         <item>dd.MM.yyyy</item>
@@ -291,7 +306,7 @@
     <string-array name="weatherIconsArray">
         <item>Tick</item>
         <item>Touch</item>
-        <item>UmutAVCI</item>
+        <item>Umut Avci</item>
         <item>Weezle</item>
         <item>Simple</item>
         <item>Novacons</item>
@@ -312,6 +327,11 @@
         <item>DesZone</item>
         <item>Modern</item>
         <item>Simplistic</item>
+        <item>Dinosoft</item>
+        <item>Freepik</item>
+        <item>Iconixar</item>
+        <item>Cute</item>
+        <item>Wissawa</item>
     </string-array>
     <string-array name="weatherIconsValues">
         <item>0</item>
@@ -337,11 +357,16 @@
         <item>20</item>
         <item>21</item>
         <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
     </string-array>
     <array name="weatherIconsImageValues">
         <item>drawable/tick_weather_03d</item>
         <item>drawable/touch_weather_03d</item>
-        <item>drawable/icon_set_weather_03d</item>
+        <item>drawable/umutavci_weather_03d</item>
         <item>drawable/weezle_weather_03d</item>
         <item>drawable/simple_weather_03d</item>
         <item>drawable/novacons_weather_03d</item>
@@ -362,6 +387,11 @@
         <item>drawable/deszone_weather_03d</item>
         <item>drawable/modern_weather_03d</item>
         <item>drawable/simplistic_weather_03d</item>
+        <item>drawable/dinosoft_weather_03d</item>
+        <item>drawable/freepik_weather_03d</item>
+        <item>drawable/iconixar_weather_03d</item>
+        <item>drawable/cute_weather_03d</item>
+        <item>drawable/wissawa_weather_03d</item>
     </array>
     <string-array name="batteryIconsArray">
         <item>@string/label_icon</item>

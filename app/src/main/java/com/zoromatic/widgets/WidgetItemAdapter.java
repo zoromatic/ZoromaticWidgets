@@ -206,7 +206,7 @@ public class WidgetItemAdapter extends BaseAdapter {
                 ImageView tempImageView = tempViewWidget.findViewById(R.id.imageViewGps);
 
                 if (tempImageView != null) {
-                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, context.getString(R.string.icon_gps),
+                    tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, context.getString(R.string.icon_location),
                             colorOn, "fonts/MaterialIcons.ttf", true, 96));
                 }
 
@@ -1014,7 +1014,7 @@ public class WidgetItemAdapter extends BaseAdapter {
                     parseString = parseString.substring(0, parseString.length() - 1);
 
                 String start = parseString.substring(0, 1);
-                String end = parseString.substring(parseString.length() - 1, parseString.length());
+                String end = parseString.substring(parseString.length() - 1);
 
                 if (!(start.equalsIgnoreCase("{") && end.equalsIgnoreCase("}"))
                         && !(start.equalsIgnoreCase("[") && end.equalsIgnoreCase("]"))) {
@@ -1132,9 +1132,9 @@ public class WidgetItemAdapter extends BaseAdapter {
                             currentTemp = main.getDouble("temp") - 273.15;
 
                             if (tempScale == 1) {
-                                temp = String.valueOf((int) (currentTemp * 1.8 + 32)) + "°";
+                                temp = (int) (currentTemp * 1.8 + 32) + "°";
                             } else {
-                                temp = String.valueOf((int) currentTemp) + "°";
+                                temp = (int) currentTemp + "°";
                             }
 
                             tempImageView = holder.linearLayout.findViewById(R.id.imageViewTemp);
@@ -1181,121 +1181,20 @@ public class WidgetItemAdapter extends BaseAdapter {
                             String iconName = weather.getString("icon");
                             String iconNameAlt = iconName + "d";
 
-                            WeatherConditions conditions = new WeatherConditions();
-
-                            int icons = Preferences.getWeatherIcons(context, appWidgetId);
-                            int resource = R.drawable.tick_weather_04d;
-                            WeatherIcon[] imageArr;
-
                             tempImageView = holder.linearLayout.findViewById(R.id.imageViewDesc);
 
                             if (tempImageView != null) {
                                 tempImageView.setImageBitmap(WidgetManager.getFontBitmap(context, weatherDesc, systemWeatherColor, font, bold, 12));
                             }
 
-                            switch (icons) {
-                                case 0:
-                                    resource = R.drawable.tick_weather_04d;
-                                    imageArr = conditions.m_ImageArrTick;
-                                    break;
-                                case 1:
-                                    resource = R.drawable.touch_weather_04d;
-                                    imageArr = conditions.m_ImageArrTouch;
-                                    break;
-                                case 2:
-                                    resource = R.drawable.icon_set_weather_04d;
-                                    imageArr = conditions.m_ImageArrIconSet;
-                                    break;
-                                case 3:
-                                    resource = R.drawable.weezle_weather_04d;
-                                    imageArr = conditions.m_ImageArrWeezle;
-                                    break;
-                                case 4:
-                                    resource = R.drawable.simple_weather_04d;
-                                    imageArr = conditions.m_ImageArrSimple;
-                                    break;
-                                case 5:
-                                    resource = R.drawable.novacons_weather_04d;
-                                    imageArr = conditions.m_ImageArrNovacons;
-                                    break;
-                                case 6:
-                                    resource = R.drawable.sticker_weather_04d;
-                                    imageArr = conditions.m_ImageArrSticker;
-                                    break;
-                                case 7:
-                                    resource = R.drawable.plain_weather_04d;
-                                    imageArr = conditions.m_ImageArrPlain;
-                                    break;
-                                case 8:
-                                    resource = R.drawable.flat_weather_04d;
-                                    imageArr = conditions.m_ImageArrFlat;
-                                    break;
-                                case 9:
-                                    resource = R.drawable.dvoid_weather_04d;
-                                    imageArr = conditions.m_ImageArrDvoid;
-                                    break;
-                                case 10:
-                                    resource = R.drawable.ikonko_weather_04d;
-                                    imageArr = conditions.m_ImageArrIkonko;
-                                    break;
-                                case 11:
-                                    resource = R.drawable.smooth_weather_04d;
-                                    imageArr = conditions.m_ImageArrSmooth;
-                                    break;
-                                case 12:
-                                    resource = R.drawable.bubble_weather_04d;
-                                    imageArr = conditions.m_ImageArrBubble;
-                                    break;
-                                case 13:
-                                    resource = R.drawable.stylish_weather_04d;
-                                    imageArr = conditions.m_ImageArrStylish;
-                                    break;
-                                case 14:
-                                    resource = R.drawable.garmahis_weather_04d;
-                                    imageArr = conditions.m_ImageArrGarmahis;
-                                    break;
-                                case 15:
-                                    resource = R.drawable.iconbest_weather_04d;
-                                    imageArr = conditions.m_ImageArrIconBest;
-                                    break;
-                                case 16:
-                                    resource = R.drawable.cartoon_weather_04d;
-                                    imageArr = conditions.m_ImageArrCartoon;
-                                    break;
-                                case 17:
-                                    resource = R.drawable.flaticon_weather_04d;
-                                    imageArr = conditions.m_ImageArrFlaticon;
-                                    break;
-                                case 18:
-                                    resource = R.drawable.icon8_weather_04d;
-                                    imageArr = conditions.m_ImageArrIcon8;
-                                    break;
-                                case 19:
-                                    resource = R.drawable.crystal_weather_04d;
-                                    imageArr = conditions.m_ImageArrCrystal;
-                                    break;
-                                case 20:
-                                    resource = R.drawable.deszone_weather_04d;
-                                    imageArr = conditions.m_ImageArrDesZone;
-                                    break;
-                                case 21:
-                                    resource = R.drawable.modern_weather_04d;
-                                    imageArr = conditions.m_ImageArrModern;
-                                    break;
-                                case 22:
-                                    resource = R.drawable.simplistic_weather_04d;
-                                    imageArr = conditions.m_ImageArrSimplistic;
-                                    break;
-                                default:
-                                    resource = R.drawable.tick_weather_04d;
-                                    imageArr = conditions.m_ImageArrTick;
-                                    break;
-                            }
+                            int icons = Preferences.getWeatherIcons(context, appWidgetId);
+                            WeatherIcon[] imageArr = WeatherConditions.weatherIcons[icons];
+                            int iconId = imageArr[0].iconId;
 
                             tempImageView = holder.linearLayout.findViewById(R.id.imageViewWeather);
 
                             if (tempImageView != null) {
-                                tempImageView.setImageResource(resource);
+                                tempImageView.setImageResource(iconId);
                             }
 
                             float lat = Preferences.getLocationLat(context, appWidgetId);
@@ -1315,19 +1214,11 @@ public class WidgetItemAdapter extends BaseAdapter {
 
                             for (WeatherIcon anImageArr : imageArr) {
                                 if (iconName.equals(anImageArr.iconName) || iconNameAlt.equals(anImageArr.iconName)) {
+                                    iconId = anImageArr.bDay != bDay ? anImageArr.altIconId : anImageArr.iconId;
+                                    tempImageView = holder.linearLayout.findViewById(R.id.imageViewWeather);
 
-                                    if (anImageArr.bDay != bDay) {
-                                        tempImageView = holder.linearLayout.findViewById(R.id.imageViewWeather);
-
-                                        if (tempImageView != null) {
-                                            tempImageView.setImageResource(anImageArr.altIconId);
-                                        }
-                                    } else {
-                                        tempImageView = holder.linearLayout.findViewById(R.id.imageViewWeather);
-
-                                        if (tempImageView != null) {
-                                            tempImageView.setImageResource(anImageArr.iconId);
-                                        }
+                                    if (tempImageView != null) {
+                                        tempImageView.setImageResource(iconId);
                                     }
                                 }
                             }

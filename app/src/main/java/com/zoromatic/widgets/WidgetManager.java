@@ -1345,7 +1345,7 @@ public class WidgetManager {
                         parseString = parseString.substring(0, parseString.length() - 1);
 
                     String start = parseString.substring(0, 1);
-                    String end = parseString.substring(parseString.length() - 1, parseString.length());
+                    String end = parseString.substring(parseString.length() - 1);
 
                     if ((start.equalsIgnoreCase("{") && end.equalsIgnoreCase("}"))
                             || (start.equalsIgnoreCase("[") && end.equalsIgnoreCase("]"))) {
@@ -1471,7 +1471,7 @@ public class WidgetManager {
                         parseString = parseString.substring(0, parseString.length() - 1);
 
                     String start = parseString.substring(0, 1);
-                    String end = parseString.substring(parseString.length() - 1, parseString.length());
+                    String end = parseString.substring(parseString.length() - 1);
 
                     if ((start.equalsIgnoreCase("{") && end.equalsIgnoreCase("}"))
                             || (start.equalsIgnoreCase("[") && end.equalsIgnoreCase("]"))) {
@@ -1605,7 +1605,7 @@ public class WidgetManager {
             parseString = parseString.substring(0, parseString.length() - 1);
 
         String start = parseString.substring(0, 1);
-        String end = parseString.substring(parseString.length() - 1, parseString.length());
+        String end = parseString.substring(parseString.length() - 1);
 
         if (!(start.equalsIgnoreCase("{") && end.equalsIgnoreCase("}"))
                 && !(start.equalsIgnoreCase("[") && end.equalsIgnoreCase("]")))
@@ -1717,9 +1717,9 @@ public class WidgetManager {
                     currentTemp = main.getDouble("temp") - 273.15;
 
                     if (tempScale == 1)
-                        temp = String.valueOf((int) (currentTemp * 1.8 + 32)) + "°";
+                        temp = (int) (currentTemp * 1.8 + 32) + "°";
                     else
-                        temp = String.valueOf((int) currentTemp) + "°";
+                        temp = (int) currentTemp + "°";
 
                     updateViews.setImageViewBitmap(R.id.imageViewTemp, getFontBitmap(mContext, temp, systemWeatherColor, font, bold, 32));
                 }
@@ -1765,114 +1765,13 @@ public class WidgetManager {
                     String iconName = weather.getString("icon");
                     String iconNameAlt = iconName + "d";
 
-                    WeatherConditions conditions = new WeatherConditions();
-
-                    int icons = Preferences.getWeatherIcons(mContext, appWidgetId);
-                    int resource;
-                    WeatherIcon[] imageArr;
-
                     updateViews.setImageViewBitmap(R.id.imageViewDesc, getFontBitmap(mContext, weatherDesc, systemWeatherColor, font, bold, 12));
 
-                    switch (icons) {
-                        case 0:
-                            resource = R.drawable.tick_weather_04d;
-                            imageArr = conditions.m_ImageArrTick;
-                            break;
-                        case 1:
-                            resource = R.drawable.touch_weather_04d;
-                            imageArr = conditions.m_ImageArrTouch;
-                            break;
-                        case 2:
-                            resource = R.drawable.icon_set_weather_04d;
-                            imageArr = conditions.m_ImageArrIconSet;
-                            break;
-                        case 3:
-                            resource = R.drawable.weezle_weather_04d;
-                            imageArr = conditions.m_ImageArrWeezle;
-                            break;
-                        case 4:
-                            resource = R.drawable.simple_weather_04d;
-                            imageArr = conditions.m_ImageArrSimple;
-                            break;
-                        case 5:
-                            resource = R.drawable.novacons_weather_04d;
-                            imageArr = conditions.m_ImageArrNovacons;
-                            break;
-                        case 6:
-                            resource = R.drawable.sticker_weather_04d;
-                            imageArr = conditions.m_ImageArrSticker;
-                            break;
-                        case 7:
-                            resource = R.drawable.plain_weather_04d;
-                            imageArr = conditions.m_ImageArrPlain;
-                            break;
-                        case 8:
-                            resource = R.drawable.flat_weather_04d;
-                            imageArr = conditions.m_ImageArrFlat;
-                            break;
-                        case 9:
-                            resource = R.drawable.dvoid_weather_04d;
-                            imageArr = conditions.m_ImageArrDvoid;
-                            break;
-                        case 10:
-                            resource = R.drawable.ikonko_weather_04d;
-                            imageArr = conditions.m_ImageArrIkonko;
-                            break;
-                        case 11:
-                            resource = R.drawable.smooth_weather_04d;
-                            imageArr = conditions.m_ImageArrSmooth;
-                            break;
-                        case 12:
-                            resource = R.drawable.bubble_weather_04d;
-                            imageArr = conditions.m_ImageArrBubble;
-                            break;
-                        case 13:
-                            resource = R.drawable.stylish_weather_04d;
-                            imageArr = conditions.m_ImageArrStylish;
-                            break;
-                        case 14:
-                            resource = R.drawable.garmahis_weather_04d;
-                            imageArr = conditions.m_ImageArrGarmahis;
-                            break;
-                        case 15:
-                            resource = R.drawable.iconbest_weather_04d;
-                            imageArr = conditions.m_ImageArrIconBest;
-                            break;
-                        case 16:
-                            resource = R.drawable.cartoon_weather_04d;
-                            imageArr = conditions.m_ImageArrCartoon;
-                            break;
-                        case 17:
-                            resource = R.drawable.flaticon_weather_04d;
-                            imageArr = conditions.m_ImageArrFlaticon;
-                            break;
-                        case 18:
-                            resource = R.drawable.icon8_weather_04d;
-                            imageArr = conditions.m_ImageArrIcon8;
-                            break;
-                        case 19:
-                            resource = R.drawable.crystal_weather_04d;
-                            imageArr = conditions.m_ImageArrCrystal;
-                            break;
-                        case 20:
-                            resource = R.drawable.deszone_weather_04d;
-                            imageArr = conditions.m_ImageArrDesZone;
-                            break;
-                        case 21:
-                            resource = R.drawable.modern_weather_04d;
-                            imageArr = conditions.m_ImageArrModern;
-                            break;
-                        case 22:
-                            resource = R.drawable.simplistic_weather_04d;
-                            imageArr = conditions.m_ImageArrSimplistic;
-                            break;
-                        default:
-                            resource = R.drawable.tick_weather_04d;
-                            imageArr = conditions.m_ImageArrTick;
-                            break;
-                    }
+                    int icons = Preferences.getWeatherIcons(mContext, appWidgetId);
+                    WeatherIcon[] imageArr = WeatherConditions.weatherIcons[icons];
+                    int iconId = imageArr[0].iconId;
 
-                    updateViews.setImageViewResource(R.id.imageViewWeather, resource);
+                    updateViews.setImageViewResource(R.id.imageViewWeather, iconId);
 
                     float lat = Preferences.getLocationLat(mContext, appWidgetId);
                     float lon = Preferences.getLocationLon(mContext, appWidgetId);
@@ -1891,7 +1790,6 @@ public class WidgetManager {
 
                     for (WeatherIcon anImageArr : imageArr) {
                         if (iconName.equals(anImageArr.iconName) || iconNameAlt.equals(anImageArr.iconName)) {
-
                             if (anImageArr.bDay != bDay)
                                 updateViews.setImageViewResource(R.id.imageViewWeather, anImageArr.altIconId);
                             else
@@ -3362,13 +3260,13 @@ public class WidgetManager {
         Boolean gpsState = getGpsState();
 
         if (gpsState != null) {
-            updateViews.setImageViewBitmap(R.id.imageViewGps, getFontBitmap(mContext, mContext.getString(R.string.icon_gps),
+            updateViews.setImageViewBitmap(R.id.imageViewGps, getFontBitmap(mContext, mContext.getString(R.string.icon_location),
                     gpsState ? colorOn : colorOff, "fonts/MaterialIcons.ttf", true, 144));
 
             updateViews.setTextColor(R.id.textViewGps, gpsState ? colorTextOn : colorTextOff);
             updateViews.setInt(R.id.imageViewGpsInd, "setColorFilter", gpsState ? colorOn : colorOff);
         } else {
-            updateViews.setImageViewBitmap(R.id.imageViewGps, getFontBitmap(mContext, mContext.getString(R.string.icon_gps),
+            updateViews.setImageViewBitmap(R.id.imageViewGps, getFontBitmap(mContext, mContext.getString(R.string.icon_location),
                     colorTransition, "fonts/MaterialIcons.ttf", true, 144));
 
             updateViews.setTextColor(R.id.textViewGps, colorTextOn);

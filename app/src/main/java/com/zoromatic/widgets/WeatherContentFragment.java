@@ -241,7 +241,7 @@ public class WeatherContentFragment extends Fragment {
             parseString = parseString.substring(0, parseString.length() - 1);
 
         String start = parseString.substring(0, 1);
-        String end = parseString.substring(parseString.length() - 1, parseString.length());
+        String end = parseString.substring(parseString.length() - 1);
 
         if (!(start.equalsIgnoreCase("{") && end.equalsIgnoreCase("}"))
                 && !(start.equalsIgnoreCase("[") && end.equalsIgnoreCase("]"))) {
@@ -293,9 +293,9 @@ public class WeatherContentFragment extends Fragment {
                 text = view.findViewById(R.id.textViewTempToday);
 
                 if (tempScale == 1) {
-                    text.setText(String.valueOf((int) (currentTemp * 1.8 + 32)) + "°");
+                    text.setText((int) (currentTemp * 1.8 + 32) + "°");
                 } else {
-                    text.setText(String.valueOf((int) currentTemp) + "°");
+                    text.setText((int) currentTemp + "°");
                 }
 
             } catch (JSONException ignored) {
@@ -339,112 +339,11 @@ public class WeatherContentFragment extends Fragment {
 
                     ImageView image = view.findViewById(R.id.imageViewWeatherToday);
 
-                    WeatherConditions conditions = new WeatherConditions();
-
                     int icons = Preferences.getWeatherIcons(context, appWidgetId);
-                    int resource;
-                    WeatherIcon[] imageArr;
+                    WeatherIcon[] imageArr = WeatherConditions.weatherIcons[icons];
+                    int iconId = imageArr[0].iconId;
 
-                    switch (icons) {
-                        case 0:
-                            resource = R.drawable.tick_weather_04d;
-                            imageArr = conditions.m_ImageArrTick;
-                            break;
-                        case 1:
-                            resource = R.drawable.touch_weather_04d;
-                            imageArr = conditions.m_ImageArrTouch;
-                            break;
-                        case 2:
-                            resource = R.drawable.icon_set_weather_04d;
-                            imageArr = conditions.m_ImageArrIconSet;
-                            break;
-                        case 3:
-                            resource = R.drawable.weezle_weather_04d;
-                            imageArr = conditions.m_ImageArrWeezle;
-                            break;
-                        case 4:
-                            resource = R.drawable.simple_weather_04d;
-                            imageArr = conditions.m_ImageArrSimple;
-                            break;
-                        case 5:
-                            resource = R.drawable.novacons_weather_04d;
-                            imageArr = conditions.m_ImageArrNovacons;
-                            break;
-                        case 6:
-                            resource = R.drawable.sticker_weather_04d;
-                            imageArr = conditions.m_ImageArrSticker;
-                            break;
-                        case 7:
-                            resource = R.drawable.plain_weather_04d;
-                            imageArr = conditions.m_ImageArrPlain;
-                            break;
-                        case 8:
-                            resource = R.drawable.flat_weather_04d;
-                            imageArr = conditions.m_ImageArrFlat;
-                            break;
-                        case 9:
-                            resource = R.drawable.dvoid_weather_04d;
-                            imageArr = conditions.m_ImageArrDvoid;
-                            break;
-                        case 10:
-                            resource = R.drawable.ikonko_weather_04d;
-                            imageArr = conditions.m_ImageArrIkonko;
-                            break;
-                        case 11:
-                            resource = R.drawable.smooth_weather_04d;
-                            imageArr = conditions.m_ImageArrSmooth;
-                            break;
-                        case 12:
-                            resource = R.drawable.bubble_weather_04d;
-                            imageArr = conditions.m_ImageArrBubble;
-                            break;
-                        case 13:
-                            resource = R.drawable.stylish_weather_04d;
-                            imageArr = conditions.m_ImageArrStylish;
-                            break;
-                        case 14:
-                            resource = R.drawable.garmahis_weather_04d;
-                            imageArr = conditions.m_ImageArrGarmahis;
-                            break;
-                        case 15:
-                            resource = R.drawable.iconbest_weather_04d;
-                            imageArr = conditions.m_ImageArrIconBest;
-                            break;
-                        case 16:
-                            resource = R.drawable.cartoon_weather_04d;
-                            imageArr = conditions.m_ImageArrCartoon;
-                            break;
-                        case 17:
-                            resource = R.drawable.flaticon_weather_04d;
-                            imageArr = conditions.m_ImageArrFlaticon;
-                            break;
-                        case 18:
-                            resource = R.drawable.icon8_weather_04d;
-                            imageArr = conditions.m_ImageArrIcon8;
-                            break;
-                        case 19:
-                            resource = R.drawable.crystal_weather_04d;
-                            imageArr = conditions.m_ImageArrCrystal;
-                            break;
-                        case 20:
-                            resource = R.drawable.deszone_weather_04d;
-                            imageArr = conditions.m_ImageArrDesZone;
-                            break;
-                        case 21:
-                            resource = R.drawable.modern_weather_04d;
-                            imageArr = conditions.m_ImageArrModern;
-                            break;
-                        case 22:
-                            resource = R.drawable.simplistic_weather_04d;
-                            imageArr = conditions.m_ImageArrSimplistic;
-                            break;
-                        default:
-                            resource = R.drawable.tick_weather_04d;
-                            imageArr = conditions.m_ImageArrTick;
-                            break;
-                    }
-
-                    image.setImageResource(resource);
+                    image.setImageResource(iconId);
 
                     float lat = Preferences.getLocationLat(context, appWidgetId);
                     float lon = Preferences.getLocationLon(context, appWidgetId);
@@ -613,7 +512,7 @@ public class WeatherContentFragment extends Fragment {
             parseString = parseString.substring(0, parseString.length() - 1);
 
         String start = parseString.substring(0, 1);
-        String end = parseString.substring(parseString.length() - 1, parseString.length());
+        String end = parseString.substring(parseString.length() - 1);
 
         if (!(start.equalsIgnoreCase("{") && end.equalsIgnoreCase("}"))
                 && !(start.equalsIgnoreCase("[") && end.equalsIgnoreCase("]"))) {
@@ -650,110 +549,9 @@ public class WeatherContentFragment extends Fragment {
                 TextView textDesc = null;
                 ImageView image = null;
 
-                WeatherConditions conditions = new WeatherConditions();
-
                 int icons = Preferences.getWeatherIcons(context, appWidgetId);
-                int iconID;
-                WeatherIcon[] imageArr;
-
-                switch (icons) {
-                    case 0:
-                        iconID = R.drawable.tick_weather_04d;
-                        imageArr = conditions.m_ImageArrTick;
-                        break;
-                    case 1:
-                        iconID = R.drawable.touch_weather_04d;
-                        imageArr = conditions.m_ImageArrTouch;
-                        break;
-                    case 2:
-                        iconID = R.drawable.icon_set_weather_04d;
-                        imageArr = conditions.m_ImageArrIconSet;
-                        break;
-                    case 3:
-                        iconID = R.drawable.weezle_weather_04d;
-                        imageArr = conditions.m_ImageArrWeezle;
-                        break;
-                    case 4:
-                        iconID = R.drawable.simple_weather_04d;
-                        imageArr = conditions.m_ImageArrSimple;
-                        break;
-                    case 5:
-                        iconID = R.drawable.novacons_weather_04d;
-                        imageArr = conditions.m_ImageArrNovacons;
-                        break;
-                    case 6:
-                        iconID = R.drawable.sticker_weather_04d;
-                        imageArr = conditions.m_ImageArrSticker;
-                        break;
-                    case 7:
-                        iconID = R.drawable.plain_weather_04d;
-                        imageArr = conditions.m_ImageArrPlain;
-                        break;
-                    case 8:
-                        iconID = R.drawable.flat_weather_04d;
-                        imageArr = conditions.m_ImageArrFlat;
-                        break;
-                    case 9:
-                        iconID = R.drawable.dvoid_weather_04d;
-                        imageArr = conditions.m_ImageArrDvoid;
-                        break;
-                    case 10:
-                        iconID = R.drawable.ikonko_weather_04d;
-                        imageArr = conditions.m_ImageArrIkonko;
-                        break;
-                    case 11:
-                        iconID = R.drawable.smooth_weather_04d;
-                        imageArr = conditions.m_ImageArrSmooth;
-                        break;
-                    case 12:
-                        iconID = R.drawable.bubble_weather_04d;
-                        imageArr = conditions.m_ImageArrBubble;
-                        break;
-                    case 13:
-                        iconID = R.drawable.stylish_weather_04d;
-                        imageArr = conditions.m_ImageArrStylish;
-                        break;
-                    case 14:
-                        iconID = R.drawable.garmahis_weather_04d;
-                        imageArr = conditions.m_ImageArrGarmahis;
-                        break;
-                    case 15:
-                        iconID = R.drawable.iconbest_weather_04d;
-                        imageArr = conditions.m_ImageArrIconBest;
-                        break;
-                    case 16:
-                        iconID = R.drawable.cartoon_weather_04d;
-                        imageArr = conditions.m_ImageArrCartoon;
-                        break;
-                    case 17:
-                        iconID = R.drawable.flaticon_weather_04d;
-                        imageArr = conditions.m_ImageArrFlaticon;
-                        break;
-                    case 18:
-                        iconID = R.drawable.icon8_weather_04d;
-                        imageArr = conditions.m_ImageArrIcon8;
-                        break;
-                    case 19:
-                        iconID = R.drawable.crystal_weather_04d;
-                        imageArr = conditions.m_ImageArrCrystal;
-                        break;
-                    case 20:
-                        iconID = R.drawable.deszone_weather_04d;
-                        imageArr = conditions.m_ImageArrDesZone;
-                        break;
-                    case 21:
-                        iconID = R.drawable.modern_weather_04d;
-                        imageArr = conditions.m_ImageArrModern;
-                        break;
-                    case 22:
-                        iconID = R.drawable.simplistic_weather_04d;
-                        imageArr = conditions.m_ImageArrSimplistic;
-                        break;
-                    default:
-                        iconID = R.drawable.tick_weather_04d;
-                        imageArr = conditions.m_ImageArrTick;
-                        break;
-                }
+                WeatherIcon[] imageArr = WeatherConditions.weatherIcons[icons];
+                int iconId = imageArr[0].iconId;
 
                 String sTempHigh = "";
                 String sTempLow = "";
@@ -782,12 +580,12 @@ public class WeatherContentFragment extends Fragment {
                     TextView textHigh = view.findViewById(R.id.textViewWeatherTodayHigh);
 
                     if (tempScale == 1) {
-                        textLow.setText(getString(R.string.temp_low) + String.valueOf((int) (minTemp * 1.8 + 32)) + "°");
-                        textHigh.setText(getString(R.string.temp_high) + String.valueOf((int) (maxTemp * 1.8 + 32)) + "°");
+                        textLow.setText(getString(R.string.temp_low) + (int) (minTemp * 1.8 + 32) + "°");
+                        textHigh.setText(getString(R.string.temp_high) + (int) (maxTemp * 1.8 + 32) + "°");
                     } else {
-                        textLow.setText(getString(R.string.temp_low) + String.valueOf((int) minTemp) + "°");
+                        textLow.setText(getString(R.string.temp_low) + (int) minTemp + "°");
 
-                        textHigh.setText(getString(R.string.temp_high) + String.valueOf((int) maxTemp) + "°");
+                        textHigh.setText(getString(R.string.temp_high) + (int) maxTemp + "°");
                     }
 
                     continue;
@@ -797,17 +595,17 @@ public class WeatherContentFragment extends Fragment {
                     double temp = (tempJSON != null ? tempJSON.getDouble("max") - 273.15 : 0);
 
                     if (tempScale == 1) {
-                        sTempHigh = "H: " + String.valueOf((int) (temp * 1.8 + 32)) + "°";
+                        sTempHigh = "H: " + (int) (temp * 1.8 + 32) + "°";
                     } else {
-                        sTempHigh = "H: " + String.valueOf((int) temp) + "°";
+                        sTempHigh = "H: " + (int) temp + "°";
                     }
 
                     temp = (tempJSON != null ? tempJSON.getDouble("min") - 273.15 : 0);
 
                     if (tempScale == 1) {
-                        sTempLow = "L: " + String.valueOf((int) (temp * 1.8 + 32)) + "°";
+                        sTempLow = "L: " + (int) (temp * 1.8 + 32) + "°";
                     } else {
-                        sTempLow = "L: " + String.valueOf((int) temp) + "°";
+                        sTempLow = "L: " + (int) temp + "°";
                     }
                 } catch (JSONException ignored) {
                 }
@@ -825,7 +623,7 @@ public class WeatherContentFragment extends Fragment {
 
                     for (WeatherIcon anImageArr : imageArr) {
                         if (iconName.equals(anImageArr.iconName) || iconNameAlt.equals(anImageArr.iconName)) {
-                            iconID = anImageArr.iconId;
+                            iconId = anImageArr.iconId;
                             break;
                         }
                     }
@@ -894,7 +692,7 @@ public class WeatherContentFragment extends Fragment {
                     textDesc.setText(weatherDesc);
                 }
                 if (image != null) {
-                    image.setImageResource(iconID);
+                    image.setImageResource(iconId);
                 }
             }
 
